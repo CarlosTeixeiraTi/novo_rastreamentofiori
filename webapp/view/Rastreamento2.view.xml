@@ -1,0 +1,369 @@
+<mvc:View
+    controllerName="br.com.smartpcm.rastreamento.zrastreio.controller.Rastreamento2"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:viz.data="sap.viz.ui5.data"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+>
+    <Page
+        id="idDashboardPage"
+        backgroundDesign="Transparent">
+
+        <customHeader>
+
+            <Bar>
+
+                <contentMiddle>
+
+                    <HBox
+                        alignItems="Center"
+                        justifyContent="Center">
+
+                        <Image
+                            src="img/SAP.png"
+                            height="40px"
+                            class="sapUiTinyMarginEnd" />
+
+                        <Title
+                            text="" />
+
+                    </HBox>
+
+                </contentMiddle>
+
+            </Bar>
+
+        </customHeader>
+
+        <content>
+
+            <!-- 1. CONTAINER PRINCIPAL: Divide a tela em duas colunas (Esquerda e
+                                Direita) -->
+
+            <HBox
+                width="100%"
+                alignItems="Start"
+                justifyContent="Center"
+                wrap="Wrap"
+                class="linhaKpis">
+                <HBox justifyContent="Center" class="sapUiSmallMarginBottom">
+
+                        <Panel
+                            id="idTotalEquipamentosPanel"
+                            width="180px"
+                            height="90px"
+                            class="sapUiSmallMargin kpiCard kpiAlturaPadrao painelAzul">
+
+                            <VBox
+                                width="100%"
+                                height="100%"
+                                alignItems="Center"
+                                justifyContent="Center"
+                                class="kpiConteudo">
+                                <HBox
+                                    width="100%"
+                                    alignItems="Center"
+                                    justifyContent="Center"
+                                    class="kpiValor">
+
+                                    <Image
+                                        src="img/rastreados.png"
+                                        width="17px"
+                                        height="19px"
+                                        class="sapUiMediumMarginEnd" />
+
+                                    <Title
+                                        text="{dashboard>/totalEquipamentos}"
+                                        level="H1"
+                                        class="kpiNumero" />
+
+                                </HBox>
+                                <Title
+                                    text="Rastreados"
+                                    titleStyle="H4"
+                                    class="tituloKpiNovo" />
+
+
+                            </VBox>
+
+                        </Panel>
+
+                </HBox>
+
+
+                <Panel
+                    id="idIndicadoresPanel"
+                    width="180px"
+                    height="90px"
+                    class="sapUiSmallMargin kpiCard kpiAlturaPadrao painelRosa">
+
+                    <VBox
+                        width="100%"
+                        height="100%"
+                        alignItems="Center"
+                        justifyContent="Center"
+                        class="kpiConteudo">
+
+                        <HBox
+                            alignItems="Center"
+                            justifyContent="Center"
+                            class="kpiValor">
+                            <Image
+                                src="img/efetividade.png"
+                                width="24px"
+                                height="17px"
+                                class="sapUiSmallMarginEnd" />
+
+                            <HBox
+                                alignItems="Start"
+                                justifyContent="Center">
+
+                                <Title
+                                    text="{dashboard>/indiceEfetividade}"
+                                    level="H1"
+                                    class="kpiNumero" />
+
+                                <Text
+                                    text="%"
+                                    class="percentualMenor" />
+
+                            </HBox>
+
+                        </HBox>
+
+                        <Title
+                            text="Efetividade"
+                            titleStyle="H4"
+                            class="tituloKpiNovo" />
+
+                    </VBox>
+
+                </Panel>
+                <Panel
+                    id="idLugaresPanel"
+                    width="180px"
+                    height="90px"
+                    class="sapUiSmallMargin kpiCard kpiAlturaPadrao painelLocalidades">
+
+                    <VBox
+                        width="100%"
+                        height="100%"
+                        alignItems="Center"
+                        justifyContent="Center"
+                        class="kpiConteudo">
+
+                        <HBox
+                            alignItems="Center"
+                            justifyContent="Center"
+                            class="kpiValor">
+
+                            <Image
+                                src="img/localidades.png"
+                                width="26px"
+                                height="23px"
+                                class="sapUiSmallMarginEnd" />
+
+                            <!-- Fechamento do binding com '}' e fechamento correto da
+                                        tag /> -->
+                            <Title
+                                text="{dashboard>/totalLocalidades}"
+                                level="H1"
+                                class="kpiNumero" />
+
+                        </HBox> <!--
+                                    Tag </HBox> adicionada para fechar o bloco -->
+
+                        <Title
+                            text="Localidades"
+                            titleStyle="H4"
+                            class="tituloKpiNovo" />
+
+                    </VBox>
+
+                </Panel>
+
+                <Panel
+                    id="idCategoriasEquipamentoPanel"
+                    width="180px"
+                    height="90px"
+                    class="sapUiSmallMargin kpiCard kpiAlturaPadrao painelCategorias">
+
+                    <VBox
+                        width="100%"
+                        height="100%"
+                        alignItems="Center"
+                        justifyContent="Center"
+                        class="kpiConteudo">
+
+                        <HBox
+                            alignItems="Center"
+                            justifyContent="Center"
+                            class="kpiValor">
+
+                            <Image
+                                src="img/categorias.png"
+                                width="29px"
+                                height="20px"
+                                class="sapUiSmallMarginEnd" />
+
+                            <!-- Fechamento do binding com '}' e fechamento correto da
+                                        tag /> -->
+                            <Title
+                                text="{dashboard>/totalCategoriasEquipamento}"
+                                level="H1"
+                                class="kpiNumero" />
+
+                        </HBox> <!--
+                                    Tag </HBox> adicionada para fechar o bloco -->
+
+                        <Title
+                            text="Categorias"
+                            titleStyle="H4"
+                            class="tituloKpiNovo" />
+
+                    </VBox>
+
+                </Panel>
+
+                <Panel
+                    id="idEmbarcadosPanel"
+                    width="180px"
+                    height="90px"
+                    class="sapUiSmallMargin kpiCard kpiAlturaPadrao painelEmbarcados">
+
+                    <VBox
+                        width="100%"
+                        height="100%"
+                        alignItems="Center"
+                        justifyContent="Center"
+                        class="kpiConteudo">
+
+                        <HBox
+                            alignItems="Center"
+                            justifyContent="Center"
+                            class="kpiValor">
+
+                            <!-- Caminho da imagem restaurado (ajuste o nome do arquivo
+                                        se necessário) -->
+                            <Image
+                                src="img/caminhao.png"
+                                width="32px"
+                                height="20px"
+                                class="sapUiSmallMarginEnd" />
+
+                            <!-- Título do valor corrigido e fechado corretamente -->
+                            <Title
+                                text="{dashboard>/totalEmbarcados}"
+                                level="H1"
+                                class="kpiNumero" />
+
+                        </HBox>
+
+                        <Title
+                            text="Embarcados"
+                            titleStyle="H4"
+                            class="tituloKpiNovo" />
+
+                    </VBox>
+
+                </Panel>
+                <Panel
+                    id="idStatusTipoPanel"
+                    width="180px"
+                    height="90px"
+                    class="sapUiSmallMargin kpiCard kpiAlturaPadrao painelStatusTipo">
+
+                    <VBox
+                        width="100%"
+                        height="100%"
+                        alignItems="Center"
+                        justifyContent="Center"
+                        class="kpiConteudo">
+
+                        <HBox
+                            alignItems="Center"
+                            justifyContent="Center"
+                            class="kpiValor">
+
+                            <Image
+                                src="img/status.png"
+                                width="24px"
+                                height="19px"
+                                class="sapUiSmallMarginEnd" />
+
+                            <Title
+                                text="{dashboard>/totalStatusTipo}"
+                                level="H1"
+                                class="kpiNumero" />
+
+                        </HBox>
+
+                        <Title
+                            text="Status"
+                            titleStyle="H4"
+                            class="tituloKpiNovo" />
+
+                    </VBox>
+
+                </Panel>
+
+            </HBox> <!--
+                                Fim da HBox dos Cards -->
+
+            <HBox
+                width="100%"
+                fitContainer="true"
+                alignItems="Stretch"
+                renderType="Bare">
+
+                <!-- ESQUERDA -->
+
+
+                <VBox
+                    width="100%"
+                    height="100%"
+                    fitContainer="true"
+                    class="sapUiSmallMarginEnd">
+
+                    <MessageStrip
+                        id="idAjudaPesquisa"
+                        text="DIGITE UM VEÍCULO, EQUIPAMENTO, GATEWAY OU LOCAL PARA LOCALIZÁ-LO NO MAPA.."
+                        type="Information"
+                        showIcon="true"
+                        showCloseButton="true"
+                        close=".onFecharAjudaPesquisa"
+                        class="sapUiTinyMarginBottom " />
+
+                    <SearchField
+                        id="idPesquisaRastreador"
+                        width="100%"
+                        placeholder="Ex.: CA6015, 11629079..."
+                        search=".onPesquisarRastreador"
+                        class="sapUiMinimumMarginBottom sapUiNoMarginTop pesquisaRastreador" />
+
+                    <Panel
+                        id="panelMapa"
+                        width="100%"
+                        class="painelMapa"
+                        headerText="">
+                        <content>
+                            <core:HTML
+                                id="htmlMapa"
+                                preferDOM="false" />
+                        </content>
+
+                    </Panel>
+
+                </VBox>
+
+            </HBox>
+
+
+        </content>
+
+    </Page>
+
+</mvc:View>

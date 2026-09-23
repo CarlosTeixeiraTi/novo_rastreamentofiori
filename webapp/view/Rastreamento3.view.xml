@@ -1,0 +1,270 @@
+<mvc:View
+    controllerName="br.com.smartpcm.rastreamento.zrastreio.controller.Rastreamento3"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:viz.data="sap.viz.ui5.data"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds">
+
+    <Page
+        id="idDashboardMainPage"
+        class="dashboardPage"
+        showHeader="false">
+
+        <content>
+
+            <VBox
+                class="dashboardContainer">
+
+                <!-- CABEÇALHO -->
+
+                <HBox
+                    justifyContent="SpaceBetween"
+                    alignItems="Center"
+                    class="dashboardHeader">
+
+                    <VBox>
+
+                        <Title
+                            text="SmartPCM Asset Intelligence"
+                            class="dashboardTitle" />
+
+                        <Text
+                            text="Centro de Monitoramento RFID"
+                            class="dashboardSubtitle" />
+
+                    </VBox>
+
+                    <SearchField
+                        id="idPesquisaRastreadorSearchField"
+                        width="450px"
+                        placeholder="Pesquisar ativo, veículo, gateway..."
+                        search=".onPesquisarRastreador" />
+
+                </HBox>
+
+                <!-- KPIs -->
+
+                <HBox
+                    wrap="Wrap"
+                    justifyContent="SpaceBetween"
+                    class="sapUiMediumMarginTop">
+
+                    <!-- Rastreadores -->
+
+                    <Panel
+                        id="idCardRastreadoresPanel"
+                        width="320px"
+                        class="kpiCardDark">
+
+                        <HBox
+                            alignItems="Center"
+                            class="sapUiMediumMargin">
+
+                            <VBox
+                                width="80px"
+                                alignItems="Center"
+                                justifyContent="Center">
+                                <core:Icon src="sap-icon://radar" />
+                            </VBox>
+
+
+                            <VBox>
+
+                                <Title
+                                    text="Rastreadores"
+                                    class="tituloKpiDark" />
+
+                                <Title
+                                    text="{dashboard>/totalEquipamentos}"
+                                    class="numeroKpiDark" />
+
+                                <Text
+                                    text="Total monitorados"
+                                    class="subtituloKpiDark" />
+
+                            </VBox>
+
+                        </HBox>
+
+                    </Panel>
+
+                    <!-- Gateways -->
+
+                    <Panel
+                        id="idCardGatewaysPanel"
+                        width="320px"
+                        class="kpiCardDark">
+
+                        <HBox
+                            alignItems="Center"
+                            class="sapUiMediumMargin">
+
+                            <VBox
+                                width="80px"
+                                alignItems="Center">
+
+                                <core:Icon src="sap-icon://antenna" />
+
+                            </VBox>
+
+                            <VBox>
+
+                                <Title
+                                    text="Gateways"
+                                    class="tituloKpiDark" />
+
+                                <Title
+                                    text="{dashboard>/gateways}"
+                                    class="numeroKpiDark" />
+
+                                <Text
+                                    text="Ativos"
+                                    class="subtituloKpiDark" />
+
+                            </VBox>
+
+                        </HBox>
+
+                    </Panel>
+
+                    <!-- Online -->
+
+                    <Panel
+                        id="idCardOnlinePanel"
+                        width="320px"
+                        class="kpiCardDark">
+
+                        <HBox
+                            alignItems="Center"
+                            class="sapUiMediumMargin">
+
+                            <VBox
+                                width="80px"
+                                alignItems="Center">
+                                <core:Icon src="sap-icon://activity-items"></core:Icon>
+
+
+                            </VBox>
+
+                            <VBox>
+
+                                <Title
+                                    text="Online"
+                                    class="tituloKpiDark" />
+
+                                <Title
+                                    text="{dashboard>/online}"
+                                    class="numeroKpiDark" />
+
+                                <Text
+                                    text="Rastreadores"
+                                    class="subtituloKpiDark" />
+
+                            </VBox>
+
+                        </HBox>
+
+                    </Panel>
+
+                    <!-- Offline -->
+
+                    <Panel
+                        id="idCardOfflinePanel"
+                        width="320px"
+                        class="kpiCardDark">
+
+                        <HBox
+                            alignItems="Center"
+                            class="sapUiMediumMargin">
+
+                            <VBox
+                                width="80px"
+                                alignItems="Center">
+
+                                <core:Icon src="sap-icon://error" />
+
+                            </VBox>
+
+                            <VBox>
+
+                                <Title
+                                    text="Offline"
+                                    class="tituloKpiDark" />
+
+                                <Title
+                                    text="{dashboard>/offline}"
+                                    class="numeroKpiDark" />
+
+                                <Text
+                                    text="Sem comunicação"
+                                    class="subtituloKpiDark" />
+
+                            </VBox>
+
+                        </HBox>
+
+                    </Panel>
+
+                </HBox>
+
+                <!-- LINHA DE GRÁFICOS -->
+
+                <HBox
+                    width="100%"
+                    justifyContent="SpaceBetween"
+                    class="sapUiMediumMarginTop">
+
+                    <Panel
+                        width="49%"
+                        class="dashboardPanelDark"
+                        headerText="Status dos Rastreadores">
+
+                        <viz:VizFrame
+                            id="idDonutStatusVizFrame"
+                            vizType="donut"
+                            height="380px" />
+
+                    </Panel>
+
+                    <Panel
+                        width="49%"
+                        class="dashboardPanelDark"
+                        headerText="Distribuição por Grupo Atual">
+
+                        <viz:VizFrame
+                            id="idBarGrupoVizFrame"
+                            vizType="bar"
+                            height="380px" />
+
+                    </Panel>
+
+                </HBox>
+
+                <!-- MAPA -->
+
+                <Panel
+                    id="idMapaPanel"
+                    width="100%"
+                    class="dashboardPanelDark sapUiMediumMarginTop"
+                    headerText="Mapa Operacional em Tempo Real">
+
+                    <content>
+
+                        <core:HTML
+                            id="idMapaHTML"
+                            preferDOM="false" />
+
+                    </content>
+
+                </Panel>
+
+            </VBox>
+
+        </content>
+
+    </Page>
+
+</mvc:View>

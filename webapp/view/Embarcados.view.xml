@@ -1,0 +1,90 @@
+<mvc:View controllerName="br.com.smartpcm.rastreamento.zrastreio.controller.Embarcados"
+	xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" height="100%">
+	<Page id="pagina" title="{i18n>navEmbarcados}" enableScrolling="true">
+		<headerContent>
+			<Button icon="sap-icon://excel-attachment" text="{i18n>exportar}" press=".onExportar" />
+		</headerContent>
+		<content>
+			<VBox class="sapUiSmallMargin">
+				<Text text="{i18n>embarcadosSubtitulo}" class="valeKpiPe sapUiTinyMarginBottom" />
+
+				<l:Grid defaultSpan="XL3 L3 M6 S6" hSpacing="1" vSpacing="1" class="sapUiTinyMarginBottom">
+					<VBox class="valeCartao sapUiSmallPadding">
+						<Text text="{i18n>embVeiculos}" class="valeKpiRotulo" />
+						<Text text="{frota>/conferencia/resumo/veiculos}" class="valeKpiValor" />
+					</VBox>
+					<VBox class="valeCartao sapUiSmallPadding">
+						<Text text="{i18n>embConformes}" class="valeKpiRotulo" />
+						<Text text="{frota>/conferencia/resumo/conformes}" class="valeKpiValor valePositivo" />
+					</VBox>
+					<VBox class="valeCartao sapUiSmallPadding">
+						<Text text="{i18n>embDivergentes}" class="valeKpiRotulo" />
+						<Text text="{frota>/conferencia/resumo/divergentes}" class="valeKpiValor valeNegativo" />
+					</VBox>
+					<VBox class="valeCartao sapUiSmallPadding">
+						<Text text="{i18n>embCobertura}" class="valeKpiRotulo" />
+						<Text text="{ path: 'frota>/conferencia/resumo/cobertura', formatter: '.percentual' }" class="valeKpiValor valeCritico" />
+						<Text text="{frota>/conferencia/resumo/comRastreador} / {frota>/conferencia/resumo/naArvore}" class="valeKpiPe" />
+					</VBox>
+				</l:Grid>
+
+				<VBox class="valeCartao">
+					<VBox class="sapUiSmallPadding">
+						<Title text="{i18n>embPorVeiculo}" level="H3" titleStyle="H6" />
+						<Text text="{i18n>embPorVeiculoPe}" class="valeKpiPe" />
+					</VBox>
+					<Table id="tabela" items="{frota>/conferencia/veiculos}" mode="SingleSelectMaster" selectionChange=".onSelecionar">
+						<columns>
+							<Column width="10rem"><Text text="{i18n>colVeiculo}" /></Column>
+							<Column width="15rem"><Text text="{i18n>colLocal}" /></Column>
+							<Column><Text text="{i18n>colCobertura}" /></Column>
+							<Column width="9rem" hAlign="End"><Text text="{i18n>colComArvore}" /></Column>
+							<Column width="10rem"><Text text="{i18n>colSituacao}" /></Column>
+						</columns>
+						<items>
+							<ColumnListItem type="Active">
+								<cells>
+									<Text text="{frota>nome}" class="valeMono" />
+									<Text text="{frota>local}" />
+									<ProgressIndicator
+										percentValue="{ path: 'frota>cobertura', formatter: '.paraPercentual' }"
+										displayValue="{ path: 'frota>cobertura', formatter: '.percentual' }"
+										showValue="true" height="1rem"
+										state="{ path: 'frota>cobertura', formatter: '.estadoDaCobertura' }" />
+									<Text text="{frota>comRastreador} / {frota>naArvore}" class="valeMono" />
+									<ObjectStatus
+										text="{ path: 'frota>conforme', formatter: '.textoSituacao' }"
+										state="{ path: 'frota>conforme', formatter: '.estadoSituacao' }" />
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+				</VBox>
+
+				<VBox class="valeCartao sapUiTinyMarginTop" visible="{= ${tela>/linhas}.length > 0 }">
+					<Title text="{i18n>embFamilias} {tela>/veiculo}" level="H3" titleStyle="H6" class="sapUiSmallPadding" />
+					<Table items="{tela>/linhas}" inset="false">
+						<columns>
+							<Column><Text text="{i18n>colFamilia}" /></Column>
+							<Column width="9rem" hAlign="End"><Text text="{i18n>colArvore}" /></Column>
+							<Column width="9rem" hAlign="End"><Text text="{i18n>colComTag}" /></Column>
+							<Column width="16rem"><Text text="{i18n>colDiferenca}" /></Column>
+						</columns>
+						<items>
+							<ColumnListItem>
+								<cells>
+									<Text text="{tela>rotulo}" />
+									<Text text="{tela>naArvore}" />
+									<Text text="{tela>comRastreador}" />
+									<ObjectStatus
+										text="{ path: 'tela>diferenca', formatter: '.textoDiferenca' }"
+										state="{ path: 'tela>diferenca', formatter: '.estadoDaDiferenca' }" />
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+				</VBox>
+			</VBox>
+		</content>
+	</Page>
+</mvc:View>

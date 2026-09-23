@@ -1,0 +1,243 @@
+<mvc:View
+	controllerName="br.com.smartpcm.rastreamento.zrastreio.controller.SalaDeControle"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core"
+	xmlns:l="sap.ui.layout"
+	height="100%">
+
+	<Page id="pagina" showHeader="false" enableScrolling="true" class="valeEscuro">
+		<content>
+			<VBox class="sapUiSmallMargin">
+
+				<!-- cabecalho -->
+				<HBox justifyContent="SpaceBetween" alignItems="End" class="sapUiTinyMarginBottom">
+					<VBox>
+						<Title text="{i18n>salaTitulo}" level="H2" titleStyle="H2" />
+						<Text text="{i18n>salaSubtitulo}" class="valeKpiPe" />
+					</VBox>
+					<Text text="{ path: 'frota>/atualizadoEm', formatter: '.formatarAtualizacao' }"
+						class="valeKpiPe" />
+				</HBox>
+
+				<!--
+					RECORTE POR PREFIXO: sempre os 4 primeiros caracteres de
+					LOCAL_INSTALACAO, so de equipamentos com rastreador. A
+					lista sai do distinct dos dados, nao de uma constante.
+					`FEIT-EMREF_EX...` continua sendo FEIT.
+				-->
+				<HBox alignItems="Center" wrap="Wrap" class="sapUiTinyMarginBottom valePrefixo">
+					<Label text="{i18n>prefixoRotulo}" class="sapUiTinyMarginEnd" />
+					<SegmentedButton id="segPrefixo" selectionChange=".onTrocarPrefixo"
+						selectedKey="__todos__">
+						<items>
+							<SegmentedButtonItem key="__todos__" text="{i18n>prefixoTodos}" />
+						</items>
+					</SegmentedButton>
+					<Input
+						id="prefixoDigitado"
+						width="11rem"
+						placeholder="{i18n>prefixoDigitar}"
+						maxLength="4"
+						submit=".onDigitarPrefixo"
+						class="sapUiTinyMarginBegin" />
+					<Text text="{i18n>prefixoAjuda}" class="valeKpiPe sapUiTinyMarginBegin" />
+				</HBox>
+
+				<!-- indicadores -->
+				<l:Grid defaultSpan="XL2 L2 M4 S6" hSpacing="1" vSpacing="1"
+					class="sapUiTinyMarginBottom">
+					<VBox
+						id="cardComunicando"
+						class="valeCartao sapUiSmallPadding valeCardClicavel">
+
+						<Text text="{i18n>kpiComunicando}" class="valeKpiRotulo" />
+						<Text text="{frota>/resumo/comunicando}" class="valeKpiValor" />
+						<Text text="{i18n>kpiComunicandoPe} {frota>/resumo/rastreadores}"
+							class="valeKpiPe" />
+					</VBox>
+					<VBox
+						id="cardMudos"
+						class="valeCartao sapUiSmallPadding valeCardClicavel">
+
+						<Text text="{i18n>kpiMudos}" class="valeKpiRotulo" />
+						<Text text="{frota>/resumo/mudos}" class="valeKpiValor" />
+						<Text text="{i18n>kpiMudosPe}" class="valeKpiPe" />
+					</VBox>
+					<VBox
+						id="cardCobertura"
+						class="valeCartao sapUiSmallPadding valeCardClicavel">
+
+						<Text text="{i18n>kpiCobertura}" class="valeKpiRotulo" />
+
+						<Text
+							text="{ path: 'frota>/resumo/cobertura', formatter: '.percentual' }"
+							class="valeKpiValor valeCritico" />
+
+						<Text
+							text="{frota>/resumo/comRastreador} {i18n>kpiCoberturaPe} {frota>/resumo/naArvore}"
+							class="valeKpiPe" />
+					</VBox>
+					<VBox
+						id="cardDivergentes"
+						class="valeCartao sapUiSmallPadding valeCardClicavel">
+
+						<Text text="{i18n>kpiDivergentes}" class="valeKpiRotulo" />
+						<Text text="{frota>/resumo/divergentes}" class="valeKpiValor valeMagenta" />
+						<Text text="{i18n>kpiDivergentesPe}" class="valeKpiPe" />
+					</VBox>
+					<VBox
+						id="cardGateways"
+						class="valeCartao sapUiSmallPadding valeCardClicavel">
+
+						<Text text="{i18n>kpiGateways}" class="valeKpiRotulo" />
+						<Text text="{frota>/resumo/gatewaysAtivos}" class="valeKpiValor" />
+						<Text text="{i18n>kpiGatewaysPe} {frota>/resumo/gatewaysTotal}"
+							class="valeKpiPe" />
+					</VBox>
+					<VBox
+						id="cardEfetividade"
+						class="valeCartao sapUiSmallPadding valeCardClicavel">
+
+						<Text text="{i18n>kpiEfetividade}" class="valeKpiRotulo" />
+
+						<Text
+							text="{ path: 'frota>/resumo/efetividade', formatter: '.percentual' }"
+							class="valeKpiValor valeMagenta" />
+
+						<Text
+							text="{i18n>kpiEfetividadePe}"
+							class="valeKpiPe" />
+
+					</VBox>
+				</l:Grid>
+
+				<!-- mapa + comparacao por tipo -->
+				<l:Grid defaultSpan="XL8 L8 M12 S12" hSpacing="1" vSpacing="1">
+					<VBox class="valeCartao">
+						<HBox justifyContent="SpaceBetween" alignItems="Center"
+							class="sapUiSmallPaddingBegin sapUiSmallPaddingEnd sapUiTinyPaddingTop sapUiTinyPaddingBottom">
+							<VBox>
+								<Title text="{i18n>mapaPosicaoAtual}" level="H3" titleStyle="H6" />
+								<Text
+									text="{frota>/zonas/length} {i18n>mapaCercas} · {frota>/gateways/length} {i18n>mapaGateways}"
+									class="valeKpiPe" />
+							</VBox>
+							<HBox alignItems="Center">
+								<!-- Alterna entre a foto de satelite e o mapa claro com ruas,
+								     igual ao controle da tela de Mapa operacional. -->
+								<SegmentedButton id="segBaseMini" selectedKey="satelite"
+									selectionChange=".onTrocarBase" class="sapUiTinyMarginEnd">
+									<items>
+										<SegmentedButtonItem key="claro" text="{i18n>mapaBaseClaro}" />
+										<SegmentedButtonItem key="satelite"
+											text="{i18n>mapaBaseSatelite}" />
+									</items>
+								</SegmentedButton>
+								<Button icon="sap-icon://full-screen" type="Transparent"
+									text="{i18n>mapaAmpliar}" press=".onAmpliarMapa" />
+							</HBox>
+						</HBox>
+						<core:HTML id="mapaMini"
+							content="&lt;div class=&quot;valeMapa&quot; style=&quot;height:360px&quot;&gt;&lt;/div&gt;" />
+					</VBox>
+
+					<VBox
+						id="cardArvoreTipo"
+						class="valeCartao valeCardClicavel"
+						height="385px">
+						<layoutData>
+							<l:GridData span="XL4 L4 M12 S12" />
+						</layoutData>
+						<VBox
+							class="sapUiSmallPaddingBegin sapUiSmallPaddingEnd sapUiTinyPaddingTop">
+							<Title text="{i18n>arvorePorTipo}" level="H3" titleStyle="H6" />
+							<Text text="{i18n>arvorePorTipoPe}" class="valeKpiPe" />
+						</VBox>
+						<List
+							id="listaFamilias"
+							items="{frota>/porFamilia}"
+							showSeparators="None"
+							class="sapUiSmallPaddingBegin sapUiSmallPaddingEnd">
+
+							<CustomListItem
+								type="Active"
+								press=".onAbrirArvoreTipo">
+
+								<VBox class="sapUiTinyMarginTop sapUiTinyMarginBottom">
+
+									<HBox justifyContent="SpaceBetween">
+										<Text text="{frota>rotulo}" />
+
+										<Text
+											text="{frota>comRastreador} / {frota>naArvore}"
+											class="valeMono" />
+									</HBox>
+
+									<ProgressIndicator
+										percentValue="{ path: 'frota>cobertura', formatter: '.paraPercentual' }"
+										showValue="false"
+										height="0.5rem"
+										state="{ path: 'frota>cobertura', formatter: '.estadoDaCobertura' }"
+										class="sapUiTinyMarginTop" />
+
+								</VBox>
+
+							</CustomListItem>
+
+						</List>
+						<HBox justifyContent="SpaceBetween" class="sapUiSmallPadding">
+							<Text text="{i18n>arvoreTotal}" class="valeKpiPe" />
+							<Text
+								text="{frota>/resumo/comRastreador} / {frota>/resumo/naArvore} · { path: 'frota>/resumo/cobertura', formatter: '.percentual' }"
+								class="valeMono" />
+						</HBox>
+					</VBox>
+				</l:Grid>
+
+				<!-- ultimas mudancas de situacao -->
+				<VBox class="valeCartao sapUiTinyMarginTop">
+					<VBox class="sapUiSmallPaddingBegin sapUiSmallPaddingEnd sapUiTinyPaddingTop">
+						<Title text="{i18n>movimentacoes}" level="H3" titleStyle="H6" />
+						<Text text="{i18n>movimentacoesPe}" class="valeKpiPe" />
+					</VBox>
+					<Table id="tabelaMovimentacoes" items="{frota>/movimentacoes}" inset="false">
+						<columns>
+							<Column width="9rem">
+								<Text text="{i18n>colEquipamento}" />
+							</Column>
+							<Column>
+								<Text text="{i18n>colDescricao}" />
+							</Column>
+							<Column>
+								<Text text="{i18n>colMudanca}" />
+							</Column>
+							<Column width="12rem">
+								<Text text="{i18n>colOficina}" />
+							</Column>
+							<Column width="8rem" hAlign="End">
+								<Text text="{i18n>colQuando}" />
+							</Column>
+						</columns>
+						<items>
+							<ColumnListItem type="Active" press=".onAbrirEquipamento">
+								<cells>
+									<Text
+										text="{
+        path: 'frota>codigo',
+        formatter: '.formatarCodigoCurto'
+    }"
+										class="valeMono" />
+									<Text text="{frota>descricao}" />
+									<Text text="{frota>de} → {frota>para}" />
+									<Text text="{frota>oficina}" />
+									<Text text="{frota>quando}" />
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+				</VBox>
+			</VBox>
+		</content>
+	</Page>
+</mvc:View>

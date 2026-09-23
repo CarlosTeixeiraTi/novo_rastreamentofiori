@@ -1,0 +1,69 @@
+<mvc:View controllerName="br.com.smartpcm.rastreamento.zrastreio.controller.Manutencao"
+	xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" height="100%">
+	<Page id="pagina" title="{i18n>navManutencao}" enableScrolling="true">
+		<subHeader>
+			<OverflowToolbar>
+				<SearchField id="busca" width="20rem" placeholder="{i18n>manutBuscar}" liveChange=".onBuscar" />
+				<ToolbarSpacer />
+				<Button icon="sap-icon://excel-attachment" text="{i18n>exportar}" press=".onExportar" />
+			</OverflowToolbar>
+		</subHeader>
+		<content>
+			<VBox class="sapUiSmallMargin">
+				<Text text="{i18n>manutSubtitulo}" class="valeKpiPe sapUiTinyMarginBottom" />
+
+				<l:Grid defaultSpan="XL3 L3 M6 S6" hSpacing="1" vSpacing="1" class="sapUiTinyMarginBottom">
+					<VBox class="valeCartao sapUiSmallPadding">
+						<Text text="{i18n>manutNotas}" class="valeKpiRotulo" />
+						<Text text="{frota>/notas/length}" class="valeKpiValor" />
+					</VBox>
+					<VBox class="valeCartao sapUiSmallPadding">
+						<Text text="{i18n>manutOrdens}" class="valeKpiRotulo" />
+						<Text text="{frota>/ordens/length}" class="valeKpiValor" />
+					</VBox>
+					<VBox class="valeCartao sapUiSmallPadding">
+						<Text text="{i18n>manutSemTag}" class="valeKpiRotulo" />
+						<Text text="{tela>/semTag}" class="valeKpiValor valeNegativo" />
+						<Text text="{i18n>manutSemTagPe}" class="valeKpiPe" />
+					</VBox>
+					<VBox class="valeCartao sapUiSmallPadding">
+						<Text text="{i18n>manutDivergentes}" class="valeKpiRotulo" />
+						<Text text="{frota>/divergentes/length}" class="valeKpiValor valeCritico" />
+						<Text text="{i18n>manutDivergentesPe}" class="valeKpiPe" />
+					</VBox>
+				</l:Grid>
+
+				<VBox class="valeCartao">
+					<VBox class="sapUiSmallPadding">
+						<Title text="{i18n>manutTabela}" level="H3" titleStyle="H6" />
+						<Text text="{i18n>manutTabelaPe}" class="valeKpiPe" />
+					</VBox>
+					<Table id="tabela" items="{frota>/notas}" growing="true" growingThreshold="50" sticky="ColumnHeaders">
+						<columns>
+							<Column width="10rem"><Text text="{i18n>colEquipamento}" /></Column>
+							<Column width="9rem"><Text text="{i18n>colNota}" /></Column>
+							<Column width="9rem"><Text text="{i18n>colOrdem}" /></Column>
+							<Column><Text text="{i18n>colTextoBreve}" /></Column>
+							<Column width="13rem"><Text text="{i18n>colOficina}" /></Column>
+							<Column width="9rem"><Text text="{i18n>colStatus}" /></Column>
+							<Column width="7rem"><Text text="{i18n>colPrioridade}" /></Column>
+						</columns>
+						<items>
+							<ColumnListItem type="Navigation" press=".onAbrir">
+								<cells>
+									<Text text="{frota>equipamento}" class="valeMono" />
+									<Text text="{frota>nota}" class="valeMono" />
+									<Text text="{frota>ordem_numero}" class="valeMono" />
+									<Text text="{frota>txt_breve_nota}" />
+									<Text text="{frota>oficina}" />
+									<ObjectStatus text="{frota>status_sistema}" state="Warning" />
+									<Text text="{frota>prioridade}" />
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+				</VBox>
+			</VBox>
+		</content>
+	</Page>
+</mvc:View>

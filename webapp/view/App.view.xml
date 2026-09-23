@@ -1,0 +1,93 @@
+<mvc:View
+	controllerName="br.com.smartpcm.rastreamento.zrastreio.controller.App"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:tnt="sap.tnt"
+	displayBlock="true"
+	height="100%">
+
+	<!--
+		Antes: App.view.xml tinha seis linhas e continha apenas um sap.m.App,
+		e cada uma das tres telas montava a sua propria barra e as suas abas.
+		Agora a moldura e uma so: ToolPage com navegacao lateral persistente,
+		e as telas ficam dentro dela. Trocar de area deixa de perder o
+		contexto de onde a pessoa estava.
+	-->
+	<tnt:ToolPage id="toolPage" sideExpanded="{= ${device>/system/phone} === false }">
+
+		<tnt:header>
+			<tnt:ToolHeader>
+				<Button
+					id="btnMenu"
+					icon="sap-icon://menu2"
+					type="Transparent"
+					tooltip="{i18n>navAlternar}"
+					press=".onAlternarMenu" />
+				<ToolbarSpacer width="0.5rem" />
+				<Image src="img/vale.png" height="1.25rem" densityAware="false" class="sapUiTinyMarginEnd" />
+				<Title text="{i18n>appTitle}" level="H1" titleStyle="H6" />
+				<ToolbarSpacer />
+				<SearchField
+					id="buscaGlobal"
+					width="20rem"
+					placeholder="{i18n>buscaGlobal}"
+					search=".onBuscar"
+					class="sapUiTinyMarginEnd" />
+				<Button
+					id="btnTema"
+					icon="{= ${tela>/escuro} ? 'sap-icon://light-mode' : 'sap-icon://dark-mode' }"
+					type="Transparent"
+					tooltip="{i18n>temaAlternar}"
+					press=".onAlternarTema" />
+				<!-- Modo TV: rotaciona SO entre as telas que tem mapa. No
+				     projeto legado ele passava por todas e virou reclamacao. -->
+				<Button
+					id="btnTv"
+					icon="sap-icon://media-play"
+					type="{= ${tela>/tv} ? 'Emphasized' : 'Transparent' }"
+					tooltip="{i18n>modoTv}"
+					press=".onAlternarTv" />
+				<Button
+					icon="sap-icon://refresh"
+					type="Transparent"
+					tooltip="{i18n>atualizar}"
+					press=".onAtualizar" />
+			</tnt:ToolHeader>
+		</tnt:header>
+
+		<tnt:sideContent>
+			<tnt:SideNavigation id="navLateral" itemSelect=".onNavegar" selectedKey="salaDeControle">
+				<tnt:NavigationList>
+					<tnt:NavigationListItem text="{i18n>navSalaDeControle}" icon="sap-icon://dashboard" key="salaDeControle" />
+					<tnt:NavigationListItem text="{i18n>navMapa}" icon="sap-icon://map" key="salaDeControle" />
+					<tnt:NavigationListItem text="{i18n>navCatalogo}" icon="sap-icon://list" key="catalogo" />
+					<tnt:NavigationListItem text="{i18n>navEmbarcados}" icon="sap-icon://technical-object" key="embarcados" />
+					<tnt:NavigationListItem text="{i18n>navIndicadores}" icon="sap-icon://performance" key="indicadores" />
+					<tnt:NavigationListItem text="{i18n>navManutencao}" icon="sap-icon://wrench" key="manutencao" />
+					<tnt:NavigationListItem text="{i18n>navRelatorios}" icon="sap-icon://document-text" key="relatorios" />
+				</tnt:NavigationList>
+				<tnt:fixedItem>
+					<tnt:NavigationList>
+						<tnt:NavigationListItem text="{i18n>navGateways}" icon="sap-icon://iphone" key="gateways" />
+						<tnt:NavigationListItem text="{i18n>navSobre}" icon="sap-icon://hint" key="sobre" />
+					</tnt:NavigationList>
+				</tnt:fixedItem>
+			</tnt:SideNavigation>
+		</tnt:sideContent>
+
+		<tnt:mainContents>
+			<VBox height="100%" fitContainer="true">
+				<!-- Aviso honesto: sem backend alcancavel, a tela roda com
+				     dados fabricados e diz isso em vez de parecer real. -->
+				<MessageStrip
+					id="avisoSimulado"
+					visible="{frota>/simulado}"
+					type="Warning"
+					showIcon="true"
+					text="{i18n>modoSimulado}"
+					class="sapUiTinyMargin" />
+				<App id="app" class="sapUiSizeCompact" />
+			</VBox>
+		</tnt:mainContents>
+	</tnt:ToolPage>
+</mvc:View>

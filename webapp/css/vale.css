@@ -1,0 +1,281 @@
+/* ------------------------------------------------------------------
+   Paleta Vale S/A + superfícies de sala de controle.
+
+   Toda cor aqui sai do webapp/css/style.css que já existia no projeto,
+   ou de uma variável do próprio tema sap_horizon. Nada foi inventado.
+
+   O style.css original tem 113 valores de cor literais e nenhuma
+   variável; estes tokens existem para que a próxima troca de paleta
+   seja um arquivo, não uma varredura.
+   ------------------------------------------------------------------ */
+
+:root {
+	--vale-verde: #00807c;
+	/* 17 ocorrências no style.css — cor de marca */
+	--vale-magenta: #e10073;
+	/* 3 ocorrências */
+	--sap-azul: #0a6ed1;
+	/* 9 ocorrências — link e ação */
+	--sap-positivo: #107e3e;
+	/* 5 ocorrências */
+	--sap-critico: #eda800;
+	/* 5 ocorrências — preenchimento */
+	--sap-critico-texto: #d99800;
+	--sap-negativo: var(--sapNegativeColor, #bb0000);
+	--vale-laranja: #e9730c;
+	/* 2 ocorrências */
+
+	--vale-superficie: #ffffff;
+	--vale-superficie-2: #f8f8f8;
+	--vale-borda: #d9d9d9;
+	--vale-borda-sutil: #e5e7eb;
+	--vale-texto: #111111;
+	--vale-texto-2: #5f6b7a;
+	--vale-texto-3: #6a6d70;
+}
+
+/* Sala de controle: superfícies escuras aplicadas por escopo, não por
+   troca de tema. Trocar o tema a cada navegação pisca a tela inteira e
+   recarrega o CSS do UI5; um escopo resolve sem custo. */
+.valeEscuro {
+	--vale-superficie: #22282e;
+	--vale-superficie-2: #2a3138;
+	--vale-borda: #3a424a;
+	--vale-borda-sutil: #333a41;
+	--vale-texto: #eaecee;
+	--vale-texto-2: #a9b4be;
+	--vale-texto-3: #8a949e;
+	background: #1c2228;
+	color: var(--vale-texto);
+}
+
+.valeEscuro .sapMTitle,
+.valeEscuro .sapMText,
+.valeEscuro .sapMLabel {
+	color: var(--vale-texto);
+}
+
+/* ---------------- Cartões e KPI ---------------- */
+.valeCartao {
+	background: var(--vale-superficie);
+	border: 1px solid var(--vale-borda-sutil);
+	border-radius: 10px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+}
+
+.valeKpiRotulo {
+	font-size: .688rem;
+	text-transform: uppercase;
+	letter-spacing: .05em;
+	color: var(--vale-texto-3);
+	min-height: 2.4em;
+	line-height: 1.2;
+	display: block;
+}
+
+.valeKpiValor {
+	font-size: 1.625rem;
+	font-weight: 600;
+	letter-spacing: -.02em;
+	font-variant-numeric: tabular-nums;
+	display: block;
+	color: var(--vale-texto);
+}
+
+.valeKpiPe {
+	font-size: .85rem;
+	color: var(--vale-texto-3);
+	display: block;
+}
+
+.valeVerde {
+	color: var(--vale-verde);
+}
+
+.valeMagenta {
+	color: var(--vale-magenta);
+}
+
+.valePositivo {
+	color: var(--sap-positivo);
+}
+
+.valeNegativo {
+	color: var(--sap-negativo);
+}
+
+.valeCritico {
+	color: var(--sap-critico-texto);
+}
+
+.valeEscuro .valePositivo {
+	color: #30b26b;
+}
+
+.valeEscuro .valeNegativo {
+	color: #ff8a8a;
+}
+
+.valeEscuro .valeVerde {
+	color: #2bb3ae;
+}
+
+.valeMono {
+	font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+/* ---------------- Seleção de prefixo ---------------- */
+.valePrefixo .sapMSegBBtn {
+	font-family: ui-monospace, Menlo, monospace;
+}
+
+/* ---------------- Mapa ---------------- */
+/* O Leaflet monta o DOM fora do UI5, então estas classes não podem virar
+   controles. Mesmo assim só consomem tokens. */
+.leaflet-container {
+	background: #1c2228;
+	font-family: inherit;
+}
+
+.valeMapa {
+	width: 100%;
+	height: 100%;
+	min-height: 320px;
+}
+
+/* Alfinete com o código do equipamento escrito ao lado. Foi o pedido que
+   mais mudou o uso do mapa: sem ele, achar um equipamento exige clicar de
+   um em um. */
+.valeAlfinete {
+	display: flex !important;
+	align-items: center;
+	gap: 4px;
+	width: max-content !important;
+}
+
+.valeAlfinete__ponto {
+	width: 11px;
+	height: 11px;
+	border-radius: 999px;
+	border: 2px solid #11171c;
+	box-shadow: 0 0 0 1px rgba(0, 0, 0, .35);
+	flex: none;
+}
+
+.valeAlfinete__rotulo {
+	font-size: 10px;
+	font-weight: 600;
+	line-height: 1;
+	white-space: nowrap;
+	padding: 2px 5px;
+	border-radius: 3px;
+	color: #eaecee;
+	background: rgba(17, 23, 28, .82);
+}
+
+/* Rótulo de cerca: sem caixa nem seta — a cerca já é a forma. */
+.valeCerca.leaflet-tooltip,
+.valeUnidade.leaflet-tooltip {
+	background: transparent;
+	border: 0;
+	box-shadow: none;
+	padding: 0;
+	font-weight: 700;
+	letter-spacing: .05em;
+	text-transform: uppercase;
+	color: #fff;
+	text-shadow: 0 0 3px rgba(0, 0, 0, .9), 0 1px 2px rgba(0, 0, 0, .85);
+}
+
+.valeUnidade.leaflet-tooltip {
+	font-size: 13px;
+}
+
+.valeCerca.leaflet-tooltip {
+	color: #b7e4e2;
+}
+
+.valeCerca.leaflet-tooltip::before,
+.valeUnidade.leaflet-tooltip::before {
+	display: none;
+}
+
+/* Legendas fora da faixa de zoom, ou desligadas pelo botão. */
+.valeSemLegendas .valeCerca.leaflet-tooltip,
+.valeSemLegendas .valeUnidade.leaflet-tooltip {
+	display: none;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+	background: var(--vale-superficie);
+	color: var(--vale-texto);
+	border-radius: 8px;
+}
+
+.valePopup b {
+	font-family: ui-monospace, Menlo, monospace;
+}
+
+.valePopup__linha {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+	font-size: 11px;
+	padding: 1px 0;
+}
+
+.valePopup__linha span {
+	color: var(--vale-texto-3);
+}
+
+/* Cluster na linguagem do painel, não no verde do plugin.
+   Prefixado com .leaflet-container de propósito: o CSS do markercluster
+   usa seletores de uma classe só e entra depois deste, então empatar na
+   especificidade significaria perder por ordem de carga. */
+.leaflet-container .marker-cluster,
+.leaflet-container .marker-cluster-small,
+.leaflet-container .marker-cluster-medium,
+.leaflet-container .marker-cluster-large {
+	background: rgba(0, 128, 124, .3);
+	border-radius: 999px;
+}
+
+.leaflet-container .marker-cluster div,
+.leaflet-container .marker-cluster-small div,
+.leaflet-container .marker-cluster-medium div,
+.leaflet-container .marker-cluster-large div {
+	background: var(--vale-verde);
+	color: #fff;
+	border-radius: 999px;
+	font-family: inherit;
+	font-size: 11px;
+	font-weight: 700;
+}
+
+/* Miniatura da unidade: o mesmo tile de satélite, travado no polígono. */
+.valeMiniMapa {
+	width: 100%;
+	height: 132px;
+	border-radius: 6px;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+/* ---------------- Barra de dados simulados ---------------- */
+.valeSimulado {
+	background: #fff8e1;
+	border-bottom: 1px solid var(--sap-critico);
+	color: var(--sap-critico-texto);
+	font-size: .75rem;
+	padding: .25rem .75rem;
+}
+
+.valeArvorePorTipo {
+	height: 360px !important;
+}
+.painelArvoreSap {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}

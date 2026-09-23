@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Rastreamento de ativos</title>
+    <style>
+        html,
+        body,
+        body>div,
+        #container,
+        #container-uiarea {
+            height: 100%;
+        }
+
+        div[id$="---Login"].sapMPage,
+        div[id$="---Login"] .sapMPage,
+        div[id$="---Login"] .sapMPageBgStandard,
+        div[id$="---Login"] .loginBackground {
+            background-image: url("img/background.png") !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-color: transparent !important;
+        }
+
+        div[id$="---Login"] .sapMPanel {
+            background-color: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            border-top: 4px solid #0f172a !important;
+            border-radius: 12px !important;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, .2) !important;
+        }
+
+        div[id$="---Login"] .sapMLbl,
+        div[id$="---Login"] .sapMTitle,
+        div[id$="---Login"] .sapMText {
+            color: #1e293b !important;
+        }
+
+        div[id$="---Login"] .sapMTitle {
+            font-weight: 700 !important;
+        }
+
+        div[id$="---Login"] .fonteExpandidaLogin .sapMLbl {
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            margin-top: 12px !important;
+            margin-bottom: 6px !important;
+        }
+
+        div[id$="---Login"] .fonteExpandidaLogin .sapMInputBaseInner {
+            font-size: 16px !important;
+            height: 44px !important;
+        }
+    </style>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- Marker Cluster CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Marker Cluster JS -->
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+    <!-- SAP UI5 Bootstrap-->
+        <script id="sap-ui-bootstrap" src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
+            data-sap-ui-theme="sap_horizon" data-sap-ui-resource-roots='{"br.com.smartpcm.rastreamento.zrastreio":"./"}'
+            data-sap-ui-on-init="module:sap/ui/core/ComponentSupport" data-sap-ui-compat-version="edge"
+            data-sap-ui-frame-options="trusted">
+            </script>
+
+
+
+
+
+</head>
+
+<body class="sapUiBody sapUiSizeCompact" id="content">
+    <div data-sap-ui-component data-name="br.com.smartpcm.rastreamento.zrastreio" data-id="container"
+        data-settings='{"id":"br.com.smartpcm.rastreamento.zrastreio"}' data-handle-validation="true">
+    </div>
+</body>
+
+</html>

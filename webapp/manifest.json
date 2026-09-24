@@ -1,0 +1,280 @@
+{
+  "_version": "1.85.0",
+  "sap.app": {
+    "id": "br.com.smartpcm.rastreamento.zrastreio",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.27.0",
+      "toolsId": "604d506f-d832-4acd-a130-9dceeed7c12e"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "http://10.44.32.193:4004/odata/v4/smart-pcm/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/mainService/metadata.xml",
+          "odataVersion": "4.0"
+        }
+      },
+      "restService": {
+        "uri": "/rest/",
+        "type": "JSON",
+        "settings": {
+          "localUri": "localService/mock/",
+          "comment": "API_Hana (Express/Sequelize). O proxy do ui5.yaml aponta /rest para o host real."
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": false,
+    "dependencies": {
+      "minUI5Version": "1.149.1",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ui.layout": {},
+        "sap.f": {},
+        "sap.ui.export": {},
+        "sap.viz": {},
+        "sap.tnt": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": false
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "br.com.smartpcm.rastreamento.zrastreio.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "frota": {
+        "type": "sap.ui.model.json.JSONModel"
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        },
+        {
+          "uri": "css/vale.css"
+        }
+      ],
+      "js": []
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "transition": "fade",
+        "type": "View",
+        "viewType": "XML",
+        "path": "br.com.smartpcm.rastreamento.zrastreio.view",
+        "async": true,
+        "viewPath": "br.com.smartpcm.rastreamento.zrastreio.view"
+      },
+      "routes": [
+        {
+          "name": "RouteSalaDeControle",
+          "pattern": "",
+          "target": [
+            "TargetSalaDeControle"
+          ]
+        },
+        {
+          "name": "RouteMapa",
+          "pattern": "mapa",
+          "target": [
+            "TargetMapa"
+          ]
+        },
+        {
+          "name": "RouteCatalogo",
+          "pattern": "catalogo",
+          "target": [
+            "TargetCatalogo"
+          ]
+        },
+        {
+          "name": "RouteEquipamento",
+          "pattern": "equipamento/{codigo}",
+          "target": [
+            "TargetEquipamento"
+          ]
+        },
+        {
+          "name": "RouteEmbarcados",
+          "pattern": "embarcados",
+          "target": [
+            "TargetEmbarcados"
+          ]
+        },
+        {
+          "name": "RouteIndicadores",
+          "pattern": "indicadores",
+          "target": [
+            "TargetIndicadores"
+          ]
+        },
+        {
+          "name": "RouteManutencao",
+          "pattern": "manutencao",
+          "target": [
+            "TargetManutencao"
+          ]
+        },
+        {
+          "name": "RouteRelatorios",
+          "pattern": "relatorios/:id:",
+          "target": [
+            "TargetRelatorios"
+          ]
+        },
+        {
+          "name": "RouteRastreamento",
+          "pattern": "Rastreamento",
+          "target": [
+            "TargetRastreamento"
+          ]
+        },
+        {
+          "name": "RouteRastreamento2",
+          "pattern": "Rastreamento2",
+          "target": [
+            "TargetRastreamento2"
+          ]
+        },
+        {
+          "name": "RouteRastreamento3",
+          "pattern": "Rastreamento3",
+          "target": [
+            "TargetRastreamento3"
+          ]
+        }
+      ],
+      "targets": {
+        "TargetLogin": {
+          "id": "Login",
+          "name": "Login"
+        },
+        "TargetRastreamento": {
+          "id": "Rastreamento",
+          "name": "Rastreamento"
+        },
+        "TargetRastreamento2": {
+          "id": "Rastreamento2",
+          "name": "Rastreamento2"
+        },
+        "TargetRastreamento3": {
+          "id": "Rastreamento3",
+          "name": "Rastreamento3"
+        },
+        "TargetSalaDeControle": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "salaDeControle",
+          "viewName": "SalaDeControle"
+        },
+        "TargetMapa": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "mapa",
+          "viewName": "Mapa"
+        },
+        "TargetCatalogo": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "catalogo",
+          "viewName": "Catalogo"
+        },
+        "TargetEquipamento": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "equipamento",
+          "viewName": "Equipamento"
+        },
+        "TargetEmbarcados": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "embarcados",
+          "viewName": "Embarcados"
+        },
+        "TargetIndicadores": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "indicadores",
+          "viewName": "Indicadores"
+        },
+        "TargetManutencao": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "manutencao",
+          "viewName": "Manutencao"
+        },
+        "TargetRelatorios": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "relatorios",
+          "viewName": "Relatorios"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "br.com.smartpcm.rastreamento.zrastreio.view.App",
+      "type": "XML",
+      "id": "App",
+      "async": true
+    }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "brcomsmartpcmrastreamentozrastreio"
+  }
+}

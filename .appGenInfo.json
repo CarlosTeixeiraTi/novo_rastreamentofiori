@@ -1,0 +1,23 @@
+{
+  "generationParameters": {
+    "generationDate": "Thu Jul 02 2026 15:10:58 GMT-0300 (Brasilia Standard Time)",
+    "generatorPlatform": "Visual Studio Code",
+    "serviceType": "OData URL",
+    "metadataFilename": "",
+    "serviceUrl": "http://10.44.32.193:4004/odata/v4/smart-pcm",
+    "appName": "zrastreio",
+    "appTitle": "Rastreamento de ativos",
+    "appDescription": "Gestão da localização dos ativos",
+    "appNamespace": "br.com.smartpcm.rastreamento",
+    "ui5Theme": "sap_horizon",
+    "ui5Version": "1.149.1",
+    "enableEslint": true,
+    "enableTypeScript": false,
+    "showMockDataInfo": true,
+    "generatorVersion": "1.27.0",
+    "template": "Basic V4",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [],
+    "launchText": "To launch the generated application, run the following from the generated application root folder:\n\n```\n    npm start\n```"
+  }
+}

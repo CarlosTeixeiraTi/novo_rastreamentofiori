@@ -1,0 +1,238 @@
+<mvc:View
+	controllerName="br.com.smartpcm.rastreamento.zrastreio.controller.Equipamento"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core"
+	xmlns:l="sap.ui.layout"
+	height="100%">
+
+	<Page id="pagina" title="{tela>/ativo/codigoOriginal}" showNavButton="true"
+		navButtonPress=".onVoltar" enableScrolling="true">
+		<headerContent>
+			<ObjectStatus text="{tela>/ativo/grupoAtual}" state="Success" />
+			<Button icon="sap-icon://map" text="{i18n>detVerNoMapa}" press=".onVerNoMapa" />
+		</headerContent>
+		<content>
+			<VBox class="sapUiSmallMargin">
+				<HBox alignItems="Center" class="sapUiTinyMarginBottom">
+					<VBox>
+						<Title text="{tela>/ativo/descricao}" level="H2" titleStyle="H4" />
+						<Text text="{tela>/ativo/local} · {tela>/ativo/descLocal}" class="valeKpiPe" />
+					</VBox>
+				</HBox>
+
+				<l:Grid defaultSpan="XL4 L4 M6 S12" hSpacing="1" vSpacing="1">
+
+					<VBox>
+
+						<VBox class="valeCartao">
+							<Title text="{i18n>detCadastro}" level="H3" titleStyle="H6"
+								class="sapUiSmallPadding" />
+
+							<List showSeparators="Inner"
+								class="sapUiSmallPaddingBegin sapUiSmallPaddingEnd sapUiSmallPaddingBottom">
+
+								<DisplayListItem label="{i18n>detEquipamento}"
+									value="{tela>/ativo/codigoOriginal}" />
+								<DisplayListItem label="{i18n>detIdentTecnica}"
+									value="{tela>/ativo/identificacaoTecnica}" />
+								<DisplayListItem label="{i18n>detCentro}"
+									value="{tela>/ativo/centro}" />
+								<DisplayListItem label="{i18n>detLocal}"
+									value="{tela>/ativo/local}" />
+								<DisplayListItem label="{i18n>detDescLocal}"
+									value="{tela>/ativo/descLocal}" />
+
+							</List>
+						</VBox>
+
+						<VBox class="valeCartao sapUiSmallMarginTop">
+
+							<Title text="{i18n>detRastreamento}" level="H3" titleStyle="H6"
+								class="sapUiSmallPadding" />
+
+							<List showSeparators="Inner"
+								class="sapUiSmallPaddingBegin sapUiSmallPaddingEnd">
+
+								<DisplayListItem label="{i18n>detGateway}"
+									value="{tela>/ativo/gateway}" />
+
+								<DisplayListItem label="{i18n>detComunicacao}"
+									value="{tela>/ativo/silencioTexto}" />
+
+								<DisplayListItem label="{i18n>detLimite}"
+									value="{tela>/ativo/limite} {i18n>dias}" />
+
+								<DisplayListItem label="{i18n>detAmostras}"
+									value="{tela>/ativo/amostras}" />
+
+								<DisplayListItem label="{i18n>detGrupoAtual}"
+									value="{tela>/ativo/grupoAtual}" />
+
+								<DisplayListItem label="{i18n>detGrupoAnterior}"
+									value="{tela>/ativo/grupoAnterior}" />
+
+							</List>
+
+						</VBox>
+
+					</VBox>
+					<VBox
+						class="valeCartao valeCartaoConfianca">
+
+						<layoutData>
+							<l:GridData span="XL4 L4 M6 S12" />
+						</layoutData>
+
+						<VBox class="sapUiSmallMargin">
+							<HBox justifyContent="SpaceBetween" alignItems="Center">
+								<Text text="{i18n>detConfiancaCadastro}" class="valeKpiRotulo" />
+
+								<ObjectStatus
+									text="{tela>/confianca/nivel}"
+									state="{ path: 'tela>/confianca/nivel', formatter: '.estadoDaConfianca' }" />
+							</HBox>
+
+							<List
+								items="{tela>/confianca/testes}"
+								showSeparators="None"
+								class="sapUiTinyMarginTop">
+
+								<CustomListItem>
+									<HBox alignItems="Start" class="sapUiTinyMarginBottom">
+										<core:Icon
+											src="{= ${tela>ok} ? 'sap-icon://accept' : 'sap-icon://alert' }"
+											size="0.875rem"
+											class="sapUiTinyMarginEnd" />
+
+
+										<Text
+											text="{tela>texto}"
+											class="valeKpiPe" />
+
+									</HBox>
+								</CustomListItem>
+
+							</List>
+
+							<Text
+								text="{tela>/confianca/explicacao}"
+								class="valeKpiPe sapUiTinyMarginTop" />
+
+						</VBox>
+					</VBox>
+
+
+					<VBox class="valeCartao valeCartaoManutencao">
+						<Title text="{i18n>detManutencao}" level="H3" titleStyle="H6"
+							class="sapUiSmallPadding" />
+						<List items="{tela>/notas}" showSeparators="Inner"
+							class="sapUiSmallPaddingBegin sapUiSmallPaddingEnd"
+							noDataText="{i18n>detSemNota}">
+							<ObjectListItem
+								title="{i18n>detNota} {tela>nota}"
+								number="{tela>prioridade}"
+								intro="{tela>txt_breve_nota}">
+								<attributes>
+									<ObjectAttribute title="{i18n>detOficina}" text="{tela>oficina}" />
+									<ObjectAttribute title="{i18n>detStatus}"
+										text="{tela>status_sistema}" />
+									<ObjectAttribute title="{i18n>detLocal}"
+										text="{tela>local_instalacao}" />
+								</attributes>
+							</ObjectListItem>
+						</List>
+						<List items="{tela>/ordens}" showSeparators="Inner"
+							class="sapUiSmallPaddingBegin sapUiSmallPaddingEnd sapUiSmallPaddingBottom"
+							noDataText="{i18n>detSemOrdem}">
+							<ObjectListItem title="{i18n>detOrdem} {tela>ordem}"
+								intro="{tela>texto_breve_om}">
+								<attributes>
+									<ObjectAttribute title="{i18n>detCentroTrab}"
+										text="{tela>centro_trab_resp}" />
+									<ObjectAttribute title="{i18n>detStatus}"
+										text="{tela>status_sistema_om}" />
+								</attributes>
+							</ObjectListItem>
+						</List>
+					</VBox>
+				</l:Grid>
+
+				<l:Grid defaultSpan="XL8 L8 M12 S12" hSpacing="1" vSpacing="1"
+					class="sapUiTinyMarginTop">
+					<VBox class="valeCartao">
+						<VBox class="sapUiSmallPadding">
+							<Title text="{i18n>detLinhaDoTempo}" level="H3" titleStyle="H6" />
+							<Text text="{i18n>detLinhaDoTempoPe}" class="valeKpiPe" />
+						</VBox>
+						<Table items="{tela>/historico}" inset="false"
+							noDataText="{i18n>detSemHistorico}">
+							<columns>
+								<Column width="11rem">
+									<Text text="{i18n>colRecebidoEm}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>colGrupo}" />
+								</Column>
+								<Column width="13rem">
+									<Text text="{i18n>colGateway}" />
+								</Column>
+								<Column width="9rem">
+									<Text text="{i18n>colComunicacao}" />
+								</Column>
+							</columns>
+							<items>
+								<ColumnListItem
+									highlight="{= ${tela>mudou} ? 'Information' : 'None' }">
+									<cells>
+										<Text
+											text="{ path: 'tela>recebidoEm', formatter: '.formatarData' }"
+											class="valeMono" />
+										<Text text="{tela>grupo}" />
+										<Text text="{tela>gateway}" />
+										<Text text="{tela>comunicacao}" />
+									</cells>
+								</ColumnListItem>
+							</items>
+						</Table>
+					</VBox>
+
+					<VBox class="valeCartao">
+						<layoutData>
+							<l:GridData span="XL4 L4 M12 S12" />
+						</layoutData>
+						<VBox class="sapUiSmallPadding">
+							<Title text="{i18n>detArvoreVeiculo}" level="H3" titleStyle="H6" />
+							<Text text="{i18n>detArvoreVeiculoPe}" class="valeKpiPe" />
+						</VBox>
+						<Table items="{tela>/arvore}" inset="false" noDataText="{i18n>detSemArvore}">
+							<columns>
+								<Column>
+									<Text text="{i18n>colFamilia}" />
+								</Column>
+								<Column width="7rem" hAlign="End">
+									<Text text="{i18n>colArvore}" />
+								</Column>
+								<Column width="8rem" hAlign="End">
+									<Text text="{i18n>colComTag}" />
+								</Column>
+							</columns>
+							<items>
+								<ColumnListItem>
+									<cells>
+										<Text text="{tela>rotulo}" />
+										<Text text="{tela>naArvore}" />
+										<ObjectStatus text="{tela>comRastreador}"
+											state="{ path: 'tela>diferenca', formatter: '.estadoDaDiferenca' }" />
+									</cells>
+								</ColumnListItem>
+							</items>
+						</Table>
+						<core:HTML id="mapaFicha"
+							content="&lt;div class=&quot;valeMiniMapa&quot;&gt;&lt;/div&gt;" />
+					</VBox>
+				</l:Grid>
+			</VBox>
+		</content>
+	</Page>
+</mvc:View>

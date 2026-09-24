@@ -1,0 +1,315 @@
+/* ------------------------------------------------------------------
+   Paleta Vale S/A.
+
+   REGRA DE OURO: superfície, texto e borda NUNCA recebem hex fixo aqui.
+   Cada token aponta para um parâmetro do tema SAPUI5 ativo
+   (--sap*), que o próprio UI5 troca quando o tema muda
+   (sap_horizon <-> sap_horizon_dark). O valor depois da vírgula é só
+   fallback para o instante antes de o CSS do tema carregar.
+
+   Só as cores de MARCA (verde, magenta, laranja) são fixas, e mesmo
+   assim o verde usado como TEXTO tem variante para fundo escuro.
+   ------------------------------------------------------------------ */
+
+:root {
+	/* Marca — preenchimentos, bordas de destaque, ícones */
+	--vale-verde: #00807c;
+	--vale-magenta: #e10073;
+	--vale-laranja: #e9730c;
+
+	/* Marca como texto: precisa de contraste no fundo do tema */
+	--vale-verde-texto: #00807c;
+
+	/* Semânticas — vêm do tema */
+	--sap-azul: var(--sapLinkColor, #0a6ed1);
+	--sap-positivo: var(--sapPositiveTextColor, #107e3e);
+	--sap-critico: var(--sapCriticalColor, #eda800);
+	--sap-critico-texto: var(--sapCriticalTextColor, #d99800);
+	--sap-negativo: var(--sapNegativeTextColor, #bb0000);
+
+	/* Superfícies / texto / bordas — 100% do tema */
+	--vale-fundo: var(--sapBackgroundColor, #f5f6f7);
+	--vale-superficie: var(--sapTile_Background, #ffffff);
+	--vale-superficie-2: var(--sapGroup_ContentBackground, #ffffff);
+	--vale-superficie-hover: var(--sapTile_Hover_Background, #f5f6f7);
+	--vale-borda: var(--sapGroup_ContentBorderColor, #d9d9d9);
+	--vale-borda-sutil: var(--sapTile_BorderColor, #e5e5e5);
+	--vale-texto: var(--sapTextColor, #1d2d3e);
+	--vale-texto-2: var(--sapContent_LabelColor, #556b82);
+	--vale-texto-3: var(--sapContent_LabelColor, #556b82);
+	--vale-sombra: var(--sapContent_Shadow0, 0 0 .125rem 0 rgba(34, 53, 72, .2));
+}
+
+/* Ajuste de MARCA para temas escuros (o UI5 põe a classe no <html>).
+   Nenhuma superfície é redefinida aqui — isso é trabalho do tema. */
+.sapUiTheme-sap_horizon_dark,
+.sapUiTheme-sap_horizon_hcb {
+	--vale-verde-texto: #2bb3ae;
+}
+
+/* .valeEscuro foi descontinuada: ela pintava a Sala de Controle de
+   escuro mesmo com o tema claro ativo. A classe fica vazia para não
+   quebrar BaseController.escuro(); pode ser removida depois. */
+
+/* ---------------- KPI ---------------- */
+.valeKpiRotulo {
+	font-size: 0.95rem;
+	text-transform: uppercase;
+	letter-spacing: .05em;
+	color: var(--vale-texto-3);
+	min-height: 2.4em;
+	line-height: 1.3;
+	display: block;
+	font-weight: 600;
+}
+
+.valeKpiValor {
+	font-size: 2.4rem;
+	font-weight: 700;
+	letter-spacing: -.02em;
+	font-variant-numeric: tabular-nums;
+	display: block;
+	color: var(--vale-texto);
+	line-height: 2.5rem;
+}
+
+.valeKpiPe {
+	font-size: 1rem;
+	color: var(--vale-texto-3);
+	display: block;
+	line-height: 1.4rem;
+}
+
+.valeVerde {
+	color: var(--vale-verde-texto);
+}
+
+.valeMagenta {
+	color: var(--vale-magenta);
+}
+
+.valePositivo {
+	color: var(--sap-positivo);
+}
+
+.valeNegativo {
+	color: var(--sap-negativo);
+}
+
+.valeCritico {
+	color: var(--sap-critico-texto);
+}
+
+.valeMono {
+	font-size: 1rem;
+	font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+/* ---------------- Seleção de prefixo ---------------- */
+.valePrefixo .sapMSegBBtn {
+	font-family: ui-monospace, Menlo, monospace;
+}
+
+/* ---------------- Cartão ---------------- */
+.valeCartao {
+	background: var(--vale-superficie);
+	border: 1px solid var(--vale-borda-sutil);
+	border-radius: var(--sapTile_BorderCornerRadius, 12px);
+	box-shadow: var(--vale-sombra);
+	color: var(--vale-texto);
+	padding: 1rem;
+	box-sizing: border-box;
+}
+
+.valeCartao .sapMText {
+	font-size: 1rem;
+}
+
+.valeCartao .sapMColumnHeader .sapMText {
+	font-size: 1.05rem;
+	font-weight: 700;
+}
+
+#pagina .valeCartao .sapMTitle {
+	font-size: 1.5rem;
+	line-height: 1.6rem;
+	font-weight: 700;
+}
+
+#pagina .valeCartao .valeKpiPe {
+	font-size: 1.1rem;
+}
+
+#pagina .valeCartao .valeMono {
+	font-size: 1.1rem;
+	font-weight: 700;
+}
+
+/* ---------------- Mapa ---------------- */
+/* O Leaflet monta o DOM fora do UI5; o fundo escuro aparece só enquanto
+   os tiles de satélite carregam, por isso é fixo. */
+.leaflet-container {
+	background: #1c2228;
+	font-family: inherit;
+}
+
+.valeMapa {
+	width: 100%;
+	height: 100%;
+	min-height: 320px;
+}
+
+.valeAlfinete {
+	display: flex !important;
+	align-items: center;
+	gap: 4px;
+	width: max-content !important;
+}
+
+.valeAlfinete__ponto {
+	width: 11px;
+	height: 11px;
+	border-radius: 999px;
+	border: 2px solid #11171c;
+	box-shadow: 0 0 0 1px rgba(0, 0, 0, .35);
+	flex: none;
+}
+
+/* Rótulos sobre o satélite: fixos de propósito (o fundo é a foto,
+   não o tema). */
+.valeAlfinete__rotulo {
+	font-size: 10px;
+	font-weight: 600;
+	line-height: 1;
+	white-space: nowrap;
+	padding: 2px 5px;
+	border-radius: 3px;
+	color: #eaecee;
+	background: rgba(17, 23, 28, .82);
+}
+
+.valeCerca.leaflet-tooltip,
+.valeUnidade.leaflet-tooltip {
+	background: transparent;
+	border: 0;
+	box-shadow: none;
+	padding: 0;
+	font-weight: 700;
+	letter-spacing: .05em;
+	text-transform: uppercase;
+	color: #fff;
+	text-shadow: 0 0 3px rgba(0, 0, 0, .9), 0 1px 2px rgba(0, 0, 0, .85);
+}
+
+.valeUnidade.leaflet-tooltip {
+	font-size: 13px;
+}
+
+.valeCerca.leaflet-tooltip {
+	color: #b7e4e2;
+}
+
+.valeCerca.leaflet-tooltip::before,
+.valeUnidade.leaflet-tooltip::before {
+	display: none;
+}
+
+.valeSemLegendas .valeCerca.leaflet-tooltip,
+.valeSemLegendas .valeUnidade.leaflet-tooltip {
+	display: none;
+}
+
+/* Popup do Leaflet segue o tema (fica fora da árvore UI5, mas as
+   variáveis --sap* estão no :root e valem ali também). */
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+	background: var(--vale-superficie);
+	color: var(--vale-texto);
+	border-radius: 8px;
+}
+
+.valePopup b {
+	font-family: ui-monospace, Menlo, monospace;
+}
+
+.valePopup__linha {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+	font-size: 11px;
+	padding: 1px 0;
+}
+
+.valePopup__linha span {
+	color: var(--vale-texto-3);
+}
+
+.leaflet-container .marker-cluster,
+.leaflet-container .marker-cluster-small,
+.leaflet-container .marker-cluster-medium,
+.leaflet-container .marker-cluster-large {
+	background: rgba(0, 128, 124, .3);
+	border-radius: 999px;
+}
+
+.leaflet-container .marker-cluster div,
+.leaflet-container .marker-cluster-small div,
+.leaflet-container .marker-cluster-medium div,
+.leaflet-container .marker-cluster-large div {
+	background: var(--vale-verde);
+	color: #fff;
+	border-radius: 999px;
+	font-family: inherit;
+	font-size: 11px;
+	font-weight: 700;
+}
+
+.valeMiniMapa {
+	width: 100%;
+	height: 280px;
+	border-radius: 6px;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+/* ---------------- Barra de dados simulados ---------------- */
+.valeSimulado {
+	background: var(--sapWarningBackground, #fff8e1);
+	border-bottom: 1px solid var(--sapWarningBorderColor, #eda800);
+	color: var(--sap-critico-texto);
+	font-size: .75rem;
+	padding: .25rem .75rem;
+}
+
+.valeArvorePorTipo {
+	height: 360px !important;
+}
+
+.painelArvoreSap {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.valeCartao .sapMText.valeKpiValor {
+	font-size: 2.8rem !important;
+	line-height: 3rem !important;
+	font-weight: 700 !important;
+	text-align: center !important;
+	width: 100%;
+}
+
+.valeCartao {
+	height: 100%;
+}
+
+/* .valeCartaoConfianca {
+	min-height: 26.5rem;
+} */
+
+.valeCartaoConfianca,
+.valeCartaoManutencao {
+	min-height: 29.5rem;
+	max-height: 29.5rem;
+	overflow-y: auto;
+}

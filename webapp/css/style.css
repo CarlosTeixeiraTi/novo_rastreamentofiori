@@ -1,0 +1,2015 @@
+/* ==========================================================================
+   ESTILIZAÇÃO DA LISTA DE INDICADORES (ITENS) - EXPLICAÇÃO DETALHADA
+   ========================================================================== */
+
+/* 
+   Aumenta a altura de cada linha inteira (Card). 
+   Dá espaço vertical para o texto "A reformar" crescer sem esmagar a barra cinza.
+*/
+.painelGrupos .sapMLIB {
+    min-height: 115px !important;
+    transition: background-color .15s ease;
+}
+
+/* Altera a cor de fundo para cinza claro quando o mouse passa por cima da linha */
+.painelGrupos .sapMLIB:hover {
+    background: var(--sapList_Hover_Background);
+}
+
+/* 
+   1. MAPEA OS TEXTOS DA ESQUERDA (Ex: "A reformar", "Instalados", "Reforma externa"...)
+   
+   COMO FUNCIONA: Ele entra na linha (.sapMLIB), entra na primeira caixa (.sapMHBox)
+   e procura o primeiro elemento de texto que encontrar (.sapMText:first-of-type).
+*/
+/* ==========================================================================
+   AJUSTE DE ESPAÇAMENTO VERTICAL (PAINEL DE GRUPOS)
+   ========================================================================== */
+
+/* 1. NOME DO INDICADOR / GRUPO (Ex: A reformar, Instalados...) */
+.painelGrupos .sapMLIB .sapMHBox .sapMText:first-of-type,
+.painelGrupos .txtTituloGrupo {
+    font-size: 24px !important;
+    font-weight: 500 !important;
+    color: var(--sapTextColor) !important;
+    display: inline-block !important;
+    margin-bottom: 0px !important;
+    /* Zera a folga abaixo do texto da esquerda */
+    padding-bottom: 0px !important;
+}
+
+/* 2. TEXTO DA PORCENTAGEM (Ex: 2.6%, 41.0%...) */
+.painelGrupos .sapMLIB .sapMHBox .sapMHBox .sapMText,
+.painelGrupos .txtPercentualGrupo {
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    color: var(--sapTextColor) !important;
+    line-height: normal !important;
+    margin-bottom: 0px !important;
+    /* Zera a folga abaixo da porcentagem */
+    padding-bottom: 0px !important;
+}
+
+/* 3. QUANTIDADE ABSOLUTA (O ObjectNumber) */
+.painelGrupos .sapMObjectNumberText {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    line-height: 30px !important;
+    color: var(--sapLinkColor) !important;
+    margin-bottom: 0px !important;
+    /* Zera a folga abaixo do número absoluto */
+}
+
+/* 4. PROGRESS INDICATOR (A BARRA DE PROGRESSO) */
+.painelGrupos .sapMProgressIndicator {
+    margin-top: 2px !important;
+    /* PUXA A BARRA PARA CIMA (Igual ao painel de Indicadores) */
+    height: 12px !important;
+}
+
+.painelGrupos .sapMPIBar {
+    height: 0.3rem !important;
+}
+
+/* ==========================================================================
+   REDUÇÃO DE ESPAÇAMENTO - DISTRIBUIÇÃO DOS COMPONENTES
+   ========================================================================== */
+
+/* 1. Remove os paddings e encolhe a altura mínima de cada linha da lista */
+.painelGrupos .sapMList .sapMLIB {
+    min-height: 48px !important;
+    /* Reduzido de 110px para 48px para compactar */
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+}
+
+/* 2. Controla o recuo interno do VBox que envolve o texto e a barra */
+.painelGrupos .sapMLIB .sapUiTinyMargin {
+    margin: 4px 12px !important;
+    /* Estreita o espaçamento interno do card */
+}
+
+/* 3. Ajusta a aproximação da barra de progresso verde logo abaixo do texto */
+.painelGrupos .sapMProgressIndicator {
+    margin-top: 2px !important;
+    /* Mantém a barra colada no texto correspondente */
+    margin-bottom: 2px !important;
+}
+
+/* .painelNavegacao {
+    margin-top: 0px !important;
+} */
+
+/* ==========================================================================
+   PAINEL TABELA - RESUMO POR GRUPO ATUAL
+   ========================================================================== */
+
+/* Cabeçalho da Tabela (Textos: "Grupo Atual" e "Quantidade") */
+.painelTabelaResumo .txtHeaderTabela {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: var(--sapTextColor) !important;
+}
+
+/* Texto da Célula / Nome do Grupo (Coluna da esquerda) */
+.painelTabelaResumo .txtCelulaGrupo {
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    color: var(--sapTextColor) !important;
+    display: inline-block !important;
+}
+
+/* Número da Quantidade (Coluna da direita) */
+.painelTabelaResumo .txtCelulaQuantidade .sapMObjectNumberText {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: var(--sapLinkColor) !important;
+    line-height: normal !important;
+}
+
+/* Ajuste de altura da linha da tabela */
+.painelTabelaResumo .sapMListShowSeparators .sapMGHLI,
+.painelTabelaResumo .sapMListShowSeparators .sapMLIB {
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    min-height: 70px !important;
+}
+
+/* ==========================================================================
+   TÍTULO PRINCIPAL DO PAINEL (Ex: "Distribuição dos Componentes")
+   ========================================================================== */
+.painelGrupos .sapMPanelHdr {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: var(--sapTextColor) !important;
+}
+
+/* ==========================================================================
+   TÍTULO DENTRO DO HEADERTOOLBAR (Ex: "Distribuição dos Componentes")
+   ========================================================================== */
+.painelGrupos .sapMBarPH .sapMTitle {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: var(--vale-texto) !important;
+}
+
+/* ==========================================================================
+   TÍTULO DO PAINEL DE GRUPOS (Focado no componente <Title> da Toolbar)
+   ========================================================================== */
+.painelGrupos .sapMTitle,
+.painelGrupos .sapMBar .sapMTitle,
+.painelGrupos [id$="-title"] {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+}
+
+/* ==========================================================================
+   AJUSTE DE ESPAÇAMENTO VERTICAL (PROGRESS INDICATOR)
+   ========================================================================== */
+
+/* 1. Remove qualquer margem ou padding extra abaixo dos textos */
+.painelIndicadores .sapMText,
+.painelIndicadores .sapMProgressIndicatorText,
+.painelIndicadores .sapMProgressIndicatorPercentValue {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* 2. Aproxima a barra verde subindo o contêiner dela */
+.painelIndicadores .sapMProgressIndicator {
+    margin-top: 2px !important;
+    /* Diminua este valor para aproximar ainda mais */
+}
+
+.kpiNumero {
+    font-size: 28px !important;
+    font-weight: bold !important;
+    line-height: 28px !important;
+    margin: 0 !important;
+}
+
+.kpiTexto {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+
+.itemNormal {
+    border: 1px solid var(--sapList_BorderColor) !important;
+    border-radius: 8px !important;
+    margin-bottom: 6px !important;
+}
+
+.itemEspecial {
+    border: 2px solid var(--sapCriticalColor) !important;
+    border-radius: 8px !important;
+    background: var(--sapWarningBackground) !important;
+    margin-bottom: 6px !important;
+}
+
+/* ============================
+   VISUAL MODERNO DASHBOARD
+   ============================ */
+
+.sapMPage {
+    /* fundo da página vem do tema (sapBackgroundColor) */
+}
+
+.painelPrincipal {
+    max-width: 1900px;
+    margin: auto;
+}
+
+/* Cards KPI */
+
+.kpiCard {
+    box-shadow: none !important;
+}
+
+
+.kpiTotal {
+    background: var(--vale-superficie);
+}
+
+.kpiOnline {
+    background: var(--sapSuccessBackground);
+}
+
+.kpiOffline {
+    background: var(--sapWarningBackground);
+}
+
+.kpiGateway {
+    background: var(--sapInformationBackground);
+}
+
+
+
+/* Painel mapa */
+
+.painelMapa {
+    border-radius: 18px !important;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, .08) !important;
+    background: var(--sapGroup_ContentBackground);
+}
+
+/* Cabeçalhos dos painéis */
+
+
+
+
+
+#mapaEquipamentos {
+    border-radius: 14px;
+}
+
+.gatewayLabel {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #f5f7fb;
+    border-radius: 6px;
+    padding: 2px 6px;
+    color: #f5f7fb;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
+}
+
+.gatewayLabel:before {
+    display: none;
+}
+
+
+
+.linhaTotal.sapMListTblRow {
+    background-color: var(--sapWarningBackground) !important;
+}
+
+.linhaTotal .sapMText,
+.linhaTotal .sapMObjectNumberText {
+    font-weight: bold !important;
+}
+
+/* ============================
+   ABAS GEOLOCALIZAÇÃO / DASHBOARD
+   ============================ */
+.dashboardTabs .sapMITBHead {
+    justify-content: center;
+    align-items: center;
+}
+
+.dashboardTabs .sapMITBFilter {
+    min-width: 220px !important;
+    margin: 0 2px !important;
+}
+
+.dashboardTabs .sapMITBFilter .sapMITBText {
+    color: var(--sapContent_LabelColor) !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    padding: 6px 10px 6px 10px !important;
+    line-height: 18px !important;
+    text-align: center;
+}
+
+.dashboardTabs .sapMITBSelected .sapMITBText {
+    color: var(--sapSelectedColor) !important;
+    border-bottom: 2px solid var(--sapSelectedColor) !important;
+}
+
+.dashboardTabs .sapMITBArrowScroll {
+    display: none !important;
+}
+
+.dashboardTabs .sapMITBHead {
+    display: none !important;
+}
+
+.dashboardTabs .sapMITBContainerContent,
+.dashboardTabs .sapMITBContent {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+.dashboardTabs .sapMITBOverflow,
+.dashboardTabs .sapMITBArrowScroll,
+.dashboardTabs .sapMITBOverflowList {
+    display: none !important;
+}
+
+.cabecalhoGrande {
+    min-height: 120px !important;
+}
+
+.kpiTotal,
+.kpiOnline,
+.kpiOffline {
+    border-top: 8px solid #0a6ed1 !important;
+}
+
+.offlineInstaladosTexto {
+    font-size: 16px !important;
+    font-weight: bold;
+}
+
+.kpiGateway {
+    border-top: 8px solid #e9730c !important;
+}
+
+.kpiCard {
+    background: var(--vale-superficie) !important;
+    border: 1px solid var(--vale-borda-sutil) !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+
+    box-shadow:
+        0 2px 6px rgba(0, 0, 0, .06),
+        0 8px 16px rgba(0, 0, 0, .04) !important;
+}
+
+
+.kpiPercentual {
+    background: var(--sapNeutralBackground);
+    color: var(--sapTextColor);
+    padding: 4px 10px;
+    font-weight: 600;
+    font-size: 18px;
+    border-radius: 8px;
+}
+
+
+.cityLabel {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: white !important;
+    font-size: 32px !important;
+    font-weight: bold !important;
+    text-shadow:
+        2px 2px 4px black,
+        -2px -2px 4px black;
+}
+
+.bairroLabel {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: white !important;
+    font-size: 13px !important;
+    font-weight: bold !important;
+    text-shadow:
+        1px 1px 3px black,
+        -1px -1px 3px black;
+}
+
+.minaLabel {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #ffe082 !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+
+    white-space: nowrap !important;
+    width: max-content !important;
+    max-width: none !important;
+
+    text-shadow:
+        1px 1px 3px black;
+}
+
+.operacaoValeLabel {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    color: #ffd54f !important;
+
+    font-size: 22px !important;
+    font-weight: 700 !important;
+
+    text-transform: uppercase;
+
+    text-shadow:
+        2px 2px 4px #000,
+        -2px -2px 4px #000;
+}
+
+.gatewayLabel {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #c7ecff !important;
+
+    font-size: 15px !important;
+    font-weight: 700 !important;
+
+    text-shadow:
+        1px 0 0 #000,
+        -1px 0 0 #000,
+        0 1px 0 #000,
+        0 -1px 0 #000,
+        1px 1px 0 #000,
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000;
+}
+
+/* .painelGrupos .sapMObjLNumber {
+    background: #eef0f2;
+
+    color: #222 !important;
+
+    padding: 4px 10px;
+
+    border-radius: 8px;
+
+    font-weight: 600;
+
+    border: 1px solid #d9dde3;
+
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, .08);
+} */
+/* .painelGrupos .sapMObjLNumber {
+    background: #eef0f2;
+    border: 1px solid #d9dde3;
+
+    border-radius: 8px;
+
+    padding: 4px 10px;
+
+    color: #222 !important;
+
+    font-weight: 600;
+} */
+
+
+
+
+/* .sapMApp {
+    zoom: 75%;
+} */
+
+/* .sapUiBody {
+    zoom: 110%;
+} */
+.operadorDashboard {
+    font-size: 48px;
+    font-weight: bold;
+    color: var(--sapContent_LabelColor);
+}
+
+.operacaoValeLabel:before,
+.operacaoValeLabel:after {
+    display: none !important;
+}
+
+.kpiClickavel,
+.kpiClickavel * {
+    cursor: pointer !important;
+}
+
+.descricaoIndicador {
+    font-size: 20px !important;
+    font-weight: 500;
+}
+
+.tituloKpiGrande {
+    font-size: 2rem !important;
+    font-weight: bold !important;
+}
+
+
+
+.kpiEfetividade .sapMObjectNumberUnit {
+    font-size: 1.2rem !important;
+    margin-left: 4px !important;
+    vertical-align: middle !important;
+}
+
+.statusEfetividadeGrande {
+    font-size: 28px !important;
+    font-weight: bold !important;
+}
+
+.fonteTabelaIndicadoresTitulo {
+    font-size: 1.2rem !important;
+    font-weight: bold;
+}
+
+.fonteTabelaIndicadoresIndicador .sapMObjectIdentifierTitle {
+    font-size: 1.6rem !important;
+    font-weight: 700 !important;
+    line-height: 2rem !important;
+}
+
+.fonteTabelaIndicadoresSubtitulo {
+    font-size: 1rem !important;
+    font-weight: bold;
+}
+
+.fonteTabelaIndicadoresTexto {
+    font-size: 1rem !important;
+    line-height: 1.5rem;
+}
+
+.tituloKpiNovo {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--sapContent_LabelColor);
+    margin-left: 5px;
+    margin-bottom: 8px;
+}
+
+/* ==========================================================================
+   AJUSTE DE FONTE - LISTA DE NAVEGAÇÃO RÁPIDA (CORRIGIDO)
+   ========================================================================== */
+
+/* 1. Alvo no texto dos itens (Itabira, Brucutu, Pico, Vespasiano) */
+.painelNavegacao .sapMSLI,
+.painelNavegacao .sapMSLITitle,
+.painelNavegacao .sapMSLITitleOnly {
+    font-size: 20px !important;
+    /* Mesma fonte de 24px dos nomes de indicadores */
+    font-weight: 500 !important;
+    color: var(--sapLinkColor) !important;
+    /* Mesma cor cinza-azulada padrão */
+}
+
+/* 2. Alvo nos ícones laterais do mapa/prédio */
+.painelNavegacao .sapMSLIIcon {
+    font-size: 1.4rem !important;
+    /* Ícone proporcional ao tamanho 24px */
+    color: #e9730c !important;
+    margin-right: 12px !important;
+}
+
+/* ==========================================================================
+   REDUÇÃO DE ESPAÇAMENTO - NAVEGAÇÃO RÁPIDA
+   ========================================================================== */
+
+/* Reduz a altura de cada linha e elimina os paddings internos do SAPUI5 */
+.painelNavegacao .sapMList .sapMLIB {
+    min-height: 43px !important;
+    /* Reduzido de 75px para 48px para ficar mais compacto */
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+
+
+
+.sapMPanelHdr {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+}
+
+
+
+/* --PAINEL INDICADORES --PORCENTAGEM (texto solto invalidava a regra seguinte) */
+/* ==========================================================================
+   PAINEL DE INDICADORES (PROGRESS INDICATOR)
+   ========================================================================== */
+
+/* 1. TÍTULO DOS INDICADORES (Ex: Cobertura, Disponibilidade, Consistência...) */
+.painelIndicadores .sapMProgressIndicator .sapMMsgStripText,
+.painelIndicadores .sapMProgressIndicatorText,
+.painelIndicadores .sapMProgressIndicator>label {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: var(--sapContent_LabelColor) !important;
+    display: inline-block !important;
+    margin-bottom: 0px !important;
+    /* REDUZIDO de 8px para 0px para aproximar a barra */
+    padding-bottom: 0px !important;
+    /* GARANTE que não haja espaçamento interno empurrando a barra */
+}
+
+/* 2. TEXTO DO PERCENTUAL / VALOR (Ex: 78.0%, 82.1%...) */
+.painelIndicadores .sapMProgressIndicatorPercentValue,
+.painelIndicadores .sapMProgressIndicatorValue {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: var(--sapTextColor) !important;
+}
+
+/* 3. SÍMBOLO DA PORCENTAGEM (%) */
+.painelIndicadores .sapMProgressIndicatorPercentValue::after {
+    font-size: 22px !important;
+    font-weight: 600 !important;
+}
+
+/* 4. TÍTULO DO PAINEL PRINCIPAL (O cabeçalho "Indicadores") */
+.painelIndicadores .sapMPanelHdr,
+.painelIndicadores .sapMPanelHdrTxt {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+}
+
+/* ==========================================================================
+   CORREÇÃO DO PERCENTUAL / VALOR NUMÉRICO (Ex: 78.0 %)
+   ========================================================================== */
+
+/* Alvo 1: Caso seja um ObjectNumber (sap.m.ObjectNumber) */
+.painelIndicadores .sapMObjectNumberText,
+.painelIndicadores .sapMObjectNumber .sapMObjectNumberText {
+    font-size: 32px !important;
+    font-weight: 700 !important;
+    line-height: normal !important;
+    margin-bottom: 0px !important;
+    /* ADICIONADO para zerar a base do número */
+}
+
+/* Alvo 2: Caso o símbolo de "%" esteja separado na propriedade Unit */
+.painelIndicadores .sapMObjectNumberUnit,
+.painelIndicadores .sapMObjectNumber .sapMObjectNumberUnit {
+    font-size: 26px !important;
+    font-weight: 600 !important;
+}
+
+/* Alvo 3: Caso seja um NumericContent (sap.m.NumericContent) */
+.painelIndicadores .sapMNCValue .sapMNCValueScr,
+.painelIndicadores .sapMNCScale {
+    font-size: 32px !important;
+    font-weight: 700 !important;
+}
+
+/* Alvo 4: Caso seja um Text comum alinhado à direita */
+.painelIndicadores .sapMProgressIndicatorPercentValue,
+.painelIndicadores .sapMProgressIndicatorDisplayValue {
+    font-size: 32px !important;
+    font-weight: 700 !important;
+    margin-bottom: 0px !important;
+    /* ADICIONADO para zerar a base do texto de porcentagem */
+}
+
+/* ==========================================================================
+   APROXIMAÇÃO REAL DA BARRA DE PROGRESSO
+   ========================================================================== */
+.painelIndicadores .sapMProgressIndicator {
+    margin-top: 2px !important;
+    /* Puxa fisicamente a barra verde para cima, colando nos textos */
+}
+
+/* ==========================================================================
+   REDUÇÃO DE ESPAÇAMENTO - PAINEL INDICADORES
+   ========================================================================== */
+
+/* 1. Reduz o espaçamento do contêiner mestre interno do painel */
+.painelIndicadores .sapUiSmallMargin {
+    margin: 8px 12px !important;
+    /* Estreita os recuos laterais e verticais internos */
+}
+
+/* 2. Reduz drasticamente a margem de afastamento entre um indicador e outro */
+.painelIndicadores .sapUiSmallMarginTop {
+    margin-top: 10px !important;
+    /* Reduzido de 16px padrão para apenas 6px */
+}
+
+/* 3. Ajusta o respiro da barra de progresso para acompanhar a aproximação */
+.painelIndicadores .sapMProgressIndicator {
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+}
+
+
+/* --- TELA DE LOGIN FORMATADA E CORRIGIDA --- */
+
+/* Fundo da tela de login */
+.loginBackground {
+    background-image: url('../img/vale.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+/* Card customizado */
+.loginCard {
+    background: #f5f7fa;
+    padding: 30px;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    box-shadow: none;
+}
+
+/* Aumenta o tamanho da fonte do título principal */
+.fonteCustomizada .tituloLogin {
+    font-size: 1.9rem !important;
+    font-weight: bold !important;
+    text-align: center !important;
+}
+
+/* Tamanho das legendas (Labels) - Aumentado substancialmente */
+.fonteCustomizada .sapMLbl {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    /* Deixa o texto ligeiramente mais grosso e visível */
+    color: #333333 !important;
+    /* Destaca o texto em cinza escuro */
+}
+
+
+
+/* Container externo */
+.fonteCustomizada .sapMInputBase {
+    height: 4rem !important;
+}
+
+/* Campo onde o texto é digitado */
+.fonteCustomizada .sapMInputBaseInner {
+    height: 100% !important;
+    line-height: 5rem !important;
+    font-size: 14px !important;
+    padding-left: 1.5rem !important;
+}
+
+/* Container do ícone (olho da senha, por exemplo) */
+.fonteCustomizada .sapMInputBaseIconContainer {
+    height: 2rem !important;
+    min-width: 5rem !important;
+}
+
+/* Ícone */
+.fonteCustomizada .sapMInputBaseIcon {
+    line-height: 5rem !important;
+    font-size: 16px !important;
+}
+
+.fonteCustomizada .sapMInputBaseIcon {
+    line-height: 4.5rem !important;
+    font-size: 1.5rem !important;
+    /* Deixa o ícone de olho proporcional ao campo */
+}
+
+
+
+
+.fonteCustomizada .sapMPanelContent {
+    height: auto !important;
+    overflow: hidden !important;
+    padding: 1rem !important;
+    padding-bottom: 2rem !important;
+    /* Espaço extra para o botão caber folgado */
+}
+
+/* SEU BOTÃO AJUSTADO COM ÁREA DE SEGURANÇA */
+.loginButton .sapMBtnInner {
+    height: 50px !important;
+    border-radius: 16px !important;
+    margin-bottom: 10px !important;
+}
+
+.loginButton .sapMBtnContent {
+    font-size: 22px !important;
+    font-weight: bold !important;
+    line-height: 50px !important;
+    /* Mantém o texto "Entrar" perfeitamente centralizado */
+}
+
+/* Aumenta o tamanho da fonte do subtítulo */
+.fonteCustomizada .subtituloLogin {
+    font-size: 1.4rem !important;
+    /* Ajuste para o tamanho que desejar */
+    color: #555555 !important;
+    text-align: center !important;
+}
+
+.labelLogin {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: #333333 !important;
+}
+
+.inputLogin .sapMInputBaseContentWrapper {
+    height: 3rem !important;
+}
+
+.inputLogin .sapMInputBaseInner {
+    height: 3rem !important;
+    line-height: 3rem !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    padding-left: 1rem !important;
+}
+
+.inputLogin .sapMInputBaseIconContainer {
+    height: 3rem !important;
+    min-width: 3rem !important;
+}
+
+.inputLogin .sapMInputBaseIcon {
+    line-height: 3rem !important;
+}
+
+.inputLogin input,
+.inputLogin .sapMInputBaseInner {
+    font-size: 16px !important;
+    font-weight: 400 !important;
+}
+
+.inputLogin input::placeholder,
+.inputLogin .sapMInputBaseInner::placeholder {
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    opacity: 1 !important;
+}
+
+.kpiEfetividade {
+    border: 2px solid #107e3e;
+    border-radius: 10px;
+    padding: 12px;
+    margin-top: 12px;
+    background: var(--sapSuccessBackground);
+    text-align: center;
+}
+
+.tituloEfetividade {
+    font-weight: bold;
+    color: var(--sapPositiveTextColor);
+}
+
+.valorEfetividade {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--sapPositiveTextColor);
+}
+
+.subtituloEfetividade {
+    font-size: 0.75rem;
+    color: var(--sapContent_LabelColor);
+}
+
+/* Aumenta a fonte dos links e força a prioridade sobre o estilo padrão do SAPUI5 */
+.linkGrande {
+    font-size: 18px !important;
+}
+
+/* Opcional: Se quiser que os ícones acompanhem o tamanho do texto, adicione esta regra */
+.painelNavegacao .sapUiIcon {
+    font-size: 18px !important;
+}
+
+.sugestaoInspecaoItem {
+    margin-bottom: 10px !important;
+}
+
+.sugestaoInspecaoItem .sapMObjectIdentifierTitle {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    line-height: 1.6rem !important;
+    color: var(--sapTitleColor);
+}
+
+.sugestaoIcone {
+    font-size: 1.5rem !important;
+    color: var(--sapLinkColor);
+    margin-right: 10px;
+}
+
+.sugestaoTexto {
+    font-size: 0.9rem !important;
+    margin-top: 6px !important;
+    font-weight: 700 !important;
+    line-height: 1.2rem !important;
+}
+
+.sugestaoInspecaoItem {
+    margin-bottom: 8px !important;
+}
+
+
+.kpiAlturaPadrao .sapMPanelContent {
+    height: 70px !important;
+    min-height: 70px !important;
+    overflow: hidden;
+}
+
+.kpiCard .sapMPanelContent {
+    min-height: auto !important;
+    height: 100% !important;
+}
+
+
+
+
+/* Remove os espaçamentos internos padrões e força a altura compacta */
+.cardVeiculoCustom {
+    height: 6rem !important;
+    padding: 0.5rem !important;
+
+    border: 1px solid var(--sapTile_BorderColor) !important;
+
+    border-radius: 8px !important;
+
+    background-color: var(--sapTile_Background) !important;
+
+    backdrop-filter: blur(3px);
+
+    box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.05) !important;
+
+    transition: all 0.2s ease-in-out !important;
+}
+
+/* Remove margens e paddings do container do conteúdo interno */
+.cardVeiculoCustom .sapMGTContent {
+    height: calc(100% - 2rem) !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Ajusta o posicionamento do título para não cortar em alturas menores */
+.cardVeiculoCustom .sapMGTHdrTxt {
+    margin-bottom: 0 !important;
+}
+
+/* Centraliza e dá respiro à imagem compactada */
+.imagemCardReduzida {
+    margin-top: -5px !important;
+}
+
+
+
+.painelTabelaResumo .sapMListTblCell {
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+}
+
+.painelTabelaResumo .sapMColumnListItem {
+    height: 24px;
+}
+
+.espacoEntrePaineis {
+    height: 5px;
+}
+
+.painelTabelaResumo .sapMListTblHeader {
+    display: none !important;
+}
+
+.painelTabelaResumo .sapMListTblHeaderCell {
+    display: none !important;
+}
+
+.tituloIndicador {
+    font-size: 12px !important;
+    font-weight: 500;
+}
+
+
+
+
+.sapMPanel,
+.kpiCard {
+
+    background: var(--vale-superficie) !important;
+
+    border: 1px solid var(--vale-borda-sutil) !important;
+
+    border-radius: 12px !important;
+
+    box-shadow:
+        0 2px 6px rgba(0, 0, 0, .06),
+        0 8px 16px rgba(0, 0, 0, .04) !important;
+
+}
+
+
+.cardTopo {
+    height: 220px !important;
+}
+
+.cardTopo .sapMPanelContent {
+    height: calc(220px - 3rem) !important;
+}
+
+.graficoCortado {
+    overflow: hidden;
+}
+
+
+@keyframes destaquePesquisa {
+
+    0% {
+        box-shadow: 0 0 0 0 rgba(10, 110, 209, .25);
+    }
+
+    50% {
+        box-shadow: 0 0 0 10px rgba(10, 110, 209, .12);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(10, 110, 209, .25);
+    }
+
+}
+
+.balaoPesquisa:after {
+
+    content: "";
+
+    position: absolute;
+
+    bottom: -10px;
+    left: 25px;
+
+    border-width: 10px 10px 0 10px;
+    border-style: solid;
+
+    border-color: #0A6ED1 transparent transparent transparent;
+}
+
+@keyframes flutuarPesquisa {
+
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.cardVeiculoCustom:hover {
+    transform: translateY(-3px) scale(1.02);
+    background: var(--sapTile_Hover_Background) !important;
+    box-shadow:
+        0 8px 18px rgba(0, 0, 0, 0.15) !important;
+}
+
+
+
+.kpiEfetividade {
+
+    background: var(--sapSuccessBackground);
+    border: 2px solid #107E3E;
+    border-radius: 12px;
+
+    box-shadow:
+        0 4px 12px rgba(16, 126, 62, 0.15);
+
+    transition: all 0.2s ease;
+
+}
+
+.kpiEfetividade .tituloKpiNovo {
+
+    color: var(--sapPositiveTextColor);
+    font-weight: 700;
+    letter-spacing: 1px;
+
+}
+
+#idDisponibilidadeBox,
+#idConsistenciaBox {
+    margin-bottom: 2px !important;
+}
+
+#idIndicadoresPanel .sapMProgressIndicator {
+    margin-top: 0px !important;
+}
+
+#idConsistenciaBox.sapUiSmallMarginTop {
+    margin-top: 6px !important;
+}
+
+.kpiCard:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, .12),
+        0 2px 6px rgba(0, 0, 0, .08) !important;
+
+    transition: all .2s ease;
+
+}
+
+#idIndicadoresPanel .sapMPanelContent {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+#idTotalEquipamentosPanel .sapMPanelContent,
+#idGatewayPanel .sapMPanelContent {
+
+    display: flex !important;
+    align-items: center !important;
+
+}
+
+#idDistribuicaoMinasVizFrame svg text {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+}
+
+.painelReformados {
+    min-width: 450px;
+}
+
+.tituloCardVeiculo {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    text-align: left !important;
+    padding-left: 8px;
+    color: var(--sapTextColor) !important;
+}
+
+.painelEsquerdoGrafico {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.gridVeiculosFlex {
+    max-height: 22rem;
+    overflow-y: auto;
+}
+
+html {
+    font-size: 67%;
+}
+
+.fonteCustomizada {
+    transform: scale(0.7);
+    transform-origin: center center;
+}
+
+.dashboard67 {
+    zoom: 0.67;
+}
+
+.kpiIcone {
+    margin-right: 12px !important;
+}
+
+
+
+
+.tituloKpiNovo {
+    color: var(--vale-texto) !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    margin-bottom: 6px !important;
+}
+
+.kpiNumero {
+    color: var(--vale-texto) !important;
+    font-size: 26px;
+    font-weight: 400 !important;
+}
+
+.kpiIcone {
+    margin-right: 8px !important;
+}
+
+.kpiConteudo {
+    padding-top: 6px !important;
+}
+
+.kpiValor {
+    margin-bottom: 5px !important;
+}
+
+.painelRosa {
+    background: #E10073 !important;
+    border-radius: 18px !important;
+}
+
+.painelRosa .sapMPanelContent {
+    background: #E10073 !important;
+    border-radius: 18px !important;
+}
+
+.painelRosa .kpiNumero,
+.painelRosa .tituloKpiNovo {
+    color: #FFFFFF !important;
+}
+
+.painelRosa .sapMObjectNumberText,
+.painelRosa .sapMObjectNumberUnit {
+    color: #FFFFFF !important;
+    font-weight: 400 !important;
+}
+
+.painelRosa .sapMObjectNumberText {
+    font-size: 20px !important;
+    font-weight: 400 !important;
+}
+
+.painelRosa .sapMObjectNumberUnit {
+    font-size: 16px !important;
+    font-weight: 400 !important;
+}
+
+.painelLocalidades,
+.painelLocalidades .sapMPanelContent {
+    background-color: #149FA8 !important;
+}
+
+.painelLocalidades .sapMTitle {
+    color: var(--vale-texto) !important;
+}
+
+.painelCategorias {
+    background: linear-gradient(135deg, #6F52ED, #7A63F7);
+    color: white;
+}
+
+.painelCategorias .sapMTitle,
+.painelCategorias .sapUiIcon,
+.painelCategorias .sapMText {
+    color: #FFFFFF !important;
+}
+
+.percentualMenor {
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 6px;
+}
+
+.percentualEfetividade {
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 6px;
+    margin-left: 2px;
+}
+
+.painelCategorias,
+.painelCategorias .sapMPanelContent,
+.painelCategorias .sapMPanelWrappingDiv {
+    background: #7858FF !important;
+}
+
+.painelEmbarcados,
+.painelEmbarcados .sapMPanelContent {
+    background: #5C738A !important;
+}
+
+.painelStatusTipo {
+    background: #004DFF !important;
+}
+
+.painelStatusTipo .sapMPanelContent {
+    background: transparent !important;
+}
+
+.tituloIndicadorPopup {
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.tituloIndicadorPopup .sapMObjectNumberText {
+    font-size: 4rem !important;
+    font-weight: 300 !important;
+    line-height: 5rem !important;
+}
+
+.tituloIndicadorPopup .sapMObjectNumberUnit {
+    font-size: 1.8rem !important;
+    line-height: 5rem !important;
+    vertical-align: top;
+}
+
+.subtituloPopup {
+    font-size: 1.5rem !important;
+    color: var(--sapContent_LabelColor) !important;
+}
+
+.popupTextoGrande {
+    font-size: 1.2rem !important;
+    line-height: 1.5rem !important;
+}
+
+
+
+.dialogIndicadores .sapMDialogTitle {
+    color: var(--vale-verde-texto) !important;
+    font-weight: 600 !important;
+}
+
+.botaoDialogCinza {
+    min-width: 60px !important;
+}
+
+.botaoDialogCinza .sapMBtnInner {
+    min-height: 21px !important;
+
+    background-color: var(--sapButton_Background) !important;
+    border-color: var(--sapButton_BorderColor) !important;
+    color: var(--sapButton_TextColor) !important;
+}
+
+.botaoDialogCinza .sapMBtnContent {
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+
+    text-align: center !important;
+    line-height: 21px !important;
+}
+
+
+
+.dialogRastreadores .sapMDialogTitleGroup,
+.dialogRastreadores .sapMDialogTitleGroup .sapMBar,
+.dialogRastreadores .sapMDialogTitleGroup .sapMIBar {
+    background-color: var(--sapPageHeader_Background) !important;
+}
+
+.dialogRastreadores .sapMDialogTitle {
+    color: var(--vale-verde-texto) !important;
+    font-weight: 700 !important;
+}
+
+.dialogRastreadores .sapMDialogFooter .sapMBar {
+    min-height: 56px !important;
+}
+
+.botaoDialogExcel {
+    min-width: 60px !important;
+}
+
+.botaoDialogExcel .sapMBtnInner {
+    min-height: 21px !important;
+
+    background-color: #0a6ed1 !important;
+    border-color: #0854a0 !important;
+}
+
+
+
+.botaoDialogExcel .sapUiIcon {
+    color: #ffffff !important;
+}
+
+.botaoDialogExcel .sapMBtnContent {
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+
+    text-align: center !important;
+    line-height: 21px !important;
+}
+
+
+
+.dialogIndicadores .sapMDialogFooter {
+    min-height: 60px !important;
+}
+
+.dialogIndicadores .sapMDialogFooter .sapMBar {
+    min-height: 60px !important;
+
+    display: flex !important;
+    align-items: center !important;
+}
+
+
+.dialogRastreadores .sapMDialogFooter {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+
+    background: var(--sapPageFooter_Background) !important;
+}
+
+.dialogRastreadores .sapMDialogFooter .sapMBar {
+    background-color: var(--sapPageFooter_Background) !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    height: 100% !important;
+}
+
+.dialogRastreadores .sapMDialogFooter .sapMBarMiddle {
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
+}
+
+.tituloIndicadorPopup {
+    margin-top: 1rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.tituloIndicadorPopup .sapMObjectNumberText {
+    font-size: 3rem !important;
+    font-weight: 400 !important;
+    line-height: 3.5rem !important;
+}
+
+.tituloIndicadorPopup .sapMObjectNumberUnit {
+    font-size: 1.4rem !important;
+    line-height: 3.5rem !important;
+}
+
+.subtituloPopup {
+    font-size: 1.2rem !important;
+    font-weight: 500 !important;
+    color: var(--sapContent_LabelColor) !important;
+}
+
+.popupTextoGrande {
+    font-size: 1rem !important;
+    line-height: 1.5rem !important;
+}
+
+.botaoDialogCinza .sapMBtnContent,
+.botaoDialogExcel .sapMBtnContent {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+}
+
+
+.sapMMsgStripMessage {
+    font-size: 13px !important;
+    font-weight: 400 !important;
+}
+
+
+.sapUiLocalBusyIndicatorAnimation {
+    transform: scale(2);
+}
+
+.btnVoltarTopo {
+    position: fixed !important;
+    right: 20px;
+    bottom: 20px;
+    z-index: 99999;
+}
+
+.linhaKpisFixa {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 99999;
+    background: var(--sapBackgroundColor);
+}
+
+.linhaRastreadorPopup {
+    padding: 10px;
+    margin-bottom: 6px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+    border: 1px solid transparent;
+}
+
+.linhaRastreadorPopup:hover {
+    transform: translateY(-3px) scale(1.02);
+    background: var(--sapList_Hover_Background);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, .15);
+    border-color: var(--sapSelectedColor);
+}
+
+
+.linhaRastreadorPopup div:nth-child(3) {
+    font-size: 10px !important;
+}
+
+.cabecalhoCorporativo {
+    margin-bottom: 12px;
+}
+
+
+.painelAzul .kpiNumero,
+.painelRosa .kpiNumero,
+.painelLocalidades .kpiNumero,
+.painelCategorias .kpiNumero,
+.painelEmbarcados .kpiNumero,
+.painelStatusTipo .kpiNumero {
+    color: var(--sapTextColor) !important;
+    font-weight: 700 !important;
+}
+
+.painelAzul .tituloKpiNovo,
+.painelRosa .tituloKpiNovo,
+.painelLocalidades .tituloKpiNovo,
+.painelCategorias .tituloKpiNovo,
+.painelEmbarcados .tituloKpiNovo,
+.painelStatusTipo .tituloKpiNovo {
+    color: var(--sapTextColor) !important;
+}
+
+.painelAzul .sapMObjectNumberText,
+.painelAzul .sapMObjectNumberUnit,
+.painelRosa .sapMObjectNumberText,
+.painelRosa .sapMObjectNumberUnit,
+.painelLocalidades .sapMObjectNumberText,
+.painelLocalidades .sapMObjectNumberUnit,
+.painelCategorias .sapMObjectNumberText,
+.painelCategorias .sapMObjectNumberUnit,
+.painelEmbarcados .sapMObjectNumberText,
+.painelEmbarcados .sapMObjectNumberUnit,
+.painelStatusTipo .sapMObjectNumberText,
+.painelStatusTipo .sapMObjectNumberUnit {
+    color: var(--sapTextColor) !important;
+}
+
+/* Texto branco em todos os cards superiores */
+.painelAzul .kpiNumero,
+.painelAzul .tituloKpiNovo,
+
+.painelRosa .kpiNumero,
+.painelRosa .tituloKpiNovo,
+
+.painelLocalidades .kpiNumero,
+.painelLocalidades .tituloKpiNovo,
+
+.painelCategorias .kpiNumero,
+.painelCategorias .tituloKpiNovo,
+
+.painelEmbarcados .kpiNumero,
+.painelEmbarcados .tituloKpiNovo,
+
+.painelStatusTipo .kpiNumero,
+.painelStatusTipo .tituloKpiNovo,
+
+.percentualMenor {
+    color: #FFFFFF !important;
+}
+
+.kpiNumero {
+    font-family: "72", "SAP 72", Arial, sans-serif !important;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--vale-texto);
+}
+
+
+.tituloKpiNovo {
+    font-family: "72", "SAP 72", Arial, sans-serif !important;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--vale-texto);
+}
+
+.leaflet-control,
+.leaflet-popup-content,
+.leaflet-tooltip {
+    font-family: "72", "SAP 72", Arial, sans-serif !important;
+}
+
+.cityLabel,
+.bairroLabel,
+.operacaoValeLabel,
+.gatewayLabel,
+.leaflet-popup-content,
+.mapLegend,
+.leaflet-control-layers {
+    font-family: "72", "SAP 72", Arial, sans-serif !important;
+}
+
+.leaflet-popup-content {
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+    margin: 8px 10px !important;
+}
+
+.pesquisaRastreador {
+    margin-bottom: 20px !important;
+}
+
+.pesquisaRastreador .sapMSFF {
+    height: 2.5rem !important;
+    border: 2px solid #00807C !important;
+    border-radius: 12px !important;
+    background: var(--sapField_Background) !important;
+    animation: destaquePesquisa 4s ease-in-out infinite !important;
+}
+
+.pesquisaRastreador input {
+    font-size: 16px !important;
+    font-weight: 800;
+}
+
+.pesquisaRastreador input::placeholder {
+    color: var(--vale-verde-texto) !important;
+}
+
+.pesquisaRastreador .sapMSFB,
+.pesquisaRastreador .sapMSFS {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 3rem !important;
+    min-width: 3rem !important;
+}
+
+.pesquisaRastreador .sapUiIcon {
+    color: var(--vale-verde-texto) !important;
+    font-size: 0.8rem !important;
+    line-height: 1 !important;
+}
+
+@keyframes destaquePesquisa {
+
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 128, 124, 0.85);
+    }
+
+    70% {
+        box-shadow: 0 0 0 16px rgba(0, 128, 124, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 128, 124, 0);
+    }
+
+}
+
+.pesquisaRastreador .sapMSFI {
+    height: 2.5rem !important;
+    line-height: 2.5rem !important;
+    font-size: 14px !important;
+    font-weight: 400;
+    font-family: "72", "SAP 72", Arial, sans-serif !important;
+}
+
+.sapUiLocalBusyIndicatorAnimation>div::before {
+    background-color: #00807C !important;
+}
+
+
+
+.painelAzul .kpiNumero,
+.painelRosa .kpiNumero,
+.painelLocalidades .kpiNumero,
+.painelCategorias .kpiNumero,
+.painelEmbarcados .kpiNumero,
+.painelStatusTipo .kpiNumero,
+.painelAzul .tituloKpiNovo,
+.painelRosa .tituloKpiNovo,
+.painelLocalidades .tituloKpiNovo,
+.painelCategorias .tituloKpiNovo,
+.painelEmbarcados .tituloKpiNovo,
+.painelStatusTipo .tituloKpiNovo,
+.percentualMenor {
+    color: var(--vale-verde-texto) !important;
+}
+
+.painelAzul .sapMPanelWrappingDiv,
+.painelAzul .sapMPanelHdr,
+.painelAzul .sapMPanelExpandablePart {
+    background: transparent !important;
+}
+
+.painelAzul {
+    background: transparent !important;
+    border-radius: 18px !important;
+    border: 2px solid #00807C !important;
+    box-shadow: none !important;
+}
+
+.kpiValor .sapMImg {
+    margin-right: 12px !important;
+}
+
+.painelAzul {
+    background: transparent !important;
+    border-radius: 18px !important;
+    border: 2px solid #00807C !important;
+    box-shadow: none !important;
+}
+
+.painelAzul .kpiNumero,
+.painelAzul .tituloKpiNovo {
+    color: var(--vale-verde-texto) !important;
+}
+
+.painelRosa {
+    background: #E10073 !important;
+}
+
+.painelLocalidades {
+    background-color: #149FA8 !important;
+}
+
+.painelCategorias {
+    background: #7858FF !important;
+}
+
+.painelEmbarcados {
+    background: #5C738A !important;
+}
+
+.painelStatusTipo {
+    background: #004DFF !important;
+}
+
+.painelAzul,
+.painelRosa,
+.painelLocalidades,
+.painelCategorias,
+.painelEmbarcados,
+.painelStatusTipo {
+    background: transparent !important;
+    border-radius: 18px !important;
+    border: 2px solid #00807C !important;
+    box-shadow: none !important;
+}
+
+.painelAzul .sapMPanelContent,
+.painelRosa .sapMPanelContent,
+.painelLocalidades .sapMPanelContent,
+.painelCategorias .sapMPanelContent,
+.painelEmbarcados .sapMPanelContent,
+.painelStatusTipo .sapMPanelContent {
+    background: transparent !important;
+}
+
+.painelAzul .kpiNumero,
+.painelAzul .tituloKpiNovo,
+.painelRosa .kpiNumero,
+.painelRosa .tituloKpiNovo,
+.painelLocalidades .kpiNumero,
+.painelLocalidades .tituloKpiNovo,
+.painelCategorias .kpiNumero,
+.painelCategorias .tituloKpiNovo,
+.painelEmbarcados .kpiNumero,
+.painelEmbarcados .tituloKpiNovo,
+.painelStatusTipo .kpiNumero,
+.painelStatusTipo .tituloKpiNovo,
+.percentualMenor {
+    color: var(--vale-verde-texto) !important;
+}
+
+/* REMOVIDO: .sapUiBody/.sapMApp/.sapMPage/.sapMITBContent { background: transparent !important }
+   Apagava o fundo de TODOS os containers do tema; no escuro a página ficava
+   sem fundo (branco do navegador) com texto claro por cima. */
+
+/* Cabeçalho */
+.dialogRastreadores .sapMDialogTitleGroup,
+.dialogRastreadores .sapMDialogTitleGroup .sapMBar,
+.dialogRastreadores .sapMDialogTitleGroup .sapMIBar {
+    background: var(--sapPageHeader_Background) !important;
+    border-top: 3px solid #EDA800 !important;
+}
+
+.dialogRastreadores .sapMDialogTitle {
+    color: var(--vale-verde-texto) !important;
+    font-weight: 700 !important;
+}
+
+/* Corpo */
+.dialogRastreadores .sapMDialogSection {
+    background: var(--sapBackgroundColor) !important;
+}
+
+/* Rodapé */
+.dialogRastreadores .sapMDialogFooter .sapMBar {
+    background: var(--sapPageFooter_Background) !important;
+    border-top: 1px solid var(--sapPageFooter_BorderColor) !important;
+}
+
+/* Cartões da lista */
+.linhaRastreadorPopup {
+    background: var(--sapList_Background);
+    border: 1px solid var(--sapList_BorderColor);
+    border-radius: 6px;
+}
+
+.linhaRastreadorPopup:hover {
+    background: var(--sapList_Hover_Background);
+    border-color: #00807C;
+}
+
+/* Identificador */
+.linhaRastreadorPopup div:nth-child(1) {
+    color: var(--sapTextColor);
+    font-weight: 700;
+}
+
+/* Status */
+.linhaRastreadorPopup div:nth-child(3) {
+    color: var(--vale-verde-texto) !important;
+    font-weight: 700;
+}
+
+/* Local */
+.linhaRastreadorPopup div:nth-child(4) {
+    color: var(--sapContent_LabelColor) !important;
+}
+
+.botaoDialogExcel .sapMBtnInner {
+    background: #EDA800 !important;
+    border-color: #EDA800 !important;
+}
+
+.botaoDialogExcel .sapMBtnContent {
+    color: #FFFFFF !important;
+}
+
+.botaoDialogCinza .sapMBtnInner {
+    background: var(--sapButton_Background) !important;
+    border: 1px solid #00807C !important;
+}
+
+.botaoDialogCinza .sapMBtnContent {
+    color: var(--vale-verde-texto) !important;
+}
+
+/* Cabeçalho */
+.dialogRastreadores .sapMDialogTitleGroup,
+.dialogRastreadores .sapMDialogTitleGroup .sapMBar,
+.dialogRastreadores .sapMDialogTitleGroup .sapMIBar {
+    background: var(--sapPageHeader_Background) !important;
+    border-top: none !important;
+}
+
+.dialogRastreadores .sapMDialogTitle {
+    color: var(--vale-verde-texto) !important;
+    font-weight: 700 !important;
+}
+
+.dialogRastreadores .sapMDialogTitleGroup,
+.dialogRastreadores .sapMDialogTitleGroup .sapMBar,
+.dialogRastreadores .sapMDialogTitleGroup .sapMIBar {
+    background: var(--sapPageHeader_Background) !important;
+    border-bottom: 1px solid var(--sapPageHeader_BorderColor) !important;
+}
+
+.dialogIndicadores .sapMDialogTitleGroup,
+.dialogIndicadores .sapMDialogTitleGroup .sapMBar,
+.dialogIndicadores .sapMDialogTitleGroup .sapMIBar {
+    background: var(--sapPageHeader_Background) !important;
+    border-bottom: 1px solid var(--sapPageHeader_BorderColor) !important;
+}
+
+.dialogIndicadores .sapMDialogTitle {
+    color: var(--vale-verde-texto) !important;
+    font-weight: 700 !important;
+}
+
+
+
+.leaflet-popup-close-button:hover {
+    background: #D99800 !important;
+    color: #FFFFFF !important;
+    transform: scale(1.05);
+}
+
+.dialogIndicadores .sapMDialogSection {
+    background: var(--sapBackgroundColor) !important;
+}
+
+.dialogIndicadores .sapMDialogFooter .sapMBar {
+    background: var(--sapPageFooter_Background) !important;
+    border-top: 1px solid var(--sapPageFooter_BorderColor) !important;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup {
+    overflow: visible !important;
+}
+
+.leaflet-popup-close-button {
+    position: absolute !important;
+
+    left: auto !important;
+    right: -8px !important;
+    top: -8px !important;
+
+    width: 24px !important;
+    height: 24px !important;
+
+    background: #EDA800 !important;
+    color: #FFFFFF !important;
+
+    border-radius: 50% !important;
+    border: none !important;
+
+    font-size: 16px !important;
+    line-height: 22px !important;
+    text-align: center !important;
+
+    z-index: 999999 !important;
+}
+
+
+.btnFecharPopup .sapMBtnInner {
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    min-height: 18px !important;
+
+    background: #EDA800 !important;
+    border: none !important;
+    border-radius: 50% !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.btnFecharPopup .sapUiIcon {
+    color: #FFFFFF !important;
+    font-size: 0.9rem !important;
+    line-height: normal !important;
+}
+
+
+
+
+
+
+.dialogEfetividade .sapMDialogSection,
+.dialogEfetividade .sapMDialogScrollCont,
+.dialogEfetividade .sapMDialogSectionWrapper {
+    background: var(--sapGroup_ContentBackground) !important;
+}
+
+.dialogEfetividade .sapMText,
+.dialogEfetividade .sapMTitle,
+.dialogEfetividade .sapMFT,
+.dialogEfetividade .sapMObjectNumberText,
+.dialogEfetividade .sapMObjectNumberUnit {
+    color: var(--sapTextColor) !important;
+}
+
+.dialogEfetividade b {
+    color: var(--sapTextColor) !important;
+}
+
+.dialogEfetividade .subtituloPopup {
+    color: var(--sapContent_LabelColor) !important;
+}
+
+.dialogEfetividade .sapMFT {
+    color: var(--sapTextColor) !important;
+    line-height: 1.5 !important;
+}
+
+.dialogEfetividade .sapMFT b {
+    color: var(--sapTextColor) !important;
+}
+
+.dialogEfetividade .popupTextoGrande {
+    margin-top: 10px !important;
+}
+
+.dialogEfetividade .tituloIndicadorPopup .sapMObjectNumberText {
+    font-size: 5rem !important;
+}
+
+.dialogEfetividade .sapMFT {
+    font-size: 1.3rem !important;
+}
+
+.valeAlfinete__rotulo {
+    display: none !important;
+}
+
+/* Bloco .sapUiTheme-sap_horizon_dark removido: os tokens --vale-* agora
+   seguem o tema, não é preciso sobrescrever cartão a cartão. */

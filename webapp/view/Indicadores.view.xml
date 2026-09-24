@@ -1,0 +1,132 @@
+<mvc:View controllerName="br.com.smartpcm.rastreamento.zrastreio.controller.Indicadores"
+	xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" height="100%">
+	<Page id="pagina" title="{i18n>navIndicadores}" enableScrolling="true">
+		<content>
+			<VBox class="sapUiSmallMargin">
+				<Text text="{i18n>indSubtitulo}" class="valeKpiPe sapUiTinyMarginBottom" />
+
+				<!-- indice geral, com a conta aberta -->
+				<VBox class="valeCartao sapUiTinyMarginBottom">
+					<HBox justifyContent="SpaceBetween" alignItems="Center"
+						class="sapUiSmallPadding">
+						<VBox>
+							<Title text="{tela>/geral/titulo}" level="H2" titleStyle="H4" />
+							<Text text="{i18n>indGeralPe}" class="valeKpiPe" />
+						</VBox>
+						<HBox alignItems="Center">
+							<Title text="{ path: 'tela>/geral/valor', formatter: '.percentual' }"
+								level="H1" class="valeVerde sapUiSmallMarginEnd" />
+							<ObjectStatus text="{tela>/classe/rotulo}" state="{tela>/classe/estado}" />
+						</HBox>
+					</HBox>
+					<VBox class="sapUiSmallPadding" backgroundDesign="Translucent">
+						<Text text="{i18n>indFormula}" class="valeKpiRotulo" />
+						<Text text="{tela>/explicacaoGeral/formula}" class="sapUiTinyMarginBottom" />
+						<Text text="{i18n>indComNumeros}" class="valeKpiRotulo" />
+						<Text text="{tela>/explicacaoGeral/conta}" class="valeMono" />
+					</VBox>
+					<!-- comparacao com o indice do backend atual -->
+					<HBox justifyContent="SpaceBetween" class="sapUiSmallPadding"
+						visible="{= !!${frota>/backend} }">
+						<Text
+							text="{i18n>indBackend} {frota>/backend/indiceEfetividade}% · {frota>/backend/classificacao}"
+							class="valeKpiPe" />
+						<Text text="{tela>/diferenca}" class="valeKpiPe" />
+					</HBox>
+					<Text text="{i18n>indBackendNota}"
+						class="valeKpiPe sapUiSmallPaddingBegin sapUiSmallPaddingEnd sapUiSmallPaddingBottom" />
+				</VBox>
+
+				<!-- parcelas -->
+				<l:Grid
+					defaultSpan="XL12 L12 M12 S12"
+					hSpacing="0"
+					vSpacing="0"
+					class="sapUiNoMargin">
+					<VBox
+						class="valeCartao sapUiSmallPadding sapUiTinyMarginBottom"
+						width="100%">
+
+						<VBox
+							width="100%"
+							items="{tela>/parcelas}">
+
+							<items>
+
+								<VBox
+									width="100%"
+									class="sapUiTinyMarginBottom">
+
+									<HBox
+										width="100%"
+										justifyContent="SpaceBetween"
+										alignItems="Start">
+
+										<VBox width="90%">
+											<Title
+												text="{tela>titulo}"
+												level="H3"
+												titleStyle="H6" />
+
+											<Text
+												text="{tela>pergunta}"
+												class="valeKpiPe" />
+										</VBox>
+
+										<Title
+											text="{ path: 'tela>valor', formatter: '.percentual' }"
+											level="H3"
+											titleStyle="H4" />
+
+									</HBox>
+
+									<ProgressIndicator
+										percentValue="{ path: 'tela>valor', formatter: '.paraPercentual' }"
+										showValue="false"
+										height="0.5rem"
+										state="{ path: 'tela>valor', formatter: '.estadoDaCobertura' }"
+										class="sapUiTinyMarginTop sapUiTinyMarginBottom" />
+
+									<Text
+										text="{tela>conta}"
+										class="valeMono valeKpiPe" />
+
+									<Text
+										text="{tela>ressalva}"
+										class="valeKpiPe sapUiTinyMarginTop" />
+
+								</VBox>
+
+							</items>
+
+						</VBox>
+
+					</VBox>
+				</l:Grid>
+
+				<!-- avanco do piloto, deliberadamente fora do indice -->
+				<VBox class="valeCartao sapUiTinyMarginTop sapUiSmallPadding">
+					<Title text="{i18n>indPiloto}" level="H3" titleStyle="H6" />
+					<Text text="{i18n>indPilotoPe}" class="valeKpiPe sapUiTinyMarginBottom" />
+					<HBox justifyContent="SpaceBetween">
+						<Text text="{i18n>indPilotoRastreadores}" />
+						<Text
+							text="{frota>/piloto/rastreadores/feito} / {frota>/piloto/rastreadores/meta}"
+							class="valeMono" />
+					</HBox>
+					<ProgressIndicator
+						percentValue="{ path: 'frota>/piloto/rastreadores/fracao', formatter: '.paraPercentual' }"
+						showValue="false" height="0.5rem" class="sapUiTinyMarginBottom" />
+					<HBox justifyContent="SpaceBetween">
+						<Text text="{i18n>indPilotoGateways}" />
+						<Text text="{frota>/piloto/gateways/feito} / {frota>/piloto/gateways/meta}"
+							class="valeMono" />
+					</HBox>
+					<ProgressIndicator
+						percentValue="{ path: 'frota>/piloto/gateways/fracao', formatter: '.paraPercentual' }"
+						showValue="false" height="0.5rem" />
+				</VBox>
+			</VBox>
+		</content>
+	</Page>
+</mvc:View>

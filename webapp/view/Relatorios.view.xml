@@ -1,0 +1,58 @@
+<mvc:View controllerName="br.com.smartpcm.rastreamento.zrastreio.controller.Relatorios"
+	xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" height="100%">
+	<Page id="pagina" title="{i18n>navRelatorios}" enableScrolling="true">
+		<content>
+			<VBox class="sapUiSmallMargin">
+				<Text text="{i18n>relSubtitulo}" class="valeKpiPe sapUiTinyMarginBottom" />
+
+				<l:Grid defaultSpan="XL3 L3 M12 S12" hSpacing="1" vSpacing="1">
+
+					<!-- lista dos relatorios, com a contagem de cada um -->
+					<List
+						id="listaRelatorios"
+						items="{tela>/relatorios}"
+						mode="SingleSelectMaster"
+						selectionChange=".onSelecionar"
+						class="valeCartao">
+
+						<items>
+							<ObjectListItem
+								title="{tela>titulo}"
+								number="{tela>total}"
+								numberState="{= ${tela>total} > 0 ? 'Warning' : 'Success' }"
+								intro="{tela>pergunta}" />
+						</items>
+
+					</List>
+
+					<VBox class="valeCartao">
+						<layoutData>
+							<l:GridData span="XL9 L9 M12 S12" />
+						</layoutData>
+						<HBox justifyContent="SpaceBetween" alignItems="Center"
+							class="sapUiSmallPadding">
+							<VBox>
+								<Title text="{tela>/atual/titulo}" level="H3" titleStyle="H6" />
+								<!-- a frase que diz o que fazer com a lista -->
+								<Text text="{tela>/atual/acao}" class="valeKpiPe" />
+							</VBox>
+							<Button icon="sap-icon://excel-attachment" text="{i18n>exportar}"
+								type="Emphasized"
+								enabled="{= ${tela>/linhas}.length > 0 }" press=".onExportar" />
+						</HBox>
+						<Table
+							id="tabela"
+							growing="true"
+							growingThreshold="80"
+							sticky="ColumnHeaders"
+							noDataText="{i18n>relNadaAReportar}">
+
+							<columns />
+
+						</Table>
+					</VBox>
+				</l:Grid>
+			</VBox>
+		</content>
+	</Page>
+</mvc:View>

@@ -1,0 +1,115 @@
+<mvc:View
+	controllerName="br.com.smartpcm.rastreamento.zrastreio.controller.Catalogo"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	height="100%">
+
+	<Page id="pagina" title="{i18n>navCatalogo}" enableScrolling="true">
+		<subHeader>
+			<OverflowToolbar>
+				<SearchField id="busca" width="22rem" placeholder="{i18n>catalogoBuscar}"
+					liveChange=".onBuscar" />
+				<Select id="filtroFamilia" change=".onFiltrar" autoAdjustWidth="true">
+					<core:Item xmlns:core="sap.ui.core" key="" text="{i18n>filtroFamiliaTodas}" />
+				</Select>
+				<Select id="filtroSituacao" change=".onFiltrar" autoAdjustWidth="true">
+					<core:Item xmlns:core="sap.ui.core" key="" text="{i18n>filtroSituacaoTodas}" />
+					<core:Item xmlns:core="sap.ui.core" key="instalado"
+						text="{i18n>filtroInstalado}" />
+					<core:Item xmlns:core="sap.ui.core" key="mudo" text="{i18n>filtroMudo}" />
+					<core:Item xmlns:core="sap.ui.core" key="divergente"
+						text="{i18n>filtroDivergente}" />
+					<core:Item xmlns:core="sap.ui.core" key="semSap" text="{i18n>filtroSemSap}" />
+				</Select>
+				<ToolbarSpacer />
+				<Text id="contador" class="valeKpiPe" />
+				<Button icon="sap-icon://excel-attachment" text="{i18n>exportar}"
+					press=".onExportar" />
+			</OverflowToolbar>
+		</subHeader>
+		<content>
+			<Table
+				id="tabela"
+				items="{frota>/ativos}"
+				growing="true"
+				growingThreshold="60"
+				sticky="ColumnHeaders">
+
+				<columns>
+
+					<Column width="8rem">
+						<Text text="{i18n>colEquipamento}" />
+					</Column>
+
+					<Column>
+						<Text text="{i18n>colDescricao}" />
+					</Column>
+
+					<Column width="5rem">
+						<Text text="{i18n>colCentro}" />
+					</Column>
+
+					<Column>
+						<Text text="{i18n>colLocal}" />
+					</Column>
+
+					<Column>
+						<Text text="{i18n>colSituacao}" />
+					</Column>
+
+					<Column width="8rem">
+						<Text text="{i18n>colComunicacao}" />
+					</Column>
+
+					<Column width="8rem">
+						<Text text="{i18n>colConfianca}" />
+					</Column>
+
+				</columns>
+
+				<items>
+
+					<ColumnListItem
+						type="Navigation"
+						press=".onAbrir">
+
+						<cells>
+
+							<Text
+								text="{
+                        path: 'frota>codigoOriginal',
+                        formatter: '.formatarCodigoCurto'
+                    }"
+								wrapping="false"
+								class="valeMono" />
+
+							<Text text="{frota>descricao}" />
+
+							<Text
+								text="{frota>centro}"
+								wrapping="false" />
+
+							<Text text="{frota>local}" />
+
+							<ObjectStatus
+								text="{frota>grupoAtual}"
+								state="{ path: 'frota>instalado', formatter: '.estadoDoGrupo' }" />
+
+							<ObjectStatus
+								text="{frota>silencioTexto}"
+								state="{ path: 'frota>mudo', formatter: '.estadoDoSilencio' }" />
+
+							<ObjectStatus
+								text="{frota>confianca}"
+								state="{ path: 'frota>confianca', formatter: '.estadoDaConfianca' }" />
+
+						</cells>
+
+					</ColumnListItem>
+
+				</items>
+
+			</Table>
+		</content>
+	</Page>
+</mvc:View>

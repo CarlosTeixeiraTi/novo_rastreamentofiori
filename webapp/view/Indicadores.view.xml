@@ -6,7 +6,7 @@
 				<Text text="{i18n>indSubtitulo}" class="valeKpiPe sapUiTinyMarginBottom" />
 
 				<!-- indice geral, com a conta aberta -->
-				<VBox class="valeCartao sapUiTinyMarginBottom">
+				<VBox id="cardGeral" class="valeCartao sapUiTinyMarginBottom valeCardClicavel">
 					<HBox justifyContent="SpaceBetween" alignItems="Center"
 						class="sapUiSmallPadding">
 						<VBox>
@@ -47,15 +47,22 @@
 						class="valeCartao sapUiSmallPadding sapUiTinyMarginBottom"
 						width="100%">
 
-						<VBox
+						<List
 							width="100%"
-							items="{tela>/parcelas}">
+							items="{tela>/parcelas}"
+							showSeparators="Inner"
+							backgroundDesign="Transparent">
 
 							<items>
 
+								<CustomListItem
+									type="Active"
+									press=".onAbrirParcela"
+									tooltip="{i18n>indDetalhar}">
+
 								<VBox
 									width="100%"
-									class="sapUiTinyMarginBottom">
+									class="sapUiTinyMarginTop sapUiTinyMarginBottom">
 
 									<HBox
 										width="100%"
@@ -97,9 +104,11 @@
 
 								</VBox>
 
+								</CustomListItem>
+
 							</items>
 
-						</VBox>
+						</List>
 
 					</VBox>
 				</l:Grid>
@@ -109,7 +118,7 @@
 					<Title text="{i18n>indPiloto}" level="H3" titleStyle="H6" />
 					<Text text="{i18n>indPilotoPe}" class="valeKpiPe sapUiTinyMarginBottom" />
 					<HBox justifyContent="SpaceBetween">
-						<Text text="{i18n>indPilotoRastreadores}" />
+						<Link text="{i18n>indPilotoRastreadores}" press=".onAbrirPilotoRastreadores" />
 						<Text
 							text="{frota>/piloto/rastreadores/feito} / {frota>/piloto/rastreadores/meta}"
 							class="valeMono" />
@@ -118,7 +127,7 @@
 						percentValue="{ path: 'frota>/piloto/rastreadores/fracao', formatter: '.paraPercentual' }"
 						showValue="false" height="0.5rem" class="sapUiTinyMarginBottom" />
 					<HBox justifyContent="SpaceBetween">
-						<Text text="{i18n>indPilotoGateways}" />
+						<Link text="{i18n>indPilotoGateways}" press=".onAbrirPilotoGateways" />
 						<Text text="{frota>/piloto/gateways/feito} / {frota>/piloto/gateways/meta}"
 							class="valeMono" />
 					</HBox>

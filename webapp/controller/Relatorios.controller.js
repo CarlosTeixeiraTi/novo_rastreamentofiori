@@ -5,18 +5,28 @@ sap.ui.define([
 	"sap/m/Column",
 	"sap/m/ColumnListItem",
 	"sap/m/Text",
-	"sap/ui/export/Spreadsheet"
-], function (BaseController, relatorios, JSONModel, Column, ColumnListItem, Text, Spreadsheet) {
+	"sap/ui/export/Spreadsheet",
+	"../service/RelatorioPopup",
+	"./personalizados/Personalizados"
+], function (BaseController, relatorios, JSONModel, Column, ColumnListItem, Text, Spreadsheet, RelatorioPopup,
+	Personalizados) {
 	"use strict";
 
-	return BaseController.extend("br.com.smartpcm.rastreamento.zrastreio.controller.Relatorios", {
+	/**
+	 * Duas abas: "Padrao" (os relatorios fixos, abaixo) e "Personalizados"
+	 * (montados pelo usuario — metodos em ./personalizados/Personalizados.js,
+	 * misturados a este controller).
+	 */
+	return BaseController.extend("br.com.smartpcm.rastreamento.zrastreio.controller.Relatorios", Object.assign({}, Personalizados, {
 
 		onInit: function () {
 			this.usarFrota();
 			this.escuro(false);
-			this._tela = new JSONModel({ relatorios: [], atual: {}, linhas: [] });
+			this._tela = new JSONModel({ relatorios: [], atual: {}, linhas: [], aba: "padrao" });
 			this.getView().setModel(this._tela, "tela");
+			this._iniciarPersonalizados();
 			this.frota.aoAtualizar(this._recarregar, this);
+			this.frota.aoAtualizar(this._recalcularPersonalizado, this);
 			this.roteador().getRoute("RouteRelatorios").attachPatternMatched(this._aoEntrar, this);
 		},
 
@@ -30,7 +40,14 @@ sap.ui.define([
 			var args = (evento && evento.getParameter("arguments")) || {};
 			if (args.id && relatorios.obter(args.id)) {
 				this._atual = args.id;
+				this._tela.setProperty("/aba", "padrao");
 			}
+			// relatorios/personalizados abre direto na aba dos personalizados
+			if (args.id === "personalizados") {
+				this._tela.setProperty("/aba", "personalizados");
+			}
+			// carrega a biblioteca ja na entrada: o contador da aba fica certo
+			this._garantirPersonalizados();
 			this._recarregar();
 		},
 
@@ -79,17 +96,27 @@ sap.ui.define([
 			 */
 			var tabela = this.byId("tabela");
 			tabela.destroyColumns();
-			var celulas = [];
-			montado.relatorio.colunas.forEach(function (c) {
+			var colunas = montado.relatorio.colunas;
+			colunas.forEach(function (c) {
 				tabela.addColumn(new Column({
 					width: c.largura,
 					header: new Text({ text: c.rotulo })
 				}));
-				celulas.push(new Text({ text: "{tela>" + c.chave + "}" }));
 			});
+
+			// Mesmo padrao dos popups: equipamento leva a ficha, gateway aos
+			// equipamentos dele, veiculo a arvore do veiculo.
+			var opcoes = this._opcoesDoPopup();
 			tabela.bindItems({
 				path: "tela>/linhas",
-				template: new ColumnListItem({ cells: celulas })
+				factory: function (id, contexto) {
+					var linha = contexto.getObject();
+					return new ColumnListItem(id, {
+						cells: colunas.map(function (c) {
+							return RelatorioPopup.criarCelula(c, linha, opcoes);
+						})
+					});
+				}
 			});
 		},
 
@@ -105,6 +132,7 @@ sap.ui.define([
 
 		onExit: function () {
 			this.frota.pararDeOuvir(this._recarregar, this);
+			this.frota.pararDeOuvir(this._recalcularPersonalizado, this);
 		}
-	});
+	}));
 });

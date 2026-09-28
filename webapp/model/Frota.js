@@ -14,13 +14,25 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/base/EventProvider",
 	"../service/Backend",
+	"./Configuracoes",
 	"./regras/prefixo",
 	"./regras/arvore",
 	"./regras/silencio",
 	"./regras/confianca",
 	"./regras/zonas",
 	"./regras/indicadores"
-], function (JSONModel, EventProvider, Backend, prefixo, arvore, silencio, confianca, zonas, indicadores) {
+], function (
+	JSONModel,
+	EventProvider,
+	Backend,
+	Configuracoes,
+	prefixo,
+	arvore,
+	silencio,
+	confianca,
+	zonas,
+	indicadores
+) {
 	"use strict";
 
 	var EVENTO_ATUALIZADO = "atualizado";
@@ -187,7 +199,15 @@ sap.ui.define([
 			Object.keys(porCodigo).forEach(function (k) {
 				var r = porCodigo[k];
 				var eq = porEquipamento[k];
-				var local = (eq && eq.LOCAL_INSTALACAO) || r.localInstalacao || null;
+				if (r.grupoAtual === "Tags Digitais Não Habilitadas") {
+					return;
+				}
+				var local = eq && eq.LOCAL_INSTALACAO;
+
+				if (!local) {
+					return;
+				}
+
 				if (!prefixo.casa(local, recorte)) { return; }
 
 				var estado = silencio.avaliar(r.ultimaPosicaoAnalisada || r.updatedAt, r.grupoAtual, agora);
@@ -266,10 +286,27 @@ sap.ui.define([
 					notas: notasPorEq[a.codigo] || [],
 					ordens: ordensPorEq[a.codigo] || [],
 					amostras: a.amostras,
-					tipoDominante: a.tipoDominante
+					tipoDominante: a.tipoDominante,
+					instalado: a.instalado,
+					diasSemComunicar: a.dias,
+					grupoAtual: a.grupoAtual,
+					grupoAnterior: a.grupoAnterior,
+					ultimaPosicao: a.grupoAnterior
 				});
 				a.confianca = aval.nivel;
-				if (aval.cadastroSuspeito) {
+				a.cadastroDivergente = !!aval.cadastroSuspeito;
+				if (Configuracoes.obter("/modoCadastro") === "piloto") {
+
+					var local = String(a.local || "").toUpperCase();
+
+					if (
+						!!a.instalado ||
+						!local.startsWith("FEIT")
+					) {
+						a.cadastroDivergente = false;
+					}
+				}
+				if (a.cadastroDivergente) {
 					divergentes.push({
 						identificador: a.codigoOriginal,
 						descEquipamento: a.descricao,
@@ -292,12 +329,24 @@ sap.ui.define([
 				};
 			});
 			m.setProperty("/movimentacoes", movimentacoes);
-			var ativosHabilitados = ativos.filter(function (a) {
-				return a.grupoAtual !== "Tags Digitais Não Habilitadas";
-			});
+			var ativosHabilitados = ativos;
 			/* --- indicadores --- */
 			var comunicando = ativosHabilitados.filter(function (a) {
+
+				if (Configuracoes.obter("/modoCadastro") === "piloto") {
+
+					var local = String(a.local || "").toUpperCase();
+
+					if (
+						!!a.instalado ||
+						!local.startsWith("FEIT")
+					) {
+						return true;
+					}
+				}
+
 				return !a.mudo;
+
 			}).length;
 			var resultados = indicadores.calcular({
 				arvore: { comRastreador: conferencia.resumo.comRastreador, naArvore: conferencia.resumo.naArvore },
@@ -313,10 +362,44 @@ sap.ui.define([
 				null
 			));
 
+			/*
+			 * Card "Sem comunicacao" da Sala de Controle: os mudos habilitados
+			 * MAIS os mudos com cadastro divergente (estes podem estar em
+			 * "Tags Digitais desatualizadas", fora do recorte de habilitados).
+			 * `mudos` continua sendo so o dos habilitados: e o numero que os
+			 * indicadores e os relatorios personalizados usam.
+			 * "Rastreadores habilitados" = comunicando + sem comunicacao.
+			 */
+			var semComunicacao = ativos.filter(function (a) {
+
+				var habilitado =
+					a.grupoAtual !== "Tags Digitais Não Habilitadas";
+
+				if (!(a.mudo && (habilitado || a.cadastroDivergente))) {
+					return false;
+				}
+
+				if (Configuracoes.obter("/modoCadastro") !== "piloto") {
+					return true;
+				}
+
+				var local = String(a.local || "").toUpperCase();
+
+				return (
+					local.startsWith("FEIT") &&
+					!a.instalado
+				);
+
+			}).length;
+
 			m.setProperty("/resumo", {
 				rastreadores: ativosHabilitados.length,
 				comunicando: comunicando,
 				mudos: ativosHabilitados.length - comunicando,
+				semComunicacao: semComunicacao,
+
+				habilitados: ativosHabilitados.length,
+
 				naArvore: conferencia.resumo.naArvore,
 				comRastreador: conferencia.resumo.comRastreador,
 				cobertura: conferencia.resumo.cobertura,
@@ -342,12 +425,14 @@ sap.ui.define([
 			return {
 				conferencia: m.getProperty("/conferencia"),
 				rastreados: (this._bruto && this._bruto.rastreados) || [],
+				ativos: m.getProperty("/ativos"),
 				divergentes: m.getProperty("/divergentes"),
 				notas: m.getProperty("/notas"),
 				gateways: m.getProperty("/gateways"),
 				codigosComRastreador: comTag,
 				agora: Date.now()
 			};
+
 		},
 
 		/** Ficha completa de um equipamento. */
@@ -367,8 +452,14 @@ sap.ui.define([
 				notas: notas,
 				ordens: ordens,
 				amostras: ativo.amostras,
-				tipoDominante: ativo.tipoDominante
+				tipoDominante: ativo.tipoDominante,
+				instalado: ativo.instalado,
+				diasSemComunicar: ativo.dias,
+				grupoAtual: ativo.grupoAtual,
+				grupoAnterior: ativo.grupoAnterior,
+				ultimaPosicao: ativo.grupoAnterior
 			});
+
 			var vistos = {};
 
 			var ordenadas = leituras
@@ -430,7 +521,7 @@ sap.ui.define([
 
 
 
-			var historico = ordenadas.slice(0, 18).map(function (l, i, todas) {
+			var historico = ordenadas.slice(0, 15).map(function (l, i, todas) {
 				var anterior = todas[i + 1];
 				return {
 					recebidoEm: l.recebidoEm,

@@ -9,19 +9,19 @@
 				<Text text="{i18n>embarcadosSubtitulo}" class="valeKpiPe sapUiTinyMarginBottom" />
 
 				<l:Grid defaultSpan="XL3 L3 M6 S6" hSpacing="1" vSpacing="1" class="sapUiTinyMarginBottom">
-					<VBox class="valeCartao sapUiSmallPadding">
+					<VBox id="cardVeiculos" class="valeCartao sapUiSmallPadding valeCardClicavel">
 						<Text text="{i18n>embVeiculos}" class="valeKpiRotulo" />
 						<Text text="{frota>/conferencia/resumo/veiculos}" class="valeKpiValor" />
 					</VBox>
-					<VBox class="valeCartao sapUiSmallPadding">
+					<VBox id="cardConformes" class="valeCartao sapUiSmallPadding valeCardClicavel">
 						<Text text="{i18n>embConformes}" class="valeKpiRotulo" />
 						<Text text="{frota>/conferencia/resumo/conformes}" class="valeKpiValor" />
 					</VBox>
-					<VBox class="valeCartao sapUiSmallPadding">
+					<VBox id="cardDivergentes" class="valeCartao sapUiSmallPadding valeCardClicavel">
 						<Text text="{i18n>embDivergentes}" class="valeKpiRotulo" />
 						<Text text="{frota>/conferencia/resumo/divergentes}" class="valeKpiValor" />
 					</VBox>
-					<VBox class="valeCartao sapUiSmallPadding">
+					<VBox id="cardCobertura" class="valeCartao sapUiSmallPadding valeCardClicavel">
 						<Text text="{i18n>embCobertura}" class="valeKpiRotulo" />
 						<Text text="{ path: 'frota>/conferencia/resumo/cobertura', formatter: '.percentual' }" class="valeKpiValor" />
 					</VBox>
@@ -61,7 +61,11 @@
 				</VBox>
 
 				<VBox class="valeCartao sapUiTinyMarginTop" visible="{= ${tela>/linhas}.length > 0 }">
-					<Title text="{i18n>embFamilias} {tela>/veiculo}" level="H3" titleStyle="H6" class="sapUiSmallPadding" />
+					<HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallPadding">
+						<Title text="{i18n>embFamilias} {tela>/veiculo}" level="H3" titleStyle="H6" />
+						<Button icon="sap-icon://excel-attachment" text="{i18n>exportar}"
+							type="Transparent" press=".onExportarFamilias" />
+					</HBox>
 					<Table items="{tela>/linhas}" inset="false">
 						<columns>
 							<Column><Text text="{i18n>colFamilia}" /></Column>
@@ -72,7 +76,7 @@
 						<items>
 							<ColumnListItem>
 								<cells>
-									<Text text="{tela>rotulo}" />
+									<Link text="{tela>rotulo}" press=".onAbrirFamiliaDoVeiculo" />
 									<Text text="{tela>naArvore}" />
 									<Text text="{tela>comRastreador}" />
 									<ObjectStatus

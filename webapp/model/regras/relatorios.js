@@ -7,6 +7,9 @@
  *
  * Cada um declara a pergunta que responde e o que fazer com a resposta.
  * Relatorio sem essas duas frases vira planilha que ninguem abre duas vezes.
+ *
+ * `tipo` nas colunas segue regras/detalhamentos: "equipamento" vira link para
+ * a ficha, "gateway" para os equipamentos do gateway, "acao" para outra lista.
  */
 sap.ui.define([
 	"./arvore",
@@ -26,7 +29,7 @@ sap.ui.define([
 			pergunta: "O que a árvore SAP declara nos veículos rastreados e não tem tag.",
 			acao: "É a fila de instalação. Cada linha é um componente que a operação acha que acompanha e não acompanha.",
 			colunas: [
-				{ chave: "veiculo", rotulo: "Veículo", largura: "12em" },
+				{ chave: "veiculo", rotulo: "Veículo", largura: "12em", tipo: "acao", acao: "veiculo" },
 				{ chave: "local", rotulo: "Local de instalação", largura: "16em" },
 				{ chave: "familia", rotulo: "Família", largura: "14em" },
 				{ chave: "naArvore", rotulo: "Na árvore SAP", largura: "9em" },
@@ -50,10 +53,10 @@ sap.ui.define([
 		{
 			id: "em-silencio",
 			titulo: "Rastreadores em silêncio",
-			pergunta: "Passaram do limite sem comunicar: 15 dias instalado em veículo, 7 dias fora.",
+			pergunta: "Sem comunicação além do limite esperado: 15 dias para equipamentos embarcados e 7 dias para equipamentos fora de operação.",
 			acao: "Aqui a cobertura mente para quem só olha o total: a tag existe, mas não está entregando nada.",
 			colunas: [
-				{ chave: "equipamento", rotulo: "Equipamento", largura: "12em" },
+				{ chave: "equipamento", rotulo: "Equipamento", largura: "12em", tipo: "equipamento" },
 				{ chave: "descricao", rotulo: "Descrição", largura: "22em" },
 				{ chave: "grupo", rotulo: "Situação", largura: "16em" },
 				{ chave: "local", rotulo: "Local de instalação", largura: "14em" },
@@ -61,28 +64,29 @@ sap.ui.define([
 				{ chave: "limite", rotulo: "Limite aplicado", largura: "9em" }
 			],
 			linhas: function (ctx) {
-				return (ctx.rastreados || []).map(function (r) {
-					var s = silencio.avaliar(r.ultimaPosicao || r.recebidoEm, r.grupoAtual, ctx.agora);
-					return { r: r, s: s };
-				}).filter(function (x) { return x.s.mudo; }).map(function (x) {
-					return {
-						equipamento: texto(x.r.identificador),
-						descricao: texto(x.r.descEquipamento),
-						grupo: texto(x.r.grupoAtual),
-						local: texto(x.r.localInstalacao),
-						dias: isFinite(x.s.dias) ? Math.round(x.s.dias) : "nunca",
-						limite: x.s.limite
-					};
-				});
+				return (ctx.ativos || [])
+					.filter(function (a) {
+						return a.mudo;
+					})
+					.map(function (a) {
+						return {
+							equipamento: texto(a.codigoOriginal).replace(/^0+/, ""),
+							descricao: texto(a.descricao),
+							grupo: texto(a.grupoAtual),
+							local: texto(a.local),
+							dias: isFinite(a.dias) ? Math.round(a.dias) : "nunca",
+							limite: a.limite
+						};
+					});
 			}
 		},
 		{
 			id: "cadastro-divergente",
-			titulo: "Cadastro possivelmente desatualizado",
+			titulo: "Local do equipamento possivelmente desatualizado",
 			pergunta: "O equipamento mudou de posição e de gateway, e o local de instalação declarado não mudou.",
 			acao: "Não é falha de rastreador: é o SAP apontando para um lugar onde o componente não está mais.",
 			colunas: [
-				{ chave: "equipamento", rotulo: "Equipamento", largura: "12em" },
+				{ chave: "equipamento", rotulo: "Equipamento", largura: "12em", tipo: "equipamento" },
 				{ chave: "descricao", rotulo: "Descrição", largura: "22em" },
 				{ chave: "local", rotulo: "Local declarado", largura: "14em" },
 				{ chave: "deslocamento", rotulo: "Deslocamento (m)", largura: "10em" },
@@ -91,7 +95,7 @@ sap.ui.define([
 			linhas: function (ctx) {
 				return (ctx.divergentes || []).map(function (d) {
 					return {
-						equipamento: texto(d.identificador),
+						equipamento: texto(d.identificador).replace(/^0+/, ""),
 						descricao: texto(d.descEquipamento),
 						local: texto(d.localInstalacao),
 						deslocamento: d.distanciaM,
@@ -106,7 +110,7 @@ sap.ui.define([
 			pergunta: "Quanto da árvore SAP de cada veículo está de fato rastreado.",
 			acao: "É o número da visão geral aberto por veículo — onde ele deixa de ser média e vira responsabilidade de alguém.",
 			colunas: [
-				{ chave: "veiculo", rotulo: "Veículo", largura: "12em" },
+				{ chave: "veiculo", rotulo: "Veículo", largura: "12em", tipo: "acao", acao: "veiculo" },
 				{ chave: "local", rotulo: "Local de instalação", largura: "16em" },
 				{ chave: "prefixo", rotulo: "Prefixo", largura: "7em" },
 				{ chave: "naArvore", rotulo: "Na árvore SAP", largura: "9em" },
@@ -134,7 +138,7 @@ sap.ui.define([
 			pergunta: "Equipamento com nota YA em aberto e sem tag associada.",
 			acao: "Entra em manutenção e ninguém consegue acompanhar por onde ele anda.",
 			colunas: [
-				{ chave: "equipamento", rotulo: "Equipamento", largura: "12em" },
+				{ chave: "equipamento", rotulo: "Equipamento", largura: "12em", tipo: "equipamento" },
 				{ chave: "nota", rotulo: "Nota", largura: "10em" },
 				{ chave: "texto", rotulo: "Texto breve", largura: "26em" },
 				{ chave: "oficina", rotulo: "Oficina", largura: "16em" },
@@ -147,7 +151,7 @@ sap.ui.define([
 					return !comTag[prefixo.chave(n.equipamento)];
 				}).map(function (n) {
 					return {
-						equipamento: texto(n.equipamento),
+						equipamento: texto(n.equipamento).replace(/^0+/, ""),
 						nota: texto(n.nota),
 						texto: texto(n.txt_breve_nota),
 						oficina: texto(n.oficina),
@@ -163,7 +167,7 @@ sap.ui.define([
 			pergunta: "Infraestrutura de leitura cadastrada que não está ativa.",
 			acao: "Cada gateway parado cria um ponto cego: os componentes daquela área somem do indicador sem terem saído do lugar.",
 			colunas: [
-				{ chave: "identificador", rotulo: "Identificador", largura: "18em" },
+				{ chave: "identificador", rotulo: "Identificador", largura: "18em", tipo: "gateway" },
 				{ chave: "gatewayId", rotulo: "ID", largura: "14em" },
 				{ chave: "localidade", rotulo: "Localidade", largura: "18em" },
 				{ chave: "condicao", rotulo: "Condição", largura: "12em" },

@@ -17,7 +17,7 @@ const controllers = readdirSync("webapp/controller");
 const i18n = readFileSync("webapp/i18n/i18n.properties", "utf8");
 const chavesI18n = new Set(i18n.split("\n").filter((l) => l.includes("=") && !l.trim().startsWith("#")).map((l) => l.split("=")[0].trim()));
 
-const NOVAS = ["App", "SalaDeControle", "Mapa", "Catalogo", "Equipamento", "Embarcados", "Indicadores", "Manutencao", "Relatorios"];
+const NOVAS = ["App", "SalaDeControle", "Mapa", "Catalogo", "Equipamento", "Embarcados", "Indicadores", "Manutencao", "Relatorios", "Configuracoes"];
 
 for (const arquivo of views) {
 	const xml = readFileSync("webapp/view/" + arquivo, "utf8");
@@ -33,6 +33,21 @@ for (const arquivo of views) {
 	if (!controllers.includes(ctrl)) { falha(`${arquivo}: controller ${ctrl} não existe`); }
 
 	for (const [, chave] of xml.matchAll(/\{i18n>([\w.]+)\}/g)) {
+		if (!chavesI18n.has(chave)) { falha(`${arquivo}: chave i18n ausente — ${chave}`); }
+	}
+}
+
+// fragmentos: XML valido
+const fragmentos = [];
+const varrerXml = (dir) => readdirSync(dir, { withFileTypes: true }).forEach((e) => {
+	const p = dir + "/" + e.name;
+	if (e.isDirectory()) { varrerXml(p); } else if (e.name.endsWith(".fragment.xml")) { fragmentos.push(p); }
+});
+varrerXml("webapp/view");
+for (const arquivo of fragmentos) {
+	const v = XMLValidator.validate(readFileSync(arquivo, "utf8"));
+	if (v !== true) { falha(`${arquivo}: XML inválido — ${v.err.msg} (linha ${v.err.line})`); }
+	for (const [, chave] of readFileSync(arquivo, "utf8").matchAll(/\{i18n>([\w.]+)\}/g)) {
 		if (!chavesI18n.has(chave)) { falha(`${arquivo}: chave i18n ausente — ${chave}`); }
 	}
 }
@@ -75,5 +90,5 @@ for (const [, nome] of backend.matchAll(/obter\("[^"]+",\s*"([^"]+)"\)/g)) {
 	}
 }
 
-console.log(`\nvalidação: ${views.length} views, ${js.length} módulos, ${chavesI18n.size} chaves i18n · ${erros} erro(s)`);
+console.log(`\nvalidação: ${views.length} views, ${fragmentos.length} fragmentos, ${js.length} módulos, ${chavesI18n.size} chaves i18n · ${erros} erro(s)`);
 process.exit(erros ? 1 : 0);

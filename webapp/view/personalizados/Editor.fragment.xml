@@ -1,0 +1,171 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:app="http://schemas.sap.com/sap/ui5/1.0/CustomData">
+<Dialog id="dlgEditor" title="{ed>/_titulo}" contentWidth="96%" contentHeight="92%"
+	resizable="true" draggable="true" horizontalScrolling="false" verticalScrolling="false"
+	afterClose=".onEdFechou" class="valeEditorRelatorio">
+	<content>
+	<l:Splitter height="100%" width="100%">
+
+		<!-- ===================== definicao ===================== -->
+		<ScrollContainer height="100%" vertical="true" horizontal="false">
+			<layoutData><l:SplitterLayoutData size="58%" minSize="420" /></layoutData>
+			<VBox class="sapUiSmallMargin">
+
+				<f:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanL="3" labelSpanM="3"
+					columnsL="1" columnsM="1" class="sapUiNoContentPadding">
+					<Label text="Nome" required="true" />
+					<Input value="{ed>/nome}" valueLiveUpdate="true" liveChange=".onEdMudou" maxLength="150"
+						placeholder="Ex.: Disponibilidade dos rastreadores" />
+					<Label text="Descrição" />
+					<TextArea value="{ed>/descricao}" rows="2" maxLength="500" width="100%"
+						placeholder="O que o relatório responde e o que fazer com ele" />
+					<Label text="Tipo" />
+					<SegmentedButton selectedKey="{ed>/tipo}" selectionChange=".onEdEstrutura">
+						<items>
+							<SegmentedButtonItem key="metrica" text="Métrica" icon="sap-icon://kpi-managing-my-area" />
+							<SegmentedButtonItem key="tabela" text="Tabela dinâmica" icon="sap-icon://pivot" />
+							<SegmentedButtonItem key="lista" text="Lista" icon="sap-icon://list" />
+						</items>
+					</SegmentedButton>
+				</f:SimpleForm>
+
+				<!-- SEÇÃO METRICA -->
+				<VBox visible="{ed>/_metrica}">
+					<Title text="Parcelas" level="H4" class="sapUiSmallMarginTop" />
+					<Text text="Cada parcela conta, soma ou calcula a média de registros de uma fonte, com as suas próprias condições. Na fórmula, elas viram P1, P2, P3…"
+						class="valeKpiPe sapUiTinyMarginBottom" />
+					<VBox items="{ path: 'ed>/parcelas', templateShareable: false }">
+						<items>
+							<Panel expandable="true" expanded="true" class="valeParcela sapUiTinyMarginBottom">
+								<headerToolbar>
+									<OverflowToolbar style="Clear">
+										<ObjectStatus text="{ed>id}" state="Information" inverted="true" />
+										<Input value="{ed>rotulo}" width="22rem" valueLiveUpdate="true"
+											liveChange=".onEdMudou" placeholder="Nome da parcela" />
+										<ToolbarSpacer />
+										<Button icon="sap-icon://delete" type="Transparent" tooltip="Remover parcela"
+											press=".onEdRemoverItem" />
+									</OverflowToolbar>
+								</headerToolbar>
+								<VBox>
+									<HBox alignItems="Center" wrap="Wrap">
+										<Label text="Fonte" width="7rem" />
+										<Select selectedKey="{ed>fonte}" change=".onEdEstrutura" width="22rem"
+											items="{ path: 'fontes>/', templateShareable: false }">
+											<core:Item key="{fontes>id}" text="{fontes>rotulo}" />
+										</Select>
+									</HBox>
+									<HBox alignItems="Center" wrap="Wrap" class="sapUiTinyMarginTop">
+										<Label text="Cálculo" width="7rem" />
+										<Select width="15rem" selectedKey="{ed>agregacao}" change=".onEdEstrutura"
+											items="{ path: 'ed>_agregacoes', templateShareable: false }" class="sapUiTinyMarginEnd">
+											<core:Item key="{ed>id}" text="{ed>rotulo}" />
+										</Select>
+										<Text text="de" visible="{ed>_precisaCampo}" class="sapUiTinyMarginEnd" />
+										<Select width="15rem" forceSelection="false" selectedKey="{ed>campo}" change=".onEdEstrutura"
+											visible="{ed>_precisaCampo}"
+											items="{ path: 'ed>_camposAgregacao', templateShareable: false }" class="sapUiTinyMarginEnd">
+											<core:Item key="{ed>id}" text="{ed>rotulo}" />
+										</Select>
+									</HBox>
+									<Label text="Condições (todas precisam ser atendidas)" class="sapUiSmallMarginTop" />
+									<VBox class="sapUiTinyMarginTop">
+										<VBox items="{ path: 'ed>filtros', templateShareable: false }">
+											<items>
+												<HBox alignItems="Center" wrap="Wrap" class="valeFiltroLinha">
+													<Select width="15rem" forceSelection="false" selectedKey="{ed>campo}" change=".onEdEstrutura"
+														items="{ path: 'ed>_campos', templateShareable: false }" class="sapUiTinyMarginEnd">
+														<core:Item key="{ed>id}" text="{ed>rotulo}" />
+													</Select>
+													<Select width="13rem" forceSelection="false" selectedKey="{ed>operator}" change=".onEdEstrutura"
+														visible="{= ${ed>_operadores}.length > 0 }"
+														items="{ path: 'ed>_operadores', templateShareable: false }" class="sapUiTinyMarginEnd">
+														<core:Item key="{ed>id}" text="{ed>rotulo}" />
+													</Select>
+													<Input width="10rem" value="{ed>valor}" placeholder="{ed>_dica}" valueLiveUpdate="true"
+														liveChange=".onEdMudou" visible="{= ${ed>_nValores} >= 1 }" class="sapUiTinyMarginEnd" />
+													<Text text="e" visible="{= ${ed>_nValores} >= 2 }" class="sapUiTinyMarginEnd" />
+													<Input width="10rem" value="{ed>valor2}" placeholder="{ed>_dica}" valueLiveUpdate="true"
+														liveChange=".onEdMudou" visible="{= ${ed>_nValores} >= 2 }" class="sapUiTinyMarginEnd" />
+													<Button icon="sap-icon://decline" type="Transparent" tooltip="Remover condição"
+														press=".onEdRemoverItem" />
+												</HBox>
+											</items>
+										</VBox>
+										<Text text="Sem condições: entram todos os registros da fonte." class="valeKpiPe" visible="{= !${ed>filtros} || ${ed>filtros}.length === 0 }" />
+										<Button text="Adicionar condição" icon="sap-icon://add" type="Transparent" press=".onEdAdicionar"
+											app:lista="filtros" app:item="filtro" />
+									</VBox>
+								</VBox>
+							</Panel>
+						</items>
+					</VBox>
+					<Button text="Adicionar parcela" icon="sap-icon://add" press=".onEdAdicionar"
+						app:lista="/parcelas" app:item="parcela" />
+
+					<Title text="Cálculo" level="H4" class="sapUiMediumMarginTop" />
+					<f:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanL="3" labelSpanM="3"
+						columnsL="1" columnsM="1" class="sapUiNoContentPadding">
+						<Label text="Fórmula" required="true" />
+						<VBox>
+							<Input value="{ed>/formula}" valueLiveUpdate="true" liveChange=".onEdMudou"
+								placeholder="P1 / P2" class="valeMono" />
+							<HBox wrap="Wrap" class="sapUiTinyMarginTop">
+								<Button text="P1 / P2" type="Transparent" press=".onEdFormulaPronta" app:formula="P1 / P2" />
+								<Button text="P1 − P2" type="Transparent" press=".onEdFormulaPronta" app:formula="P1 - P2" />
+								<Button text="P1 + P2" type="Transparent" press=".onEdFormulaPronta" app:formula="P1 + P2" />
+								<Button text="1 − P1 / P2" type="Transparent" press=".onEdFormulaPronta" app:formula="1 - P1 / P2" />
+								<Button text="min(P1 / P2, 1)" type="Transparent" press=".onEdFormulaPronta" app:formula="min(P1 / P2, 1)" />
+							</HBox>
+							<Text text="Parcelas disponíveis: {ed>/_variaveis}. Use + − * / ( ), números com ponto (0.4) e min( ), max( ), abs( ). Divisão por zero dá “não medido”."
+								class="valeKpiPe" />
+						</VBox>
+						<Label text="Resultado em" />
+						<HBox alignItems="Center">
+							<Select selectedKey="{ed>/formato}" change=".onEdEstrutura" width="18rem"
+								items="{ path: 'opcoes>/formatos', templateShareable: false }">
+								<core:Item key="{opcoes>id}" text="{opcoes>rotulo}" />
+							</Select>
+							<Label text="Casas decimais" class="sapUiSmallMarginBegin sapUiTinyMarginEnd" />
+							<StepInput value="{ed>/casas}" min="0" max="4" width="7rem" change=".onEdMudou" />
+						</HBox>
+					</f:SimpleForm>
+
+					<CheckBox text="Abrir o resultado por grupo (uma linha por prefixo, família, situação…)"
+						selected="{ed>/usarAgrupamento}" select=".onEdMudou" class="sapUiSmallMarginTop" />
+					
+					<!-- Bloco de agrupamento corrigido e fechado -->
+					<VBox visible="{ed>/usarAgrupamento}" class="sapUiSmallMarginBegin">
+						<HBox alignItems="Center" wrap="Wrap" binding="{ed>/agrupamento}">
+							<Label text="Agrupar por" class="sapUiTinyMarginEnd" width="7rem" />
+							<Select width="15rem" forceSelection="false" selectedKey="{ed>campo}" change=".onEdEstrutura"
+								items="{ path: 'ed>_campos', templateShareable: false }" class="sapUiTinyMarginEnd">
+								<core:Item key="{ed>id}" text="{ed>rotulo}" />
+							</Select>
+							<Select width="14rem" selectedKey="{ed>transformacao/tipo}" change=".onEdEstrutura">
+								<!-- Itens de transformação podem ser inseridos aqui via controller ou estáticos -->
+							</Select>
+						</HBox>
+					</VBox>
+				</VBox>
+
+			</VBox>
+		</ScrollContainer>
+
+		<!-- ===================== lado direito do splitter (Pre-visualizacao) ===================== -->
+		<ScrollContainer height="100%" vertical="true" horizontal="false">
+			<layoutData><l:SplitterLayoutData size="42%" minSize="300" /></layoutData>
+			<VBox class="sapUiSmallMargin" id="previaEditor">
+				<Title text="Visualização Prévia" level="H4" />
+				<!-- O ResultadoRelatorio.desenhar() do seu controller vai renderizar o preview dinâmico aqui -->
+			</VBox>
+		</ScrollContainer>
+
+	</l:Splitter>
+	</content>
+
+	<buttons>
+		<Button text="Salvar" type="Emphasized" press=".onEdSalvar" />
+		<Button text="Cancelar" press=".onEdCancelar" />
+	</buttons>
+</Dialog>
+</core:FragmentDefinition>

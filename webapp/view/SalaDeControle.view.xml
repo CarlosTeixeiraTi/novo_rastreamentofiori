@@ -44,9 +44,17 @@
 					<Text text="{i18n>prefixoAjuda}" class="valeKpiPe sapUiTinyMarginBegin" />
 				</HBox>
 
-				<!-- indicadores -->
-				<l:Grid defaultSpan="XL2 L2 M4 S6" hSpacing="1" vSpacing="1"
-					class="sapUiTinyMarginBottom">
+				<!-- indicadores: sete cards numa linha (grade CSS valeKpiGrade) -->
+				<FlexBox renderType="Bare" class="valeKpiGrade sapUiTinyMarginBottom">
+					<!-- Rastreadores habilitados = comunicando + sem comunicacao -->
+					<VBox
+						id="cardHabilitados"
+						class="valeCartao sapUiSmallPadding valeCardClicavel">
+
+						<Text text="{i18n>kpiHabilitados}" class="valeKpiRotulo" />
+						<Text text="{frota>/resumo/habilitados}" class="valeKpiValor" />
+
+					</VBox>
 					<VBox
 						id="cardComunicando"
 						class="valeCartao sapUiSmallPadding valeCardClicavel">
@@ -60,7 +68,16 @@
 						class="valeCartao sapUiSmallPadding valeCardClicavel">
 
 						<Text text="{i18n>kpiMudos}" class="valeKpiRotulo" />
-						<Text text="{frota>/resumo/mudos}" class="valeKpiValor" />
+						<!-- inclui os sem comunicacao com cadastro divergente -->
+						<Text text="{frota>/resumo/semComunicacao}" class="valeKpiValor" />
+					</VBox>
+					<VBox
+						id="cardDivergentes"
+						class="valeCartao sapUiSmallPadding valeCardClicavel">
+
+						<Text text="{i18n>kpiDivergentes}" class="valeKpiRotulo" />
+						<Text text="{frota>/resumo/divergentes}" class="valeKpiValor" />
+
 					</VBox>
 					<VBox
 						id="cardCobertura"
@@ -72,16 +89,9 @@
 							text="{ path: 'frota>/resumo/cobertura', formatter: '.percentual' }"
 							class="valeKpiValor" />
 
-	
-					</VBox>
-					<VBox
-						id="cardDivergentes"
-						class="valeCartao sapUiSmallPadding valeCardClicavel">
-
-						<Text text="{i18n>kpiDivergentes}" class="valeKpiRotulo" />
-						<Text text="{frota>/resumo/divergentes}" class="valeKpiValor" />
 
 					</VBox>
+
 					<VBox
 						id="cardGateways"
 						class="valeCartao sapUiSmallPadding valeCardClicavel">
@@ -102,7 +112,7 @@
 
 
 					</VBox>
-				</l:Grid>
+				</FlexBox>
 
 				<!-- mapa + comparacao por tipo -->
 				<l:Grid defaultSpan="XL8 L8 M12 S12" hSpacing="1" vSpacing="1">
@@ -118,7 +128,7 @@
 							<HBox alignItems="Center">
 								<!-- Alterna entre a foto de satelite e o mapa claro com ruas,
 								     igual ao controle da tela de Mapa operacional. -->
-								<SegmentedButton id="segBaseMini" selectedKey="satelite"
+								<SegmentedButton id="segBaseMini" selectedKey="{config>/mapa/base}"
 									selectionChange=".onTrocarBase" class="sapUiTinyMarginEnd">
 									<items>
 										<SegmentedButtonItem key="claro" text="{i18n>mapaBaseClaro}" />
@@ -136,7 +146,7 @@
 
 					<VBox
 						id="cardArvoreTipo"
-						class="valeCartao valeCardClicavel"
+						class="valeCartao"
 						height="385px">
 						<layoutData>
 							<l:GridData span="XL4 L4 M12 S12" />
@@ -189,10 +199,16 @@
 
 				<!-- ultimas mudancas de situacao -->
 				<VBox class="valeCartao sapUiTinyMarginTop">
-					<VBox class="sapUiSmallPaddingBegin sapUiSmallPaddingEnd sapUiTinyPaddingTop">
-						<Title text="{i18n>movimentacoes}" level="H3" titleStyle="H6" />
-						<Text text="{i18n>movimentacoesPe}" class="valeKpiPe" />
-					</VBox>
+					<HBox justifyContent="SpaceBetween" alignItems="Center"
+						class="sapUiSmallPaddingBegin sapUiSmallPaddingEnd sapUiTinyPaddingTop">
+						<VBox>
+							<Title text="{i18n>movimentacoes}" level="H3" titleStyle="H6" />
+							<Text text="{i18n>movimentacoesPe}" class="valeKpiPe" />
+						</VBox>
+						<Button icon="sap-icon://excel-attachment" text="{i18n>exportar}"
+							type="Transparent" press=".onExportarMovimentacoes"
+							enabled="{= ${frota>/movimentacoes}.length > 0 }" />
+					</HBox>
 					<Table id="tabelaMovimentacoes" items="{frota>/movimentacoes}" inset="false">
 						<columns>
 							<Column width="9rem">

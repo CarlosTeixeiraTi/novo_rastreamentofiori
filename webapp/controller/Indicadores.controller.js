@@ -14,6 +14,24 @@ sap.ui.define([
 			this.getView().setModel(this._tela, "tela");
 			this.frota.aoAtualizar(this._montar, this);
 			this.roteador().getRoute("RouteIndicadores").attachPatternMatched(this._montar, this);
+
+			// Indice geral: a composicao, com cada parcela levando a sua lista.
+			this.tornarClicavel("cardGeral", function () { this.abrirDetalhamento("efetividade"); });
+		},
+
+		/** Parcela clicada: a lista que forma o numerador e o denominador. */
+		onAbrirParcela: function (evento) {
+			var contexto = evento.getSource().getBindingContext("tela");
+			if (!contexto) { return; }
+			this.abrirDetalhamento("parcela", contexto.getProperty("id"));
+		},
+
+		onAbrirPilotoRastreadores: function () {
+			this.abrirDetalhamento("rastreadores");
+		},
+
+		onAbrirPilotoGateways: function () {
+			this.abrirDetalhamento("gateways", false);
 		},
 
 		/**

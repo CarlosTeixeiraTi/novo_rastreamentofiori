@@ -1,23 +1,21 @@
 sap.ui.define([
 	"./BaseController",
 	"../service/Backend",
+	"../model/Configuracoes",
 	"sap/ui/core/Theming",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageToast"
-], function (BaseController, Backend, Theming, JSONModel, MessageToast) {
+], function (BaseController, Backend, Configuracoes, Theming, JSONModel, MessageToast) {
 	"use strict";
 
-	var CHAVE_TEMA = "zrastreio:tema";
-
 	/**
-	 * Modo TV: rotaciona SOMENTE entre telas com mapa.
+	 * Modo TV: sorteia entre Mapa operacional, Catalogo de ativos,
+	 * Componentes embarcados, Indicadores e Manutencao e reforma.
 	 *
-	 * No projeto legado ele sorteava qualquer tela, inclusive as de
-	 * cadastro, e a reclamacao foi direta. Painel de parede serve para
-	 * olhar de longe — tabela de nota fiscal nao se le a cinco metros.
+	 * As telas participantes, o intervalo, a ordem (aleatoria ou em
+	 * sequencia) e a tela cheia vem da guia Configuracoes
+	 * (model/Configuracoes.js, TELAS_TV).
 	 */
-	var ROTAS_TV = ["RouteSalaDeControle", "RouteMapa"];
-	var INTERVALO_TV_MS = 20000;
 
 	return BaseController.extend("br.com.smartpcm.rastreamento.zrastreio.controller.App", {
 
@@ -37,6 +35,8 @@ sap.ui.define([
 			});
 
 			this.getView().setModel(this.usarFrota().modelo(), "frota");
+			this.getView().setModel(Configuracoes.modelo(), "config");
+			Configuracoes.aoAlterar(this._aoMudarConfig, this);
 			// O tema salvo ja foi aplicado no bootstrap (index.html), antes do
 			// primeiro render. Aqui so lemos o estado e acompanhamos mudancas.
 			this._tela = new JSONModel({ tv: false, escuro: this._temaEscuro(Theming.getTheme()) });
@@ -44,11 +44,66 @@ sap.ui.define([
 			this._aoAplicarTemaBound = this._aoAplicarTema.bind(this);
 			Theming.attachApplied(this._aoAplicarTemaBound); // dispara ja na 1a vez se o tema estiver aplicado
 
-			this.frota.carregar().catch(function (erro) {
+			var that = this;
+			this.frota.carregar().then(function () {
+				// Recorte padrao definido em Configuracoes (so na abertura).
+				var inicial = Configuracoes.obter("/prefixoPadrao");
+				if (inicial && !that.frota.modelo().getProperty("/prefixo")) {
+					that.frota.definirPrefixo(inicial);
+				}
+			}).catch(function (erro) {
 				MessageToast.show("Falha ao carregar: " + erro.message);
 			});
 
+			if (Configuracoes.obter("/menuExpandido") === false) {
+				this.byId("toolPage").setSideExpanded(false);
+			}
+			this._programarAtualizacao();
+
 			this.roteador().attachRouteMatched(this._aoTrocarDeRota, this);
+		},
+
+		/* ---------------- Configuracoes ---------------- */
+
+		/** Aplica o que mudou na guia Configuracoes, sem recarregar a pagina. */
+		_aoMudarConfig: function (evento) {
+			var antes = evento.getParameter("anterior");
+			var agora = evento.getParameter("atual");
+
+			if (agora.tema !== Theming.getTheme()) {
+				Theming.setTheme(agora.tema);
+			}
+			if (antes.atualizacaoMin !== agora.atualizacaoMin) {
+				this._programarAtualizacao();
+			}
+			// Limites de silencio mudam quem e "mudo": recalcula os cards.
+			if (antes.silencio.instalado !== agora.silencio.instalado ||
+				antes.silencio.padrao !== agora.silencio.padrao) {
+				this.frota.recalcular();
+			}
+			// Modo TV ligado: reinicia com as telas/intervalo novos.
+			if (this._tela.getProperty("/tv") &&
+				JSON.stringify(antes.tv) !== JSON.stringify(agora.tv)) {
+				clearInterval(this._timerTv);
+				this._rotaTvAtual = null;
+				this._indiceTv = -1;
+				this._agendarTv();
+			}
+		},
+
+		/** Atualizacao automatica dos dados (0 = desligada). */
+		_programarAtualizacao: function () {
+			var that = this;
+			if (this._timerAtualizacao) {
+				clearInterval(this._timerAtualizacao);
+				this._timerAtualizacao = null;
+			}
+			var minutos = Configuracoes.obter("/atualizacaoMin");
+			if (minutos > 0) {
+				this._timerAtualizacao = setInterval(function () {
+					that.frota.carregar().catch(function () { /* proxima tentativa no ciclo */ });
+				}, minutos * 60000);
+			}
 		},
 
 		_aoTrocarDeRota: function (evento) {
@@ -66,6 +121,11 @@ sap.ui.define([
 
 			if (chave === "salaDeControle") {
 				window.location.href = "http://localhost:8080/index.html#";
+				return;
+			}
+
+			if (chave === "configuracoes") {
+				this.navegarPara("RouteConfiguracoes", {});
 				return;
 			}
 
@@ -101,7 +161,9 @@ sap.ui.define([
 
 		onAlternarTema: function () {
 			var proximo = this._temaEscuro(Theming.getTheme()) ? "sap_horizon" : "sap_horizon_dark";
-			Theming.setTheme(proximo); // /escuro e atualizado em _aoAplicarTema
+			// Grava a escolha (zrastreio:tema, lida pelo index.html) e dispara
+			// _aoMudarConfig, que aplica; /escuro e atualizado em _aoAplicarTema.
+			Configuracoes.definirTema(proximo);
 		},
 
 		/* ---------------- Modo TV ---------------- */
@@ -122,8 +184,9 @@ sap.ui.define([
 			this._ladoAntesDaTv = this.byId("toolPage").getSideExpanded();
 			this.byId("toolPage").setSideExpanded(false);
 
-			this._proximaTela();
-			this._timerTv = setInterval(function () { that._proximaTela(); }, INTERVALO_TV_MS);
+			this._rotaTvAtual = null;
+			this._indiceTv = -1;
+			this._agendarTv();
 
 			this._sairComEsc = function (e) {
 				if (e.key === "Escape") { that._pararTv(); }
@@ -131,7 +194,7 @@ sap.ui.define([
 			document.addEventListener("keydown", this._sairComEsc);
 
 			var alvo = document.documentElement;
-			if (alvo.requestFullscreen) {
+			if (Configuracoes.obter("/tv/telaCheia") !== false && alvo.requestFullscreen) {
 				alvo.requestFullscreen().catch(function () { /* o navegador pode recusar */ });
 			}
 			MessageToast.show(this.i18n("modoTvLigado", []));
@@ -150,20 +213,38 @@ sap.ui.define([
 			}
 		},
 
+		/** Vai para a primeira tela ja e agenda as proximas no intervalo configurado. */
+		_agendarTv: function () {
+			var that = this;
+			var intervaloMs = (Configuracoes.obter("/tv/intervaloSeg") || 20) * 1000;
+			this._proximaTela();
+			this._timerTv = setInterval(function () { that._proximaTela(); }, intervaloMs);
+		},
+
 		/**
 		 * Sorteia a proxima, sem repetir a que ja esta na tela: sortear com
 		 * reposicao faz o painel ficar parado na mesma tela por dois ciclos,
-		 * e quem olha de longe acha que travou.
+		 * e quem olha de longe acha que travou. Com "ordem aleatoria"
+		 * desligada em Configuracoes, segue a ordem do menu.
 		 */
 		_proximaTela: function () {
-			var disponiveis = ROTAS_TV.filter(function (r) { return r !== this._rotaTvAtual; }, this);
-			var escolhida = disponiveis[Math.floor(Math.random() * disponiveis.length)] || ROTAS_TV[0];
+			var rotas = Configuracoes.rotasTv();
+			var escolhida;
+			if (Configuracoes.obter("/tv/aleatorio") === false) {
+				this._indiceTv = ((this._indiceTv === undefined ? -1 : this._indiceTv) + 1) % rotas.length;
+				escolhida = rotas[this._indiceTv];
+			} else {
+				var disponiveis = rotas.filter(function (r) { return r !== this._rotaTvAtual; }, this);
+				escolhida = disponiveis[Math.floor(Math.random() * disponiveis.length)] || rotas[0];
+			}
 			this._rotaTvAtual = escolhida;
 			this.navegarPara(escolhida, {});
 		},
 
 		onExit: function () {
 			this._pararTv();
+			if (this._timerAtualizacao) { clearInterval(this._timerAtualizacao); }
+			Configuracoes.pararDeOuvir(this._aoMudarConfig, this);
 			if (this._aoAplicarTemaBound) { Theming.detachApplied(this._aoAplicarTemaBound); }
 		},
 

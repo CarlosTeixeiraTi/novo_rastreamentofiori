@@ -1,0 +1,370 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form" xmlns:app="http://schemas.sap.com/sap/ui5/1.0/CustomData">
+	<Dialog id="dlgAssistente" title="Assistente de relatório" contentWidth="1100px"
+		contentHeight="88%"
+		resizable="true" draggable="true" verticalScrolling="false" afterClose=".onWzFechou"
+		class="valeAssistenteRelatorio">
+		<content>
+			<Wizard id="wizardRelatorio" height="100%" showNextButton="true"
+				complete=".onWzConcluir"
+				finishButtonText="Salvar relatório" enableBranching="false">
+
+				<!-- 1. o que ver -->
+				<WizardStep id="wzPassoTipo" title="O que você quer ver?" validated="true"
+					icon="sap-icon://question-mark">
+					<Text text="Escolha o formato da resposta. Dá para mudar depois."
+						class="valeKpiPe sapUiSmallMarginBottom" />
+					<RadioButtonGroup
+						selectedIndex="{= ${ed>/tipo} === 'tabela' ? 1 : (${ed>/tipo} === 'lista' ? 2 : 0) }"
+						select=".onWzTipo">
+						<RadioButton
+							text="Um indicador — um número ou uma porcentagem (ex.: % de rastreadores sem comunicação)" />
+						<RadioButton
+							text="Uma tabela resumida — contar ou somar por grupo, como uma tabela dinâmica (ex.: rastreadores por localidade)" />
+						<RadioButton
+							text="Uma lista de registros — os itens que atendem a um filtro, com as colunas que eu escolher" />
+					</RadioButtonGroup>
+				</WizardStep>
+
+				<!-- 2. sobre quais dados -->
+				<WizardStep id="wzPassoDados" title="Sobre quais dados?" validated="true"
+					icon="sap-icon://database">
+					<Text
+						text="Cada fonte é uma lista que o painel já usa. O relatório sempre bate com os números das telas."
+						class="valeKpiPe sapUiSmallMarginBottom" />
+					<Select selectedKey="{ed>/fonte}" change=".onWzMudou" width="24rem"
+						items="{ path: 'fontes>/', templateShareable: false }">
+						<core:Item key="{fontes>id}" text="{fontes>rotulo}" />
+					</Select>
+					<Text text="{ed>/_fonteDescricao}" class="valeKpiPe sapUiTinyMarginTop" />
+					<Label text="Quer considerar só uma parte desses dados? (opcional)"
+						class="sapUiMediumMarginTop" />
+					<Text
+						text="Ex.: só rastreadores habilitados, só o prefixo FEIT, só notas deste mês."
+						class="valeKpiPe" />
+					<VBox class="sapUiTinyMarginTop">
+						<VBox items="{ path: 'ed>/filtros', templateShareable: false }">
+							<items>
+								<HBox alignItems="Center" wrap="Wrap" class="valeFiltroLinha">
+									<Select width="15rem" forceSelection="false"
+										selectedKey="{ed>campo}" change=".onEdEstrutura"
+										items="{ path: 'ed>_campos', templateShareable: false }"
+										class="sapUiTinyMarginEnd">
+										<core:Item key="{ed>id}" text="{ed>rotulo}" />
+									</Select>
+									<Select width="13rem" forceSelection="false"
+										selectedKey="{ed>operador}" change=".onEdEstrutura"
+										visible="{= ${ed>_operadores}.length > 0 }"
+										items="{ path: 'ed>_operadores', templateShareable: false }"
+										class="sapUiTinyMarginEnd">
+										<core:Item key="{ed>id}" text="{ed>rotulo}" />
+									</Select>
+									<Input width="10rem" value="{ed>valor}" placeholder="{ed>_dica}"
+										valueLiveUpdate="true"
+										liveChange=".onEdMudou" visible="{= ${ed>_nValores} >= 1 }"
+										class="sapUiTinyMarginEnd" />
+									<Text text="e" visible="{= ${ed>_nValores} >= 2 }"
+										class="sapUiTinyMarginEnd" />
+									<Input width="10rem" value="{ed>valor2}"
+										placeholder="{ed>_dica}" valueLiveUpdate="true"
+										liveChange=".onEdMudou" visible="{= ${ed>_nValores} >= 2 }"
+										class="sapUiTinyMarginEnd" />
+									<Button icon="sap-icon://decline" type="Transparent"
+										tooltip="Remover condição"
+										press=".onEdRemoverItem" />
+								</HBox>
+							</items>
+						</VBox>
+						<Text text="Sem filtro: entram todos." class="valeKpiPe"
+							visible="{= !${ed>/filtros} || ${ed>/filtros}.length === 0 }" />
+						<Button text="Adicionar filtro"
+							icon="sap-icon://add"
+							type="Transparent"
+							press=".onEdAdicionar">
+							<customData>
+								<core:CustomData key="lista" value="/filtros" />
+								<core:CustomData key="item" value="filtro" />
+							</customData>
+						</Button>
+					</VBox>
+				</WizardStep>
+
+				<!-- 3. calculo -->
+				<WizardStep id="wzPassoCalculo" title="O que calcular?" validated="false"
+					icon="sap-icon://simulate">
+
+					<!-- indicador -->
+					<VBox visible="{ed>/_metrica}">
+						<RadioButtonGroup
+							selectedIndex="{= ${ed>/modoMetrica} === 'valor' ? 1 : 0 }"
+							select=".onWzModoMetrica">
+							<RadioButton
+								text="Porcentagem: quantos, do total, atendem a uma condição (parcela ÷ total)" />
+							<RadioButton text="Número: contar, somar ou tirar a média de um campo" />
+						</RadioButtonGroup>
+
+						<VBox visible="{ed>/_proporcao}" class="sapUiSmallMarginTop">
+							<Label text="Qual condição conta no numerador?" required="true" />
+							<Text
+								text="Ex.: “Sem comunicação (mudo) é verdadeiro”. O denominador é o total dos dados escolhidos no passo anterior."
+								class="valeKpiPe" />
+							<VBox class="sapUiTinyMarginTop">
+								<VBox items="{ path: 'ed>/condicoes', templateShareable: false }">
+									<items>
+										<HBox alignItems="Center" wrap="Wrap"
+											class="valeFiltroLinha">
+											<Select width="15rem" forceSelection="false"
+												selectedKey="{ed>campo}" change=".onEdEstrutura"
+												items="{ path: 'ed>_campos', templateShareable: false }"
+												class="sapUiTinyMarginEnd">
+												<core:Item key="{ed>id}" text="{ed>rotulo}" />
+											</Select>
+											<Select width="13rem" forceSelection="false"
+												selectedKey="{ed>operador}" change=".onEdEstrutura"
+												visible="{= ${ed>_operadores}.length > 0 }"
+												items="{ path: 'ed>_operadores', templateShareable: false }"
+												class="sapUiTinyMarginEnd">
+												<core:Item key="{ed>id}" text="{ed>rotulo}" />
+											</Select>
+											<Input width="10rem" value="{ed>valor}"
+												placeholder="{ed>_dica}" valueLiveUpdate="true"
+												liveChange=".onEdMudou"
+												visible="{= ${ed>_nValores} >= 1 }"
+												class="sapUiTinyMarginEnd" />
+											<Text text="e" visible="{= ${ed>_nValores} >= 2 }"
+												class="sapUiTinyMarginEnd" />
+											<Input width="10rem" value="{ed>valor2}"
+												placeholder="{ed>_dica}" valueLiveUpdate="true"
+												liveChange=".onEdMudou"
+												visible="{= ${ed>_nValores} >= 2 }"
+												class="sapUiTinyMarginEnd" />
+											<Button icon="sap-icon://decline" type="Transparent"
+												tooltip="Remover condição"
+												press=".onEdRemoverItem" />
+										</HBox>
+									</items>
+								</VBox>
+								<Text text="Nenhuma condição ainda." class="valeKpiPe"
+									visible="{= !${ed>/condicoes} || ${ed>/condicoes}.length === 0 }" />
+								<Button text="Adicionar condição" icon="sap-icon://add"
+									type="Transparent" press=".onEdAdicionar"
+									app:lista="/condicoes" app:item="filtro" />
+							</VBox>
+							<HBox alignItems="Center" wrap="Wrap" class="sapUiSmallMarginTop">
+								<Label text="Nome do numerador" class="sapUiTinyMarginEnd" />
+								<Input value="{ed>/rotuloNumerador}" width="18rem"
+									placeholder="Ex.: Rastreadores mudos"
+									valueLiveUpdate="true" liveChange=".onWzMudou"
+									class="sapUiSmallMarginEnd" />
+								<Label text="do denominador" class="sapUiTinyMarginEnd" />
+								<Input value="{ed>/rotuloDenominador}" width="18rem"
+									placeholder="Ex.: Total de rastreadores"
+									valueLiveUpdate="true" liveChange=".onWzMudou" />
+							</HBox>
+						</VBox>
+
+						<HBox visible="{ed>/_valor}" alignItems="Center" wrap="Wrap"
+							class="sapUiSmallMarginTop"
+							binding="{ed>/calculo}">
+							<Select width="15rem" selectedKey="{ed>agregacao}"
+								change=".onEdEstrutura"
+								items="{ path: 'ed>_agregacoes', templateShareable: false }"
+								class="sapUiTinyMarginEnd">
+								<core:Item key="{ed>id}" text="{ed>rotulo}" />
+							</Select>
+							<Text text="de" visible="{ed>_precisaCampo}" class="sapUiTinyMarginEnd" />
+							<Select width="15rem" forceSelection="false" selectedKey="{ed>campo}"
+								change=".onEdEstrutura"
+								visible="{ed>_precisaCampo}"
+								items="{ path: 'ed>_camposAgregacao', templateShareable: false }"
+								class="sapUiTinyMarginEnd">
+								<core:Item key="{ed>id}" text="{ed>rotulo}" />
+							</Select>
+						</HBox>
+					</VBox>
+
+					<!-- tabela -->
+					<VBox visible="{ed>/_tabela}">
+						<Label text="Agrupar as linhas por" required="true" />
+						<Text
+							text="Para agrupar pelos 4 primeiros caracteres do local (FEIT, FEBR…), escolha “Local de instalação” e “Primeiros N caracteres”."
+							class="valeKpiPe sapUiTinyMarginBottom" />
+						<HBox alignItems="Center" wrap="Wrap" binding="{ed>/agrupar}">
+							<Label text="Linhas" class="sapUiTinyMarginEnd" width="7rem" />
+							<Select width="15rem" forceSelection="false" selectedKey="{ed>campo}"
+								change=".onEdEstrutura"
+								items="{ path: 'ed>_campos', templateShareable: false }"
+								class="sapUiTinyMarginEnd">
+								<core:Item key="{ed>id}" text="{ed>rotulo}" />
+							</Select>
+							<Select width="14rem" selectedKey="{ed>transformacao/tipo}"
+								change=".onEdEstrutura"
+								items="{ path: 'ed>_transformacoes', templateShareable: false }"
+								class="sapUiTinyMarginEnd">
+								<core:Item key="{ed>id}" text="{ed>rotulo}" />
+							</Select>
+							<Label text="{ed>_rotuloParametro}" visible="{ed>_temParametro}"
+								class="sapUiTinyMarginEnd" />
+							<StepInput value="{ed>transformacao/n}" min="1" max="100" width="7rem"
+								visible="{ed>_temParametro}"
+								change=".onEdMudou" />
+						</HBox>
+						<Label text="Em cada grupo, calcular" class="sapUiSmallMarginTop" />
+						<HBox alignItems="Center" wrap="Wrap" binding="{ed>/calculo}">
+							<Select width="15rem" selectedKey="{ed>agregacao}"
+								change=".onEdEstrutura"
+								items="{ path: 'ed>_agregacoes', templateShareable: false }"
+								class="sapUiTinyMarginEnd">
+								<core:Item key="{ed>id}" text="{ed>rotulo}" />
+							</Select>
+							<Text text="de" visible="{ed>_precisaCampo}" class="sapUiTinyMarginEnd" />
+							<Select width="15rem" forceSelection="false" selectedKey="{ed>campo}"
+								change=".onEdEstrutura"
+								visible="{ed>_precisaCampo}"
+								items="{ path: 'ed>_camposAgregacao', templateShareable: false }"
+								class="sapUiTinyMarginEnd">
+								<core:Item key="{ed>id}" text="{ed>rotulo}" />
+							</Select>
+						</HBox>
+						<CheckBox text="Mostrar a participação de cada grupo (% do total)"
+							selected="{ed>/percentualDoTotal}"
+							select=".onWzMudou" />
+						<CheckBox text="Cruzar com outro campo em colunas" selected="{ed>/cruzar}"
+							select=".onWzMudou" />
+						<VBox visible="{ed>/cruzar}" class="sapUiSmallMarginBegin">
+							<HBox alignItems="Center" wrap="Wrap" binding="{ed>/colunas}">
+								<Label text="Colunas" class="sapUiTinyMarginEnd" width="7rem" />
+								<Select width="15rem" forceSelection="false"
+									selectedKey="{ed>campo}" change=".onEdEstrutura"
+									items="{ path: 'ed>_campos', templateShareable: false }"
+									class="sapUiTinyMarginEnd">
+									<core:Item key="{ed>id}" text="{ed>rotulo}" />
+								</Select>
+								<Select width="14rem" selectedKey="{ed>transformacao/tipo}"
+									change=".onEdEstrutura"
+									items="{ path: 'ed>_transformacoes', templateShareable: false }"
+									class="sapUiTinyMarginEnd">
+									<core:Item key="{ed>id}" text="{ed>rotulo}" />
+								</Select>
+								<Label text="{ed>_rotuloParametro}" visible="{ed>_temParametro}"
+									class="sapUiTinyMarginEnd" />
+								<StepInput value="{ed>transformacao/n}" min="1" max="100"
+									width="7rem" visible="{ed>_temParametro}"
+									change=".onEdMudou" />
+							</HBox>
+						</VBox>
+					</VBox>
+
+					<!-- lista -->
+					<VBox visible="{ed>/_lista}">
+						<Label text="Quais colunas?" required="true" />
+						<MultiComboBox width="100%" selectedKeys="{ed>/campos}"
+							selectionFinish=".onWzMudou"
+							items="{ path: 'ed>/_camposFonte', templateShareable: false }">
+							<core:Item key="{ed>id}" text="{ed>rotulo}" />
+						</MultiComboBox>
+						<HBox alignItems="Center" class="sapUiSmallMarginTop">
+							<Label text="Ordenar por" class="sapUiTinyMarginEnd" />
+							<Select selectedKey="{ed>/ordenarPor}" change=".onWzMudou" width="15rem"
+								items="{ path: 'ed>/_camposOrdenacao', templateShareable: false }"
+								class="sapUiTinyMarginEnd">
+								<core:Item key="{ed>id}" text="{ed>rotulo}" />
+							</Select>
+							<Select selectedKey="{ed>/sentido}" change=".onWzMudou" width="11rem">
+								<core:Item key="desc" text="Maior primeiro / Z–A" />
+								<core:Item key="asc" text="Menor primeiro / A–Z" />
+							</Select>
+						</HBox>
+					</VBox>
+					<MessageStrip text="{ed>/_falta}" type="Warning" showIcon="true"
+						visible="{= !!${ed>/_falta} }"
+						class="sapUiSmallMarginTop" />
+				</WizardStep>
+
+				<!-- 4. apresentacao -->
+				<WizardStep id="wzPassoApresentacao" title="Como apresentar?" validated="true"
+					icon="sap-icon://business-objects-experience">
+					<VBox visible="{ed>/_metrica}">
+						<CheckBox
+							text="Abrir o indicador por grupo (uma linha por prefixo, família, situação…)"
+							selected="{ed>/abrirPorGrupo}" select=".onWzMudou" />
+						<VBox visible="{ed>/abrirPorGrupo}" class="sapUiSmallMarginBegin">
+							<HBox alignItems="Center" wrap="Wrap" binding="{ed>/grupoMetrica}">
+								<Label text="Por" class="sapUiTinyMarginEnd" width="7rem" />
+								<Select width="15rem" forceSelection="false"
+									selectedKey="{ed>campo}" change=".onEdEstrutura"
+									items="{ path: 'ed>_campos', templateShareable: false }"
+									class="sapUiTinyMarginEnd">
+									<core:Item key="{ed>id}" text="{ed>rotulo}" />
+								</Select>
+								<Select width="14rem" selectedKey="{ed>transformacao/tipo}"
+									change=".onEdEstrutura"
+									items="{ path: 'ed>_transformacoes', templateShareable: false }"
+									class="sapUiTinyMarginEnd">
+									<core:Item key="{ed>id}" text="{ed>rotulo}" />
+								</Select>
+								<Label text="{ed>_rotuloParametro}" visible="{ed>_temParametro}"
+									class="sapUiTinyMarginEnd" />
+								<StepInput value="{ed>transformacao/n}" min="1" max="100"
+									width="7rem" visible="{ed>_temParametro}"
+									change=".onEdMudou" />
+							</HBox>
+						</VBox>
+						<CheckBox text="Definir meta (semáforo verde / amarelo / vermelho)"
+							selected="{ed>/usarMeta}"
+							select=".onWzMudou" class="sapUiSmallMarginTop" />
+						<HBox visible="{ed>/usarMeta}" alignItems="Center" wrap="Wrap"
+							class="sapUiSmallMarginBegin">
+							<Select selectedKey="{ed>/meta/sentido}" change=".onWzMudou"
+								width="13rem" class="sapUiTinyMarginEnd">
+								<core:Item key="maior" text="Quanto maior, melhor" />
+								<core:Item key="menor" text="Quanto menor, melhor" />
+							</Select>
+							<Label text="Verde a partir de" class="sapUiTinyMarginEnd" />
+							<Input value="{ed>/meta/verde}" width="6rem" valueLiveUpdate="true"
+								liveChange=".onWzMudou"
+								description="{ed>/_unidadeMeta}" class="sapUiTinyMarginEnd" />
+							<Label text="Amarelo a partir de" class="sapUiTinyMarginEnd" />
+							<Input value="{ed>/meta/amarelo}" width="6rem" valueLiveUpdate="true"
+								liveChange=".onWzMudou"
+								description="{ed>/_unidadeMeta}" />
+						</HBox>
+					</VBox>
+					<HBox alignItems="Center" visible="{= !${ed>/_lista} }"
+						class="sapUiSmallMarginTop">
+						<Label text="Gráfico" width="7rem" />
+						<Select selectedKey="{ed>/grafico}" change=".onWzMudou" width="15rem"
+							items="{ path: 'opcoes>/graficos', templateShareable: false }">
+							<core:Item key="{opcoes>id}" text="{opcoes>rotulo}" />
+						</Select>
+					</HBox>
+					<Text text="Nada a configurar para listas: siga para o próximo passo."
+						visible="{ed>/_lista}" class="valeKpiPe" />
+				</WizardStep>
+
+				<!-- 5. nome e previa -->
+				<WizardStep id="wzPassoNome" title="Nome e conferência" validated="true"
+					icon="sap-icon://accept"
+					activate=".onWzPassoNome">
+					<f:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanL="2"
+						labelSpanM="2"
+						columnsL="1" columnsM="1" class="sapUiNoContentPadding">
+						<Label text="Nome" required="true" />
+						<Input value="{ed>/nome}" placeholder="{ed>/_nomeSugerido}"
+							valueLiveUpdate="true"
+							liveChange=".onWzMudou" maxLength="150" />
+						<Label text="Descrição" />
+						<TextArea value="{ed>/descricao}" rows="2" width="100%" maxLength="500" />
+					</f:SimpleForm>
+					<Title text="Pré-visualização" level="H5" class="sapUiSmallMarginTop" />
+					<VBox id="previaAssistente" />
+				</WizardStep>
+			</Wizard>
+		</content>
+		<buttons>
+			<Button text="Abrir no editor completo" icon="sap-icon://edit" press=".onWzParaEditor"
+				tooltip="Continua a partir daqui com todas as opções (várias parcelas, fórmula livre…)" />
+			<Button text="Cancelar" press=".onWzCancelar" />
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

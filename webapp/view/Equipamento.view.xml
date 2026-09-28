@@ -55,7 +55,10 @@
 								class="sapUiSmallPaddingBegin sapUiSmallPaddingEnd">
 
 								<DisplayListItem label="{i18n>detGateway}"
-									value="{tela>/ativo/gateway}" />
+									value="{tela>/ativo/gateway}"
+									type="{= ${tela>/ativo/gateway} ? 'Active' : 'Inactive' }"
+									press=".onAbrirGatewayAtual"
+									tooltip="{i18n>detGatewayDica}" />
 
 								<DisplayListItem label="{i18n>detComunicacao}"
 									value="{tela>/ativo/silencioTexto}" />
@@ -124,8 +127,17 @@
 
 
 					<VBox class="valeCartao valeCartaoManutencao">
-						<Title text="{i18n>detManutencao}" level="H3" titleStyle="H6"
-							class="sapUiSmallPadding" />
+						<HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallPadding">
+							<Title text="{i18n>detManutencao}" level="H3" titleStyle="H6" />
+							<HBox>
+								<Button icon="sap-icon://excel-attachment" text="{i18n>detNotasExcel}"
+									type="Transparent" press=".onExportarNotas"
+									enabled="{= ${tela>/notas}.length > 0 }" />
+								<Button icon="sap-icon://excel-attachment" text="{i18n>detOrdensExcel}"
+									type="Transparent" press=".onExportarOrdens"
+									enabled="{= ${tela>/ordens}.length > 0 }" />
+							</HBox>
+						</HBox>
 						<List items="{tela>/notas}" showSeparators="Inner"
 							class="sapUiSmallPaddingBegin sapUiSmallPaddingEnd"
 							noDataText="{i18n>detSemNota}">
@@ -161,10 +173,15 @@
 				<l:Grid defaultSpan="XL8 L8 M12 S12" hSpacing="1" vSpacing="1"
 					class="sapUiTinyMarginTop">
 					<VBox class="valeCartao">
-						<VBox class="sapUiSmallPadding">
-							<Title text="{i18n>detLinhaDoTempo}" level="H3" titleStyle="H6" />
-							<Text text="{i18n>detLinhaDoTempoPe}" class="valeKpiPe" />
-						</VBox>
+						<HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallPadding">
+							<VBox>
+								<Title text="{i18n>detLinhaDoTempo}" level="H3" titleStyle="H6" />
+								<Text text="{i18n>detLinhaDoTempoPe}" class="valeKpiPe" />
+							</VBox>
+							<Button icon="sap-icon://excel-attachment" text="{i18n>exportar}"
+								type="Transparent" press=".onExportarHistorico"
+								enabled="{= ${tela>/historico}.length > 0 }" />
+						</HBox>
 						<Table items="{tela>/historico}" inset="false"
 							noDataText="{i18n>detSemHistorico}">
 							<columns>
@@ -189,7 +206,7 @@
 											text="{ path: 'tela>recebidoEm', formatter: '.formatarData' }"
 											class="valeMono" />
 										<Text text="{tela>grupo}" />
-										<Text text="{tela>gateway}" />
+										<Link text="{tela>gateway}" press=".onAbrirGatewayDaLeitura" />
 										<Text text="{tela>comunicacao}" />
 									</cells>
 								</ColumnListItem>
@@ -201,10 +218,15 @@
 						<layoutData>
 							<l:GridData span="XL4 L4 M12 S12" />
 						</layoutData>
-						<VBox class="sapUiSmallPadding">
-							<Title text="{i18n>detArvoreVeiculo}" level="H3" titleStyle="H6" />
-							<Text text="{i18n>detArvoreVeiculoPe}" class="valeKpiPe" />
-						</VBox>
+						<HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallPadding">
+							<VBox>
+								<Title text="{i18n>detArvoreVeiculo}" level="H3" titleStyle="H6" />
+								<Text text="{i18n>detArvoreVeiculoPe}" class="valeKpiPe" />
+							</VBox>
+							<Button icon="sap-icon://excel-attachment" text="{i18n>exportar}"
+								type="Transparent" press=".onExportarArvore"
+								enabled="{= ${tela>/arvore}.length > 0 }" />
+						</HBox>
 						<Table items="{tela>/arvore}" inset="false" noDataText="{i18n>detSemArvore}">
 							<columns>
 								<Column>
@@ -220,7 +242,7 @@
 							<items>
 								<ColumnListItem>
 									<cells>
-										<Text text="{tela>rotulo}" />
+										<Link text="{tela>rotulo}" press=".onAbrirFamiliaDoVeiculo" />
 										<Text text="{tela>naArvore}" />
 										<ObjectStatus text="{tela>comRastreador}"
 											state="{ path: 'tela>diferenca', formatter: '.estadoDaDiferenca' }" />

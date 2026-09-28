@@ -14,26 +14,35 @@
 			<VBox class="sapUiSmallMargin">
 				<Text text="{i18n>manutSubtitulo}" class="valeKpiPe sapUiTinyMarginBottom" />
 
-				<l:Grid defaultSpan="XL3 L3 M6 S6" hSpacing="1" vSpacing="1"
+				<l:Grid defaultSpan="XL3 L3 M6 S6"
+					hSpacing="1"
+					vSpacing="1"
 					class="sapUiTinyMarginBottom">
-					<VBox class="valeCartao sapUiSmallPadding">
+
+					<VBox id="cardNotas"
+						class="valeCartao sapUiSmallPadding valeCardClicavel">
 						<Text text="{i18n>manutNotas}" class="valeKpiRotulo" />
 						<Text text="{frota>/notas/length}" class="valeKpiValor" />
 					</VBox>
-					<VBox class="valeCartao sapUiSmallPadding">
+
+					<VBox id="cardOrdens"
+						class="valeCartao sapUiSmallPadding valeCardClicavel">
 						<Text text="{i18n>manutOrdens}" class="valeKpiRotulo" />
 						<Text text="{frota>/ordens/length}" class="valeKpiValor" />
 					</VBox>
-					<VBox class="valeCartao sapUiSmallPadding">
+
+					<VBox id="cardSemTag"
+						class="valeCartao sapUiSmallPadding valeCardClicavel">
 						<Text text="{i18n>manutSemTag}" class="valeKpiRotulo" />
 						<Text text="{tela>/semTag}" class="valeKpiValor" />
-
 					</VBox>
-					<VBox class="valeCartao sapUiSmallPadding">
+
+					<VBox id="cardDivergentes"
+						class="valeCartao sapUiSmallPadding valeCardClicavel">
 						<Text text="{i18n>manutDivergentes}" class="valeKpiRotulo" />
-						<Text text="{frota>/divergentes/length}" class="valeKpiValor " />
-
+						<Text text="{frota>/divergentes/length}" class="valeKpiValor" />
 					</VBox>
+
 				</l:Grid>
 
 				<VBox class="valeCartao">

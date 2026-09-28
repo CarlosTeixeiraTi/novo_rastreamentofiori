@@ -92,6 +92,40 @@ sap.ui.define([], function () {
 			});
 		},
 
+		/**
+		 * Escrita (POST/PUT/DELETE). Diferente de `obter`, NAO cai no modo
+		 * simulado em caso de falha: gravar em lugar nenhum e dizer que
+		 * gravou seria pior que o erro. Quem chama decide o que fazer.
+		 */
+		enviar: function (metodo, caminho, corpo) {
+			var opcoes = {
+				method: metodo,
+				headers: { Accept: "application/json" }
+			};
+			if (corpo !== undefined) {
+				opcoes.headers["Content-Type"] = "application/json";
+				opcoes.body = JSON.stringify(corpo);
+			}
+			return comTempoLimite(fetch(juntar(this._base, caminho), opcoes), TEMPO_LIMITE_MS)
+				.then(function (resposta) {
+					if (resposta.status === 204) { return null; }
+					return resposta.json().catch(function () { return null; }).then(function (dados) {
+						if (!resposta.ok) {
+							var erro = new Error((dados && dados.erro) || ("HTTP " + resposta.status));
+							erro.status = resposta.status;
+							erro.dados = dados;
+							throw erro;
+						}
+						return dados;
+					});
+				});
+		},
+
+		/** GET sem queda para o simulado (erro volta para quem chamou). */
+		obterEstrito: function (caminho) {
+			return this.enviar("GET", caminho);
+		},
+
 		_doMock: function (arquivo, caminho) {
 			var nome = arquivo || String(caminho).replace(/[^\w]+/g, "-").replace(/^-|-$/g, "");
 			if (this._cacheMock[nome]) {

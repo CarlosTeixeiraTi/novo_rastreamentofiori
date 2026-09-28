@@ -2,14 +2,12 @@ sap.ui.define([
 	"./BaseController",
 	"../service/MapaLeaflet",
 	"../model/regras/zonas",
-	"sap/m/SegmentedButtonItem",
-	"sap/ui/export/Spreadsheet"
+	"sap/m/SegmentedButtonItem"
 ], function (
 	BaseController,
 	MapaLeaflet,
 	zonas,
-	SegmentedButtonItem,
-	Spreadsheet
+	SegmentedButtonItem
 ) {
 	"use strict";
 
@@ -19,11 +17,13 @@ sap.ui.define([
 
 			onInit: function () {
 				this.usarFrota();
+				this._ligarCards();
 
 				// Repinta quando a carga (assincrona, disparada no App) termina,
 				// no botao Atualizar e na troca de prefixo. Nao usar
 				// attachPropertyChange: ele nao dispara para setProperty.
 				this.frota.aoAtualizar(this._aoMudarModelo, this);
+				this.configuracoes.aoAlterar(this._aoMudarConfig, this);
 
 				this.roteador()
 					.getRoute("RouteSalaDeControle")
@@ -38,83 +38,61 @@ sap.ui.define([
 				// modelo tiver. Se a carga ainda nao terminou, o aviso de
 				// Frota.aoAtualizar repinta quando os dados chegarem.
 				this._montarMapa();
-
-				var oCard = this.byId("cardComunicando");
-
-				if (oCard && oCard.$().length) {
-
-					oCard.$()
-						.css("cursor", "pointer")
-						.off("click.cardComunicando")
-						.on(
-							"click.cardComunicando",
-							this.onAbrirRastreadoresComunicando.bind(this)
-						);
-				}
-
-				var oCardMudos = this.byId("cardMudos");
-
-				if (oCardMudos && oCardMudos.$().length) {
-
-					oCardMudos.$()
-						.css("cursor", "pointer")
-						.off("click.cardMudos")
-						.on(
-							"click.cardMudos",
-							this.onAbrirRastreadoresMudos.bind(this)
-						);
-				}
-				var oCardCobertura = this.byId("cardCobertura");
-
-				if (oCardCobertura && oCardCobertura.$().length) {
-
-					oCardCobertura.$()
-						.css("cursor", "pointer")
-						.off("click.cardCobertura")
-						.on(
-							"click.cardCobertura",
-							this.onAbrirCoberturaArvore.bind(this)
-						);
-				}
-				var oCardDivergentes = this.byId("cardDivergentes");
-
-				if (oCardDivergentes && oCardDivergentes.$().length) {
-
-					oCardDivergentes.$()
-						.css("cursor", "pointer")
-						.off("click.cardDivergentes")
-						.on(
-							"click.cardDivergentes",
-							this.onAbrirDivergentes.bind(this)
-						);
-				}
-
-				var oCardGateways = this.byId("cardGateways");
-
-				if (oCardGateways && oCardGateways.$().length) {
-
-					oCardGateways.$()
-						.css("cursor", "pointer")
-						.off("click.cardGateways")
-						.on(
-							"click.cardGateways",
-							this.onAbrirGateways.bind(this)
-						);
-				}
-				var oCardEfetividade = this.byId("cardEfetividade");
-
-				if (oCardEfetividade && oCardEfetividade.$().length) {
-
-					oCardEfetividade.$()
-						.css("cursor", "pointer")
-						.off("click.cardEfetividade")
-						.on(
-							"click.cardEfetividade",
-							this.onAbrirEfetividade.bind(this)
-						);
-				}
-
 			},
+
+			/**
+			 * Cards clicaveis. Cada um abre a lista que explica o proprio
+			 * numero, com EXCEL e link para a ficha de cada equipamento. As
+			 * listas saem de regras/detalhamentos, com o MESMO filtro do card.
+			 */
+			_ligarCards: function () {
+
+				var that = this;
+
+				function ligar(id, fn) {
+
+					var oCard = that.byId(id);
+
+					if (!oCard) {
+						return;
+					}
+
+					oCard.addStyleClass("valeCardClicavel");
+
+					oCard.attachBrowserEvent("click", function () {
+						fn.call(that);
+					});
+
+					oCard.attachBrowserEvent("keydown", function (e) {
+						if (e.key === "Enter" || e.key === " ") {
+							e.preventDefault();
+							fn.call(that);
+						}
+					});
+
+					oCard.addEventDelegate({
+						onAfterRendering: function () {
+							oCard.$().attr({
+								tabindex: 0,
+								role: "button"
+							});
+						}
+					});
+				}
+
+				ligar("cardHabilitados", this.onAbrirRastreadoresHabilitados);
+				ligar("cardComunicando", this.onAbrirRastreadoresComunicando);
+				ligar("cardMudos", this.onAbrirRastreadoresMudos);
+				ligar("cardCobertura", this.onAbrirCoberturaArvore);
+				ligar("cardDivergentes", this.onAbrirDivergentes);
+				ligar("cardGateways", this.onAbrirGateways);
+				ligar("cardEfetividade", this.onAbrirEfetividade);
+
+				ligar("cardDesatualizadas", function () {
+					this.abrirDetalhamento("desatualizadas");
+				});
+			},
+
 			formatarCodigoCurto: function (codigo) {
 
 				return String(codigo || "")
@@ -122,930 +100,50 @@ sap.ui.define([
 					.slice(-8);
 
 			},
-			onAbrirArvoreTipo: function () {
-
-				var dados = this.getView()
-					.getModel("frota")
-					.getProperty("/porFamilia") || [];
-
-				var oModel = new sap.ui.model.json.JSONModel({
-					itens: dados
-				});
-
-				var oTabela = new sap.m.Table({
-					sticky: ["ColumnHeaders"],
-					columns: [
-						new sap.m.Column({
-							header: new sap.m.Text({ text: "Família" })
-						}),
-						new sap.m.Column({
-							header: new sap.m.Text({ text: "Com rastreador" })
-						}),
-						new sap.m.Column({
-							header: new sap.m.Text({ text: "Na árvore SAP" })
-						}),
-						new sap.m.Column({
-							header: new sap.m.Text({ text: "Cobertura" })
-						})
-					]
-				});
-
-				oTabela.setModel(oModel);
-
-				oTabela.bindItems({
-					path: "/itens",
-					template: new sap.m.ColumnListItem({
-						cells: [
-							new sap.m.Text({
-								text: "{rotulo}"
-							}),
-							new sap.m.Text({
-								text: "{comRastreador}"
-							}),
-							new sap.m.Text({
-								text: "{naArvore}"
-							}),
-							new sap.m.Text({
-								text: {
-									path: "cobertura",
-									formatter: function (v) {
-										return ((v || 0) * 100).toFixed(1) + "%";
-									}
-								}
-							})
-						]
-					})
-				});
-
-				var oDialog = new sap.m.Dialog({
-					title: "Rastreadores × árvore SAP, por tipo",
-					contentWidth: "1000px",
-					contentHeight: "600px",
-					draggable: true,
-					resizable: true,
-					content: [oTabela],
-
-					beginButton: new sap.m.Button({
-						text: "EXCEL",
-						icon: "sap-icon://excel-attachment",
-						press: function () {
-
-							var dadosExcel = dados.map(function (d) {
-								return {
-									familia: d.rotulo,
-									comRastreador: d.comRastreador,
-									naArvore: d.naArvore,
-									cobertura: ((d.cobertura || 0) * 100).toFixed(1) + "%"
-								};
-							});
-
-							var oSpreadsheet = new Spreadsheet({
-								workbook: {
-									columns: [
-										{
-											label: "Família",
-											property: "familia"
-										},
-										{
-											label: "Com rastreador",
-											property: "comRastreador"
-										},
-										{
-											label: "Na árvore SAP",
-											property: "naArvore"
-										},
-										{
-											label: "Cobertura",
-											property: "cobertura"
-										}
-									]
-								},
-								dataSource: dadosExcel,
-								fileName: "Rastreadores_Arvore_SAP.xlsx"
-							});
-
-							oSpreadsheet.build().finally(function () {
-								oSpreadsheet.destroy();
-							});
-
-						}
-					}).addStyleClass("botaoDialogExcel"),
-
-					endButton: new sap.m.Button({
-						text: "OK",
-						press: function () {
-							oDialog.close();
-						}
-					}).addStyleClass("botaoDialogCinza"),
-
-					afterClose: function () {
-						oDialog.destroy();
-					}
-				});
-
-				oDialog.open();
-
-			},
-			onAbrirEfetividade: function () {
-
-				var indicadores = this.getView()
-					.getModel("frota")
-					.getProperty("/indicadores") || {};
-
-				var cobertura =
-					indicadores.cobertura &&
-						indicadores.cobertura.valor !== null
-						? indicadores.cobertura.valor
-						: 0;
-
-				var disponibilidade =
-					indicadores.disponibilidade &&
-						indicadores.disponibilidade.valor !== null
-						? indicadores.disponibilidade.valor
-						: 0;
-
-				var gateways =
-					indicadores.gateways &&
-						indicadores.gateways.valor !== null
-						? indicadores.gateways.valor
-						: 0;
-
-				var efetividade =
-					indicadores.efetividade &&
-						indicadores.efetividade.valor !== null
-						? indicadores.efetividade.valor
-						: 0;
-
-				var coberturaPct = (cobertura * 100).toFixed(1);
-				var disponibilidadePct = (disponibilidade * 100).toFixed(1);
-				var gatewaysPct = (gateways * 100).toFixed(1);
-				var efetividadePct = (efetividade * 100).toFixed(1);
-
-				var oDialog = new sap.m.Dialog({
-					title: "Índice Geral de Efetividade",
-					contentWidth: "700px",
-					contentHeight: "650px",
-					verticalScrolling: true,
-					draggable: true,
-					resizable: true,
-
-					content: [
-						new sap.m.VBox({
-							alignItems: "Center",
-							items: [
-
-								new sap.m.ObjectNumber({
-									number: efetividadePct,
-									unit: "%"
-								}).addStyleClass("tituloIndicadorPopup"),
-
-								new sap.m.Text({
-									text: "Índice Geral de Efetividade"
-								}).addStyleClass("subtituloPopup"),
-
-								new sap.m.FormattedText({
-									htmlText:
-										"<b>O que mede?</b><br>" +
-										"Consolida os principais indicadores operacionais em uma única visão de desempenho.<br><br>" +
-
-										"<b>Como é calculado?</b><br>" +
-										"Cobertura × 40% + Disponibilidade × 40% + Gateways × 20%.<br><br>" +
-
-										"<b>Composição</b><br>" +
-										"Cobertura da árvore SAP: " + coberturaPct + "%<br>" +
-										"Disponibilidade dos rastreadores: " + disponibilidadePct + "%<br>" +
-										"Gateways em operação: " + gatewaysPct + "%<br><br>" +
-
-										"<b>Resultado</b><br>" +
-										"(" + coberturaPct + "% × 40%) + " +
-										"(" + disponibilidadePct + "% × 40%) + " +
-										"(" + gatewaysPct + "% × 20%) = " +
-										efetividadePct + "%<br><br>" +
-
-										"<b>Por que é importante?</b><br>" +
-										"Permite avaliar em um único indicador a cobertura da solução, a disponibilidade dos rastreadores e a operação da infraestrutura de gateways."
-								}).addStyleClass("popupTextoGrande")
-							]
-						})
-					],
-
-					buttons: [
-
-						new sap.m.Button({
-							text: "EXCEL",
-							icon: "sap-icon://excel-attachment",
-							press: function () {
-
-								var oSpreadsheet = new Spreadsheet({
-									workbook: {
-										columns: [
-											{
-												label: "Cobertura (%)",
-												property: "cobertura"
-											},
-											{
-												label: "Disponibilidade (%)",
-												property: "disponibilidade"
-											},
-											{
-												label: "Gateways (%)",
-												property: "gateways"
-											},
-											{
-												label: "Efetividade (%)",
-												property: "efetividade"
-											}
-										]
-									},
-									dataSource: [{
-										cobertura: coberturaPct,
-										disponibilidade: disponibilidadePct,
-										gateways: gatewaysPct,
-										efetividade: efetividadePct
-									}],
-									fileName: "Indice_Efetividade.xlsx"
-								});
-
-								oSpreadsheet.build().finally(function () {
-									oSpreadsheet.destroy();
-								});
-
-							}
-						}).addStyleClass("botaoDialogExcel"),
-
-						new sap.m.Button({
-							text: "OK",
-							press: function () {
-								oDialog.close();
-							}
-						}).addStyleClass("botaoDialogCinza")
-					],
-
-					afterClose: function () {
-						oDialog.destroy();
-					}
-				});
-
-				oDialog.addStyleClass("sapUiContentPadding");
-				oDialog.addStyleClass("dialogEfetividade");
-
-				oDialog.open();
-
-			},
-			onAbrirDetalheGateway: function (oEvent) {
-
-				var g = oEvent.getSource()
-					.getBindingContext()
-					.getObject();
-
-				var oDialog = new sap.m.Dialog({
-					title: "Detalhes do Gateway",
-					contentWidth: "500px",
-
-					content: [
-						new sap.m.VBox({
-							items: [
-								new sap.m.Label({ text: "Gateway ID" }),
-								new sap.m.Text({ text: g.id || "" }),
-
-								new sap.m.Label({ text: "Identificador" }),
-								new sap.m.Text({ text: g.identificador || "" }),
-
-								new sap.m.Label({ text: "Localidade" }),
-								new sap.m.Text({ text: g.localidade || "" }),
-
-								new sap.m.Label({ text: "Condição" }),
-								new sap.m.Text({ text: g.condicao || "" })
-							]
-						})
-					],
-
-					endButton: new sap.m.Button({
-						text: "OK",
-						press: function () {
-							oDialog.close();
-						}
-					}),
-
-					afterClose: function () {
-						oDialog.destroy();
-					}
-				});
-
-				oDialog.open();
-
-			},
-			onAbrirGateways: function () {
-
-				var dados = this.getView()
-					.getModel("frota")
-					.getProperty("/gateways") || [];
-
-				var oModel = new sap.ui.model.json.JSONModel({
-					itens: dados
-				});
-
-				var oTabela = new sap.m.Table({
-					sticky: ["ColumnHeaders"],
-					columns: [
-						new sap.m.Column({
-							header: new sap.m.Text({
-								text: "Gateway"
-							})
-						}),
-						new sap.m.Column({
-							header: new sap.m.Text({
-								text: "Localidade"
-							})
-						}),
-						new sap.m.Column({
-							header: new sap.m.Text({
-								text: "Condição"
-							})
-						})
-					]
-				});
-
-				oTabela.setModel(oModel);
-
-				oTabela.bindItems({
-					path: "/itens",
-					template: new sap.m.ColumnListItem({
-						cells: [
-							new sap.m.Link({
-								text: "{identificador}",
-								press: this.onAbrirDetalheGateway.bind(this)
-							}),
-							new sap.m.Text({
-								text: "{localidade}"
-							}),
-							new sap.m.Text({
-								text: "{condicao}"
-							})
-						]
-					})
-				});
-
-				var oDialog = new sap.m.Dialog({
-					title: "Gateways ativos",
-					contentWidth: "1100px",
-					contentHeight: "600px",
-					draggable: true,
-					resizable: true,
-					content: [oTabela],
-
-					beginButton: new sap.m.Button({
-						text: "Excel",
-						icon: "sap-icon://excel-attachment",
-						press: function () {
-
-							var dadosExcel = dados.map(function (g) {
-								return {
-									gateway: g.identificador,
-									localidade: g.localidade,
-									condicao: g.condicao
-								};
-							});
-
-							var oSpreadsheet = new Spreadsheet({
-								workbook: {
-									columns: [
-										{
-											label: "Gateway",
-											property: "gateway"
-										},
-										{
-											label: "Localidade",
-											property: "localidade"
-										},
-										{
-											label: "Condição",
-											property: "condicao"
-										}
-									]
-								},
-								dataSource: dadosExcel,
-								fileName: "Gateways.xlsx"
-							});
-
-							oSpreadsheet.build().finally(function () {
-								oSpreadsheet.destroy();
-							});
-
-						}
-					}),
-
-					endButton: new sap.m.Button({
-						text: "OK",
-						press: function () {
-							oDialog.close();
-						}
-					}),
-
-					afterClose: function () {
-						oDialog.destroy();
-					}
-				});
-
-				oDialog.open();
-
-			},
-			onAbrirDivergentes: function () {
-
-				var dados = this.getView()
-					.getModel("frota")
-					.getProperty("/divergentes") || [];
-
-				var oModel = new sap.ui.model.json.JSONModel({
-					itens: dados
-				});
-
-				var oTabela = new sap.m.Table({
-					sticky: ["ColumnHeaders"],
-					columns: [
-						new sap.m.Column({
-							header: new sap.m.Text({
-								text: "Equipamento"
-							})
-						}),
-						new sap.m.Column({
-							header: new sap.m.Text({
-								text: "Local de instalação"
-							})
-						})
-					]
-				});
-
-				oTabela.setModel(oModel);
-
-				oTabela.bindItems({
-					path: "/itens",
-					template: new sap.m.ColumnListItem({
-						cells: [
-							new sap.m.Link({
-								text: {
-									path: "identificador",
-									formatter: function (v) {
-										return String(v || "")
-											.replace(/^0+/, "")
-											.slice(-8);
-									}
-								},
-								press: this.onAbrirEquipamentoPopup.bind(this)
-							}),
-							new sap.m.Text({
-								text: "{localInstalacao}"
-							})
-						]
-					})
-				});
-
-				var oDialog = new sap.m.Dialog({
-					title: "Cadastro divergente",
-					contentWidth: "1100px",
-					contentHeight: "600px",
-					draggable: true,
-					resizable: true,
-					content: [oTabela],
-
-					beginButton: new sap.m.Button({
-						text: "Excel",
-						icon: "sap-icon://excel-attachment",
-						press: function () {
-
-							var dadosExcel = dados.map(function (d) {
-								return {
-									equipamento: String(d.identificador || "")
-										.replace(/^0+/, "")
-										.slice(-8),
-									local: d.localInstalacao,
-									distancia: d.distanciaM
-								};
-							});
-
-							var oSpreadsheet = new Spreadsheet({
-								workbook: {
-									columns: [
-										{
-											label: "Equipamento",
-											property: "equipamento"
-										},
-										{
-											label: "Local de instalação",
-											property: "local"
-										},
-										{
-											label: "Distância (m)",
-											property: "distancia"
-										}
-									]
-								},
-								dataSource: dadosExcel,
-								fileName: "Cadastro_Divergente.xlsx"
-							});
-
-							oSpreadsheet.build().finally(function () {
-								oSpreadsheet.destroy();
-							});
-
-						}
-					}),
-
-					endButton: new sap.m.Button({
-						text: "OK",
-						press: function () {
-							oDialog.close();
-						}
-					}),
-
-					afterClose: function () {
-						oDialog.destroy();
-					}
-				});
-
-				oDialog.open();
-
-			},
-			onAbrirCoberturaArvore: function () {
-
-				var dados = this.getView()
-					.getModel("frota")
-					.getProperty("/porFamilia") || [];
-
-				var oModel = new sap.ui.model.json.JSONModel({
-					itens: dados
-				});
-
-				var oTabela = new sap.m.Table({
-					sticky: ["ColumnHeaders"],
-					columns: [
-						new sap.m.Column({
-							header: new sap.m.Text({
-								text: "Família"
-							})
-						}),
-						new sap.m.Column({
-							header: new sap.m.Text({
-								text: "Com rastreador"
-							})
-						}),
-						new sap.m.Column({
-							header: new sap.m.Text({
-								text: "Na árvore SAP"
-							})
-						}),
-						new sap.m.Column({
-							header: new sap.m.Text({
-								text: "Cobertura"
-							})
-						})
-					]
-				});
-
-				oTabela.setModel(oModel);
-
-				oTabela.bindItems({
-					path: "/itens",
-					template: new sap.m.ColumnListItem({
-						cells: [
-							new sap.m.Text({
-								text: "{rotulo}"
-							}),
-							new sap.m.Text({
-								text: "{comRastreador}"
-							}),
-							new sap.m.Text({
-								text: "{naArvore}"
-							}),
-							new sap.m.Text({
-								text: {
-									path: "cobertura",
-									formatter: function (v) {
-										return ((v || 0) * 100).toFixed(1) + "%";
-									}
-								}
-							})
-						]
-					})
-				});
-
-				var oDialog = new sap.m.Dialog({
-					title: "Cobertura da árvore SAP",
-					contentWidth: "1100px",
-					contentHeight: "600px",
-					draggable: true,
-					resizable: true,
-
-					content: [
-						oTabela
-					],
-
-					beginButton: new sap.m.Button({
-						text: "Excel",
-						icon: "sap-icon://excel-attachment",
-						press: function () {
-
-							var dadosExcel = dados.map(function (d) {
-								return {
-									familia: d.rotulo,
-									comRastreador: d.comRastreador,
-									naArvore: d.naArvore,
-									cobertura:
-										((d.cobertura || 0) * 100)
-											.toFixed(1) + "%"
-								};
-							});
-
-							var oSpreadsheet = new Spreadsheet({
-								workbook: {
-									columns: [
-										{
-											label: "Família",
-											property: "familia"
-										},
-										{
-											label: "Com rastreador",
-											property: "comRastreador"
-										},
-										{
-											label: "Na árvore SAP",
-											property: "naArvore"
-										},
-										{
-											label: "Cobertura",
-											property: "cobertura"
-										}
-									]
-								},
-								dataSource: dadosExcel,
-								fileName: "Cobertura_Arvore_SAP.xlsx"
-							});
-
-							oSpreadsheet.build().finally(function () {
-								oSpreadsheet.destroy();
-							});
-
-						}
-					}),
-
-					endButton: new sap.m.Button({
-						text: "OK",
-						press: function () {
-							oDialog.close();
-						}
-					}),
-
-					afterClose: function () {
-						oDialog.destroy();
-					}
-				});
-
-				oDialog.open();
-
-			},
-			onAbrirRastreadoresMudos: function () {
-
-				var ativos = this.getView().getModel("frota").getProperty("/ativos") || [];
-
-				var dados = ativos
-					.filter(function (a) {
-						return a.grupoAtual !== "Tags Digitais Não Habilitadas" &&
-							a.mudo;
-					})
-					.map(function (a) {
-
-						return {
-							equipamento: String(
-								a.codigoOriginal || a.codigo || ""
-							)
-								.replace(/^0+/, "")
-								.slice(-8),
-
-							codigoOriginal: a.codigoOriginal || a.codigo,
-
-							local: a.local || ""
-						};
-					});
-
-				var oModel = new sap.ui.model.json.JSONModel({
-					itens: dados
-				});
-
-				var oTabela = new sap.m.Table({
-					sticky: ["ColumnHeaders"],
-					columns: [
-						new sap.m.Column({
-							header: new sap.m.Text({
-								text: "Equipamento"
-							})
-						}),
-						new sap.m.Column({
-							header: new sap.m.Text({
-								text: "Local de instalação"
-							})
-						})
-					]
-				});
-
-				oTabela.setModel(oModel);
-
-				oTabela.bindItems({
-					path: "/itens",
-					template: new sap.m.ColumnListItem({
-						cells: [
-							new sap.m.Link({
-								text: "{equipamento}",
-								press: this.onAbrirEquipamentoPopup.bind(this)
-							}),
-							new sap.m.Text({
-								text: "{local}"
-							})
-						]
-					})
-				});
-
-				var oDialog = new sap.m.Dialog({
-					title: "Rastreadores sem comunicação",
-					contentWidth: "1100px",
-					contentHeight: "600px",
-					draggable: true,
-					resizable: true,
-
-					content: [
-						oTabela
-					],
-
-					beginButton: new sap.m.Button({
-						text: "Excel",
-						icon: "sap-icon://excel-attachment",
-						press: function () {
-
-							var oSpreadsheet = new Spreadsheet({
-								workbook: {
-									columns: [
-										{
-											label: "Equipamento",
-											property: "equipamento"
-										},
-										{
-											label: "Local de instalação",
-											property: "local"
-										}
-									]
-								},
-								dataSource: dados,
-								fileName: "Rastreadores_Sem_Comunicacao.xlsx"
-							});
-
-							oSpreadsheet.build().finally(function () {
-								oSpreadsheet.destroy();
-							});
-
-						}
-					}),
-
-					endButton: new sap.m.Button({
-						text: "OK",
-						press: function () {
-							oDialog.close();
-						}
-					}),
-
-					afterClose: function () {
-						oDialog.destroy();
-					}
-				});
-
-				oDialog.open();
-
-			},
-			onAbrirEquipamentoPopup: function (oEvent) {
-
-				var obj = oEvent.getSource()
-					.getBindingContext()
-					.getObject();
-
-				this.navegarPara("RouteEquipamento", {
-					codigo: obj.identificador || obj.codigoOriginal || obj.codigo
-				});
-
-			},
 
 			onAbrirRastreadoresComunicando: function () {
-
-				var ativos = this.getView().getModel("frota").getProperty("/ativos") || [];
-
-				var dados = ativos
-					.filter(function (a) {
-						return a.grupoAtual !== "Tags Digitais Não Habilitadas" &&
-							!a.mudo;
-					})
-					.map(function (a) {
-
-						return {
-							equipamento: String(
-								a.codigoOriginal || a.codigo || ""
-							)
-								.replace(/^0+/, "")
-								.slice(-8),
-
-							codigoOriginal: a.codigoOriginal || a.codigo,
-
-							local: a.local || ""
-						};
-					});
-				var oModel = new sap.ui.model.json.JSONModel({
-					itens: dados
-				});
-
-				var oTabela = new sap.m.Table({
-					sticky: ["ColumnHeaders"],
-					columns: [
-						new sap.m.Column({
-							header: new sap.m.Text({
-								text: "Equipamento"
-							})
-						}),
-						new sap.m.Column({
-							header: new sap.m.Text({
-								text: "Local de instalação"
-							})
-						})
-					]
-				});
-
-				oTabela.setModel(oModel);
-
-				oTabela.bindItems({
-					path: "/itens",
-					template: new sap.m.ColumnListItem({
-						cells: [
-							new sap.m.Link({
-								text: "{equipamento}",
-								press: this.onAbrirEquipamentoPopup.bind(this)
-							}),
-							new sap.m.Text({
-								text: "{local}"
-							})
-						]
-					})
-				});
-
-				var oDialog = new sap.m.Dialog({
-					title: "Rastreadores comunicando",
-					contentWidth: "1100px",
-					contentHeight: "600px",
-					draggable: true,
-					resizable: true,
-
-					content: [
-						oTabela
-					],
-
-					beginButton: new sap.m.Button({
-						text: "Excel",
-						icon: "sap-icon://excel-attachment",
-						press: function () {
-
-							var oSpreadsheet = new Spreadsheet({
-								workbook: {
-									columns: [
-										{
-											label: "Equipamento",
-											property: "equipamento"
-										},
-										{
-											label: "Local de instalação",
-											property: "local"
-										}
-									]
-								},
-								dataSource: dados,
-								fileName: "Rastreadores_Comunicando.xlsx"
-							});
-
-							oSpreadsheet.build().finally(function () {
-								oSpreadsheet.destroy();
-							});
-
-						}
-					}),
-
-					endButton: new sap.m.Button({
-						text: "OK",
-						press: function () {
-							oDialog.close();
-						}
-					}),
-
-					afterClose: function () {
-						oDialog.destroy();
-					}
-				});
-
-				oDialog.open();
-
+				this.abrirDetalhamento("comunicando");
 			},
+
+			/** Mesmo filtro do card: mudos habilitados + mudos com cadastro divergente. */
+			onAbrirRastreadoresMudos: function () {
+				this.abrirDetalhamento("semComunicacao");
+			},
+
+			onAbrirRastreadoresHabilitados: function () {
+				this.abrirDetalhamento("habilitados");
+			},
+
+			onAbrirCoberturaArvore: function () {
+				this.abrirDetalhamento("porFamilia");
+			},
+
+			onAbrirDivergentes: function () {
+				this.abrirDetalhamento("divergentes");
+			},
+
+			onAbrirGateways: function () {
+				this.abrirDetalhamento("gateways", true);
+			},
+
+			onAbrirEfetividade: function () {
+				this.abrirDetalhamento("efetividade");
+			},
+
+			/** Item da lista "por tipo": os rastreadores daquela familia. */
+			onAbrirArvoreTipo: function (oEvent) {
+				var contexto = oEvent.getSource().getBindingContext("frota");
+				if (!contexto) { return; }
+				this.abrirDetalhamento("familia", contexto.getProperty("familia"));
+			},
+
+			/** Excel das ultimas mudancas, exatamente como estao na tabela. */
+			onExportarMovimentacoes: function () {
+				this.exportarDetalhamento(
+					this.detalhamentos.movimentacoes(this.dadosDaFrota())
+				);
+			},
+
 			_aoEntrar: function () {
 
 				this._sincronizarPrefixos();
@@ -1090,7 +188,7 @@ sap.ui.define([
 				// nada (o que antes apontava para uma URL sem o arquivo de
 				// verdade e nunca resolvia, deixando este mapa sem montar).
 				var mapa = MapaLeaflet.criar(alvo, {
-					base: "satelite",
+					base: this.configuracoes.obter("/mapa/base") || "satelite",
 					zoom: 11,
 					zoomControl: false
 				});
@@ -1107,6 +205,11 @@ sap.ui.define([
 					that._abrirCerca(zona);
 				});
 
+				// Gateway no mapa: mesma lista do link de gateway nos popups.
+				this._mapa.aoClicarGateway(function (g) {
+					that.abrirGateway(g.identificador || g.id);
+				});
+
 				// Pinta ja com o que houver no modelo. Na primeira abertura a
 				// carga pode ainda estar em andamento — nesse caso as listas
 				// vem vazias e o aviso Frota.aoAtualizar repinta depois.
@@ -1118,6 +221,15 @@ sap.ui.define([
 						that._mapa.ajustar();
 					}
 				}, 200);
+			},
+
+			/** Base padrao do mapa trocada na guia Configuracoes. */
+			_aoMudarConfig: function (evento) {
+				var antes = evento.getParameter("anterior").mapa.base;
+				var agora = evento.getParameter("atual").mapa.base;
+				if (antes !== agora && this._mapa) {
+					this._mapa.trocarBase(agora);
+				}
 			},
 
 			onTrocarBase: function (evento) {
@@ -1140,7 +252,7 @@ sap.ui.define([
 				this._mapa.desenharAtivos(ativos, function (a) {
 					return that._posicaoDe(a);
 				}, function (a) {
-					that.navegarPara("RouteEquipamento", { codigo: a.codigo });
+					that.abrirFicha(a.codigo);
 				});
 
 				if (!this._enquadrou) {
@@ -1303,7 +415,7 @@ sap.ui.define([
 			onAbrirEquipamento: function (evento) {
 				var contexto = evento.getSource().getBindingContext("frota");
 				if (!contexto) { return; }
-				this.navegarPara("RouteEquipamento", { codigo: contexto.getProperty("codigo") });
+				this.abrirFicha(contexto.getProperty("codigo"));
 			},
 
 			paraPercentual: function (fracao) {
@@ -1326,6 +438,7 @@ sap.ui.define([
 
 			onExit: function () {
 				this.frota.pararDeOuvir(this._aoMudarModelo, this);
+				this.configuracoes.pararDeOuvir(this._aoMudarConfig, this);
 				if (this._mapa) { this._mapa.destruir(); this._mapa = null; }
 			}
 		});

@@ -1,0 +1,252 @@
+<mvc:View
+	controllerName="br.com.smartpcm.rastreamento.zrastreio.controller.Configuracoes"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core"
+	xmlns:l="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form"
+	height="100%">
+
+	<!--
+		Configuracoes do sistema. Tudo aqui e editado num RASCUNHO (modelo
+		`cfg`); so vale depois de "Salvar", que grava neste navegador e
+		aplica na hora, sem recarregar a pagina.
+	-->
+	<Page id="pagina" title="{i18n>navConfiguracoes}" enableScrolling="true" showFooter="true">
+		<content>
+			<VBox class="sapUiSmallMargin">
+				<Text text="{i18n>cfgSubtitulo}" class="valeKpiPe sapUiTinyMarginBottom" />
+
+				<MessageStrip
+					visible="{cfg>/_alterado}"
+					type="Information"
+					showIcon="true"
+					text="{i18n>cfgPendente}"
+					class="sapUiTinyMarginBottom" />
+
+				<l:Grid defaultSpan="XL6 L6 M12 S12" hSpacing="1" vSpacing="1">
+
+					<!-- Aparencia -->
+					<VBox class="valeCartao">
+						<Title text="{i18n>cfgAparencia}" level="H3" titleStyle="H6" />
+						<f:SimpleForm editable="true" layout="ResponsiveGridLayout"
+							labelSpanXL="5" labelSpanL="5" labelSpanM="5" labelSpanS="12"
+							columnsXL="1" columnsL="1" columnsM="1">
+							<f:content>
+								<Label text="{i18n>cfgTema}" />
+								<SegmentedButton selectedKey="{cfg>/tema}">
+									<items>
+										<SegmentedButtonItem key="sap_horizon"
+											icon="sap-icon://light-mode"
+											text="{i18n>cfgTemaClaro}" />
+										<SegmentedButtonItem key="sap_horizon_dark"
+											icon="sap-icon://dark-mode"
+											text="{i18n>cfgTemaEscuro}" />
+									</items>
+								</SegmentedButton>
+								<Label text="{i18n>cfgMenuExpandido}" />
+								<Switch state="{cfg>/menuExpandido}" customTextOn="Sim"
+									customTextOff="Não" />
+							</f:content>
+						</f:SimpleForm>
+					</VBox>
+
+					<!-- Mapa -->
+					<VBox class="valeCartao">
+						<Title text="{i18n>cfgMapa}" level="H3" titleStyle="H6" />
+						<f:SimpleForm editable="true" layout="ResponsiveGridLayout"
+							labelSpanXL="5" labelSpanL="5" labelSpanM="5" labelSpanS="12"
+							columnsXL="1" columnsL="1" columnsM="1">
+							<f:content>
+								<Label text="{i18n>cfgMapaBase}" />
+								<SegmentedButton selectedKey="{cfg>/mapa/base}">
+									<items>
+										<SegmentedButtonItem key="claro" text="{i18n>mapaBaseClaro}" />
+										<SegmentedButtonItem key="satelite"
+											text="{i18n>mapaBaseSatelite}" />
+									</items>
+								</SegmentedButton>
+								<Label text="{i18n>cfgPrefixoPadrao}" />
+								<ComboBox
+									selectedKey="{cfg>/prefixoPadrao}"
+									placeholder="{i18n>prefixoTodos}"
+									items="{ path: 'frota>/prefixos', templateShareable: false }">
+									<core:Item key="{frota>prefixo}"
+										text="{frota>prefixo} ({frota>total})" />
+								</ComboBox>
+								<Label text="" />
+								<Text text="{i18n>cfgPrefixoPadraoPe}" class="valeKpiPe" />
+							</f:content>
+						</f:SimpleForm>
+					</VBox>
+
+					<!-- Modo TV -->
+					<VBox class="valeCartao">
+						<Title text="{i18n>cfgTv}" level="H3" titleStyle="H6" />
+						<f:SimpleForm editable="true" layout="ResponsiveGridLayout"
+							labelSpanXL="5" labelSpanL="5" labelSpanM="5" labelSpanS="12"
+							columnsXL="1" columnsL="1" columnsM="1">
+							<f:content>
+								<Label text="{i18n>cfgTvTelas}" />
+								<VBox>
+									<CheckBox text="{i18n>navMapa}"
+										selected="{cfg>/tv/rotas/RouteMapa}" />
+									<CheckBox text="{i18n>navCatalogo}"
+										selected="{cfg>/tv/rotas/RouteCatalogo}" />
+									<CheckBox text="{i18n>navEmbarcados}"
+										selected="{cfg>/tv/rotas/RouteEmbarcados}" />
+									<CheckBox text="{i18n>navIndicadores}"
+										selected="{cfg>/tv/rotas/RouteIndicadores}" />
+									<CheckBox text="{i18n>navManutencao}"
+										selected="{cfg>/tv/rotas/RouteManutencao}" />
+								</VBox>
+								<Label text="{i18n>cfgTvIntervalo}" />
+								<StepInput value="{cfg>/tv/intervaloSeg}" min="10" max="600"
+									step="5"
+									width="10rem" description="s" />
+								<Label text="{i18n>cfgTvAleatorio}" />
+								<Switch state="{cfg>/tv/aleatorio}" customTextOn="Sim"
+									customTextOff="Não" />
+								<Label text="{i18n>cfgTvTelaCheia}" />
+								<Switch state="{cfg>/tv/telaCheia}" customTextOn="Sim"
+									customTextOff="Não" />
+							</f:content>
+						</f:SimpleForm>
+					</VBox>
+
+					<!-- Modo de avaliação do cadastro -->
+					<VBox class="valeCartao">
+						<Title text="{i18n>cfgModoCadastro}" level="H3" titleStyle="H6" />
+
+						<f:SimpleForm editable="true" layout="ResponsiveGridLayout"
+							labelSpanXL="5" labelSpanL="5" labelSpanM="5" labelSpanS="12"
+							columnsXL="1" columnsL="1" columnsM="1">
+
+							<f:content>
+
+								<Label text="{i18n>cfgModoCadastro}" />
+
+								<SegmentedButton selectedKey="{cfg>/modoCadastro}">
+									<items>
+										<SegmentedButtonItem
+											key="padrao"
+											text="{i18n>cfgModoCadastroPadrao}" />
+
+										<SegmentedButtonItem
+											key="piloto"
+											text="{i18n>cfgModoCadastroPiloto}" />
+									</items>
+								</SegmentedButton>
+
+								<Label text="" />
+
+								<Text
+									text="{i18n>cfgModoCadastroPe}"
+									class="valeKpiPe" />
+
+							</f:content>
+
+						</f:SimpleForm>
+					</VBox>
+
+					<!-- Regras de comunicacao -->
+					<VBox class="valeCartao">
+						<Title text="{i18n>cfgRegras}" level="H3" titleStyle="H6" />
+						<f:SimpleForm editable="true" layout="ResponsiveGridLayout"
+							labelSpanXL="5" labelSpanL="5" labelSpanM="5" labelSpanS="12"
+							columnsXL="1" columnsL="1" columnsM="1">
+							<f:content>
+								<Label text="{i18n>cfgSilencioInstalado}" />
+								<StepInput value="{cfg>/silencio/instalado}" min="1" max="365"
+									width="10rem" description="{i18n>cfgDias}" />
+								<Label text="{i18n>cfgSilencioPadrao}" />
+								<StepInput value="{cfg>/silencio/padrao}" min="1" max="365"
+									width="10rem" description="{i18n>cfgDias}" />
+								<Label text="" />
+								<Text text="{i18n>cfgSilencioPe}" class="valeKpiPe" />
+							</f:content>
+						</f:SimpleForm>
+					</VBox>
+
+					<!-- Dados e atualizacao -->
+					<VBox class="valeCartao">
+						<Title text="{i18n>cfgDados}" level="H3" titleStyle="H6" />
+						<f:SimpleForm editable="true" layout="ResponsiveGridLayout"
+							labelSpanXL="5" labelSpanL="5" labelSpanM="5" labelSpanS="12"
+							columnsXL="1" columnsL="1" columnsM="1">
+							<f:content>
+								<Label text="{i18n>cfgAtualizacao}" />
+								<StepInput value="{cfg>/atualizacaoMin}" min="0" max="240"
+									width="10rem" description="min" />
+								<Label text="" />
+								<Text text="{i18n>cfgAtualizacaoPe}" class="valeKpiPe" />
+								<Label text="{i18n>cfgFonte}" />
+								<Text text="{sis>/fonte}" />
+								<Label text="{i18n>cfgUltimaCarga}" />
+								<HBox alignItems="Center">
+									<Text
+										text="{ path: 'frota>/atualizadoEm', formatter: '.formatarData' }"
+										class="sapUiSmallMarginEnd" />
+									<Button icon="sap-icon://refresh" text="{i18n>atualizar}"
+										press=".onAtualizarAgora" />
+								</HBox>
+							</f:content>
+						</f:SimpleForm>
+					</VBox>
+
+					<!-- Relatorios -->
+					<VBox class="valeCartao">
+						<Title text="{i18n>cfgRelatorios}" level="H3" titleStyle="H6" />
+						<f:SimpleForm editable="true" layout="ResponsiveGridLayout"
+							labelSpanXL="5" labelSpanL="5" labelSpanM="5" labelSpanS="12"
+							columnsXL="1" columnsL="1" columnsM="1">
+							<f:content>
+								<Label text="{i18n>cfgAutor}" />
+								<Input value="{cfg>/autor}" placeholder="{i18n>cfgAutorDica}"
+									maxLength="80" />
+								<Label text="" />
+								<Text text="{i18n>cfgAutorPe}" class="valeKpiPe" />
+							</f:content>
+						</f:SimpleForm>
+					</VBox>
+
+					<!-- Sobre o sistema -->
+					<VBox class="valeCartao">
+						<layoutData>
+							<l:GridData span="XL12 L12 M12 S12" />
+						</layoutData>
+						<Title text="{i18n>cfgSobre}" level="H3" titleStyle="H6" />
+						<f:SimpleForm editable="false" layout="ResponsiveGridLayout"
+							labelSpanXL="3" labelSpanL="3" labelSpanM="4" labelSpanS="12"
+							columnsXL="2" columnsL="2" columnsM="1">
+							<f:content>
+								<Label text="{i18n>cfgVersaoApp}" />
+								<Text text="{sis>/versaoApp}" />
+								<Label text="{i18n>cfgVersaoUi5}" />
+								<Text text="{sis>/versaoUi5}" />
+								<Label text="{i18n>cfgModo}" />
+								<Text
+									text="{= ${frota>/simulado} ? 'Simulado (dados de exemplo)' : 'Backend real' }" />
+								<Label text="{i18n>cfgTotais}" />
+								<Text
+									text="{frota>/resumo/habilitados} rastreadores habilitados · {frota>/gateways/length} gateways · {frota>/zonas/length} cercas" />
+								<Label text="{i18n>cfgArmazenamento}" />
+								<Text text="{i18n>cfgArmazenamentoPe}" />
+							</f:content>
+						</f:SimpleForm>
+					</VBox>
+				</l:Grid>
+			</VBox>
+		</content>
+		<footer>
+			<OverflowToolbar>
+				<Button icon="sap-icon://reset" text="{i18n>cfgRestaurar}"
+					press=".onRestaurarPadroes" />
+				<ToolbarSpacer />
+				<Button text="{i18n>cfgDescartar}" enabled="{cfg>/_alterado}" press=".onDescartar" />
+				<Button type="Emphasized" icon="sap-icon://save" text="{i18n>cfgSalvar}"
+					enabled="{cfg>/_alterado}" press=".onSalvar" />
+			</OverflowToolbar>
+		</footer>
+	</Page>
+</mvc:View>

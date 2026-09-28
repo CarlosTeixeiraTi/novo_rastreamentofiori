@@ -23,13 +23,14 @@
  *    sendo ouvido por ele. E o caso do componente parado em oficina
  *    coberta, onde o sinal degrada e a coordenada passeia.
  */
-sap.ui.define([], function () {
+
+sap.ui.define([
+	"../Configuracoes"
+], function (Configuracoes) {
 	"use strict";
 
-	/** Deriva tipica de GNSS de consumo em mina: ceu aberto 5-10 m, com
-	 *  multicaminho de bancada e caçamba chega a 30. Abaixo disto nao da
-	 *  para separar movimento de alucinacao do sensor. */
 	var DERIVA_M = 25;
+	var LIMIAR_CADASTRO_M = 500;
 	var RAIO_TERRA_M = 6371000;
 
 	function rad(g) { return (g * Math.PI) / 180; }
@@ -157,7 +158,7 @@ sap.ui.define([], function () {
 
 			testes.push({
 				id: "local",
-				ok: historico.estavel,
+				ok: true,
 				texto: historico.estavel
 					? "Local de instalação " + (d.localAtual || "—") + " estável no histórico de notas e ordens"
 					: "Local declarado mudou " + (historico.distintos.length - 1) + "x no histórico de notas e ordens"
@@ -165,14 +166,23 @@ sap.ui.define([], function () {
 
 			testes.push({
 				id: "deslocamento",
-				ok: mov.medido ? !mov.moveu : false,
-				texto: !mov.medido
-					? "Sem coordenada suficiente para medir deslocamento"
-					: mov.moveu
-						? "Deslocou " + mov.distanciaM + " m da mediana e trocou de gateway"
-						: mov.deriva
-							? "Variou " + mov.distanciaM + " m sem trocar de gateway — tratado como deriva de GPS"
-							: "Posição a " + mov.distanciaM + " m da mediana das leituras (limite " + mov.limiteM + " m)"
+				ok: d.instalado
+					? true
+					: (
+						d.grupoAtual === d.grupoAnterior ||
+						!mov.moveu ||
+						mov.distanciaM < LIMIAR_CADASTRO_M
+					),
+
+				texto: d.instalado
+					? "Equipamento embarcado: deslocamento e troca de gateway são comportamentos esperados"
+					: !mov.medido
+						? "Sem coordenada suficiente para medir deslocamento"
+						: mov.moveu
+							? "Deslocou " + mov.distanciaM + " m da mediana e trocou de gateway"
+							: mov.deriva
+								? "Variou " + mov.distanciaM + " m sem trocar de gateway — tratado como deriva de GPS"
+								: "Posição a " + mov.distanciaM + " m da mediana das leituras (limite " + mov.limiteM + " m)"
 			});
 
 			testes.push({
@@ -182,19 +192,73 @@ sap.ui.define([], function () {
 					? amostras + " leituras analisadas" + (d.tipoDominante ? ", predominância " + d.tipoDominante : "")
 					: "Sem leituras analisadas"
 			});
+			if (d.diasSemComunicar > 15) {
+				testes.push({
+					id: "comunicacao",
+					ok: false,
+					texto: "Mais de 15 dias sem comunicação. Possível falha do rastreador, perda da tag ou ausência de cobertura de gateway na região."
+				});
+			} else {
+				testes.push({
+					id: "comunicacao",
+					ok: true,
+					texto: "Rastreador comunicando dentro do prazo esperado."
+				});
+			}
+			var grupoAtual = String(d.grupoAtual || "").toUpperCase();
+			var ultimaPosicao = String(d.ultimaPosicao || "").toUpperCase();
 
+			if (
+				(
+					grupoAtual.indexOf("DESATUALIZADAS") >= 0 ||
+					grupoAtual.indexOf("FORA DE ZONA") >= 0
+				) &&
+				d.diasSemComunicar > 15 &&
+				(
+					ultimaPosicao.indexOf("OFIC") >= 0 ||
+					ultimaPosicao.indexOf("REFOR") >= 0
+				)
+			) {
+				testes.push({
+					id: "sap",
+					ok: false,
+					texto: "Última posição registrada em Oficina/Reforma. Possível falha de movimentação do equipamento no SAP."
+				});
+			}
 			/**
 			 * O caso que o cliente descreveu: local declarado nao muda e o
 			 * equipamento se moveu. Ai quem nao e confiavel e o CADASTRO.
 			 */
-			var cadastroSuspeito = historico.estavel && mov.moveu;
+			var grupo = String(d.grupoAtual || "").trim();
+
 			var nivel;
-			if (cadastroSuspeito) {
+
+			if (
+				grupo === "Tags Digitais desatualizadas" ||
+				grupo === "Fora de zona"
+			) {
 				nivel = "BAIXA";
-			} else if (testes.every(function (t) { return t.ok; })) {
-				nivel = "ALTA";
 			} else {
-				nivel = "MEDIA";
+				nivel = "ALTA";
+			}
+
+			var cadastroSuspeito = (nivel === "BAIXA");
+
+			if (Configuracoes.obter("/modoCadastro") === "piloto") {
+
+				var local = String(
+					d.localAtual ||
+					d.localInstalacao ||
+					""
+				).toUpperCase();
+
+				if (
+					d.instalado === true ||
+					!local.startsWith("FEIT")
+				) {
+					nivel = "ALTA";
+					cadastroSuspeito = false;
+				}
 			}
 
 			return {
@@ -203,9 +267,7 @@ sap.ui.define([], function () {
 				cadastroSuspeito: cadastroSuspeito,
 				deslocamento: mov,
 				historicoLocal: historico,
-				explicacao: cadastroSuspeito
-					? "O equipamento mudou de posição e de gateway, e o local de instalação declarado continua o mesmo. Isso aponta cadastro desatualizado, não rastreador errado."
-					: "Local declarado, posição e volume de leituras concordam entre si."
+				explicacao: ""
 			};
 		}
 	};

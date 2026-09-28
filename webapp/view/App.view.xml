@@ -40,8 +40,9 @@
 					type="Transparent"
 					tooltip="{i18n>temaAlternar}"
 					press=".onAlternarTema" />
-				<!-- Modo TV: rotaciona SO entre as telas que tem mapa. No
-				     projeto legado ele passava por todas e virou reclamacao. -->
+				<!-- Modo TV: sorteia entre Mapa operacional, Catalogo de ativos,
+				     Componentes embarcados, Indicadores e Manutencao e reforma
+				     (telas, intervalo e ordem ajustaveis em Configuracoes). -->
 				<Button
 					id="btnTv"
 					icon="sap-icon://media-play"
@@ -80,6 +81,8 @@
 					<tnt:NavigationList>
 						<tnt:NavigationListItem text="{i18n>navGateways}" icon="sap-icon://iphone"
 							key="gateways" />
+						<tnt:NavigationListItem text="{i18n>navConfiguracoes}"
+							icon="sap-icon://action-settings" key="configuracoes" />
 						<tnt:NavigationListItem text="{i18n>navSobre}" icon="sap-icon://hint"
 							key="sobre" />
 					</tnt:NavigationList>

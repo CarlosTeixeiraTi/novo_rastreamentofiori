@@ -1,58 +1,181 @@
 <mvc:View controllerName="br.com.smartpcm.rastreamento.zrastreio.controller.Relatorios"
-	xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" height="100%">
+	xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core"
+	height="100%">
 	<Page id="pagina" title="{i18n>navRelatorios}" enableScrolling="true">
 		<content>
-			<VBox class="sapUiSmallMargin">
-				<Text text="{i18n>relSubtitulo}" class="valeKpiPe sapUiTinyMarginBottom" />
+			<IconTabBar id="abasRelatorios" selectedKey="{tela>/aba}" select=".onTrocarAba"
+				expandable="false" applyContentPadding="false" class="sapUiResponsiveContentPadding">
+				<items>
 
-				<l:Grid defaultSpan="XL3 L3 M12 S12" hSpacing="1" vSpacing="1">
+					<!-- ============ relatorios padrao (como antes) ============ -->
+					<IconTabFilter key="padrao" text="{i18n>relAbaPadrao}" icon="sap-icon://document-text">
+						<VBox class="sapUiSmallMargin">
+							<Text text="{i18n>relSubtitulo}" class="valeKpiPe sapUiTinyMarginBottom" />
 
-					<!-- lista dos relatorios, com a contagem de cada um -->
-					<List
-						id="listaRelatorios"
-						items="{tela>/relatorios}"
-						mode="SingleSelectMaster"
-						selectionChange=".onSelecionar"
-						class="valeCartao">
+							<l:Grid defaultSpan="XL3 L3 M12 S12" hSpacing="1" vSpacing="1">
 
-						<items>
-							<ObjectListItem
-								title="{tela>titulo}"
-								number="{tela>total}"
-								numberState="{= ${tela>total} > 0 ? 'Warning' : 'Success' }"
-								intro="{tela>pergunta}" />
-						</items>
+								<!-- lista dos relatorios, com a contagem de cada um -->
+								<List
+									id="listaRelatorios"
+									items="{tela>/relatorios}"
+									mode="SingleSelectMaster"
+									selectionChange=".onSelecionar"
+									class="valeCartao">
 
-					</List>
+									<items>
+										<ObjectListItem
+											title="{tela>titulo}"
+											number="{tela>total}"
+											numberState="{= ${tela>total} > 0 ? 'Warning' : 'Success' }"
+											intro="{tela>pergunta}" />
+									</items>
 
-					<VBox class="valeCartao">
-						<layoutData>
-							<l:GridData span="XL9 L9 M12 S12" />
-						</layoutData>
-						<HBox justifyContent="SpaceBetween" alignItems="Center"
-							class="sapUiSmallPadding">
-							<VBox>
-								<Title text="{tela>/atual/titulo}" level="H3" titleStyle="H6" />
-								<!-- a frase que diz o que fazer com a lista -->
-								<Text text="{tela>/atual/acao}" class="valeKpiPe" />
-							</VBox>
-							<Button icon="sap-icon://excel-attachment" text="{i18n>exportar}"
-								type="Emphasized"
-								enabled="{= ${tela>/linhas}.length > 0 }" press=".onExportar" />
-						</HBox>
-						<Table
-							id="tabela"
-							growing="true"
-							growingThreshold="80"
-							sticky="ColumnHeaders"
-							noDataText="{i18n>relNadaAReportar}">
+								</List>
 
-							<columns />
+								<VBox class="valeCartao">
+									<layoutData>
+										<l:GridData span="XL9 L9 M12 S12" />
+									</layoutData>
+									<HBox justifyContent="SpaceBetween" alignItems="Center"
+										class="sapUiSmallPadding">
+										<VBox>
+											<Title text="{tela>/atual/titulo}" level="H3" titleStyle="H6" />
+											<!-- a frase que diz o que fazer com a lista -->
+											<Text text="{tela>/atual/acao}" class="valeKpiPe" />
+										</VBox>
+										<Button icon="sap-icon://excel-attachment" text="{i18n>exportar}"
+											type="Emphasized"
+											enabled="{= ${tela>/linhas}.length > 0 }" press=".onExportar" />
+									</HBox>
+									<Table
+										id="tabela"
+										growing="true"
+										growingThreshold="80"
+										sticky="ColumnHeaders"
+										noDataText="{i18n>relNadaAReportar}">
 
-						</Table>
-					</VBox>
-				</l:Grid>
-			</VBox>
+										<columns />
+
+									</Table>
+								</VBox>
+							</l:Grid>
+						</VBox>
+					</IconTabFilter>
+
+					<!-- ============ relatorios personalizados ============ -->
+					<IconTabFilter key="personalizados" text="{i18n>relAbaPersonalizados}"
+						icon="sap-icon://customize" count="{= ${pers>/lista}.length }">
+						<VBox class="sapUiSmallMargin">
+
+							<MessageStrip
+								visible="{pers>/local}"
+								type="Information" showIcon="true"
+								text="{i18n>persLocal}"
+								class="sapUiTinyMarginBottom" />
+							<MessageStrip
+								visible="{= !!${pers>/erroLista} }"
+								type="Error" showIcon="true"
+								text="{pers>/erroLista}"
+								class="sapUiTinyMarginBottom" />
+
+							<l:Grid defaultSpan="XL3 L3 M12 S12" hSpacing="1" vSpacing="1">
+
+								<!-- biblioteca -->
+								<VBox class="valeCartao">
+									<OverflowToolbar style="Clear">
+										<MenuButton text="{i18n>persCriar}" icon="sap-icon://add"
+											type="Emphasized">
+											<menu>
+												<Menu itemSelected=".onCriar">
+													<MenuItem key="assistente" text="{i18n>persCriarAssistente}"
+														icon="sap-icon://wizard" />
+													<MenuItem key="editor" text="{i18n>persCriarEditor}"
+														icon="sap-icon://edit" />
+													<MenuItem key="modelo" text="{i18n>persCriarModelo}"
+														icon="sap-icon://copy" />
+													<MenuItem key="importar" text="{i18n>persImportar}"
+														icon="sap-icon://upload" />
+												</Menu>
+											</menu>
+										</MenuButton>
+										<ToolbarSpacer />
+										<Button icon="sap-icon://refresh" type="Transparent"
+											tooltip="{i18n>persRecarregar}" press=".onRecarregarPersonalizados" />
+									</OverflowToolbar>
+									<SearchField width="100%" placeholder="{i18n>persBuscar}"
+										liveChange=".onBuscarPersonalizado" class="sapUiTinyMarginBeginEnd" />
+									<List
+										id="listaPersonalizados"
+										items="{ path: 'pers>/lista', sorter: { path: 'nome' } }"
+										mode="SingleSelectMaster"
+										selectionChange=".onSelecionarPersonalizado"
+										busy="{pers>/carregando}"
+										noDataText="{i18n>persNenhum}">
+										<items>
+											<StandardListItem
+												title="{pers>nome}"
+												description="{pers>_resumo}"
+												info="{pers>autor}"
+												icon="{= ${pers>tipo} === 'metrica' ? 'sap-icon://kpi-managing-my-area' : (${pers>tipo} === 'tabela' ? 'sap-icon://pivot' : 'sap-icon://list') }"
+												wrapping="true" />
+										</items>
+									</List>
+								</VBox>
+
+								<!-- resultado -->
+								<VBox class="valeCartao">
+									<layoutData>
+										<l:GridData span="XL9 L9 M12 S12" />
+									</layoutData>
+
+									<VBox visible="{= !${pers>/atual} }" alignItems="Center"
+										class="sapUiLargeMarginTop sapUiLargeMarginBottom">
+										<core:Icon src="sap-icon://customize" size="3rem"
+											class="sapUiSmallMarginBottom" />
+										<Title text="{i18n>persVazioTitulo}" level="H3" />
+										<Text text="{i18n>persVazioTexto}" textAlign="Center"
+											class="valeKpiPe sapUiTinyMarginTop sapUiSmallMarginBottom" />
+										<HBox>
+											<Button text="{i18n>persCriarAssistente}" icon="sap-icon://wizard"
+												type="Emphasized" press=".onAbrirAssistente"
+												class="sapUiTinyMarginEnd" />
+											<Button text="{i18n>persCriarModelo}" icon="sap-icon://copy"
+												press=".onEscolherModelo" />
+										</HBox>
+									</VBox>
+
+									<VBox visible="{= !!${pers>/atual} }">
+										<OverflowToolbar style="Clear" class="sapUiTinyMarginTop">
+											<VBox>
+												<Title text="{pers>/atual/nome}" level="H3" titleStyle="H5"
+													wrapping="true" />
+												<Text text="{pers>/atual/descricao}" class="valeKpiPe"
+													visible="{= !!${pers>/atual/descricao} }" />
+											</VBox>
+											<ToolbarSpacer />
+											<Button icon="sap-icon://excel-attachment" text="{i18n>exportar}"
+												type="Emphasized" press=".onExportarPersonalizado"
+												enabled="{pers>/podeExportar}" />
+											<Button icon="sap-icon://edit" text="{i18n>persEditar}"
+												press=".onEditarPersonalizado" />
+											<Button icon="sap-icon://copy" tooltip="{i18n>persDuplicar}"
+												press=".onDuplicarPersonalizado" />
+											<Button icon="sap-icon://download" tooltip="{i18n>persExportarDef}"
+												press=".onExportarDefinicao" />
+											<Button icon="sap-icon://delete" tooltip="{i18n>persExcluir}"
+												type="Reject" press=".onExcluirPersonalizado" />
+										</OverflowToolbar>
+										<Text
+											text="{pers>/rodape}"
+											class="valeKpiPe sapUiSmallMarginBeginEnd sapUiTinyMarginBottom" />
+										<VBox id="resultadoPersonalizado" class="sapUiSmallMarginBeginEnd sapUiSmallMarginBottom" />
+									</VBox>
+								</VBox>
+							</l:Grid>
+						</VBox>
+					</IconTabFilter>
+				</items>
+			</IconTabBar>
 		</content>
 	</Page>
 </mvc:View>

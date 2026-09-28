@@ -187,6 +187,9 @@ sap.ui.define([
 
 	Mapa.prototype.aoClicarCerca = function (fn) { this._aoClicarCerca = fn; };
 
+	/** Clique no gateway: com callback, abre a lista dele em vez do balao. */
+	Mapa.prototype.aoClicarGateway = function (fn) { this._aoClicarGateway = fn; };
+
 	Mapa.prototype.desenharGateways = function (lista) {
 		this._gateways.clearLayers();
 		var zoom = this._mapa.getZoom();
@@ -203,11 +206,15 @@ sap.ui.define([
 				fillOpacity: 0.9,
 				weight: 1
 			});
-			marcador.bindPopup(
-				"<div class=\"valePopup\"><b>" + escapar(g.identificador || g.id) + "</b>" +
-				"<div class=\"valePopup__linha\"><span>Localidade</span><b>" + escapar(g.localidade || "—") + "</b></div>" +
-				"<div class=\"valePopup__linha\"><span>Condição</span><b>" + escapar(g.condicao || "—") + "</b></div></div>"
-			);
+			if (that._aoClicarGateway) {
+				marcador.on("click", function () { that._aoClicarGateway(g); });
+			} else {
+				marcador.bindPopup(
+					"<div class=\"valePopup\"><b>" + escapar(g.identificador || g.id) + "</b>" +
+					"<div class=\"valePopup__linha\"><span>Localidade</span><b>" + escapar(g.localidade || "—") + "</b></div>" +
+					"<div class=\"valePopup__linha\"><span>Condição</span><b>" + escapar(g.condicao || "—") + "</b></div></div>"
+				);
+			}
 
 			marcador.bindTooltip(
 				escapar(g.identificador || g.id),

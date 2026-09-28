@@ -16,6 +16,7 @@ sap.ui.define([
 			this.getView().setModel(this._tela, "tela");
 
 			this.frota.aoAtualizar(this._pintar, this);
+			this.configuracoes.aoAlterar(this._aoMudarConfig, this);
 			this.roteador().getRoute("RouteMapa").attachPatternMatched(this._aoEntrar, this);
 			this.byId("mapaCheio").attachAfterRendering(this._montar, this);
 		},
@@ -34,35 +35,67 @@ sap.ui.define([
 			var alvo = dominio.querySelector(".valeMapa") || dominio;
 
 			// ampliado: satelite em brilho cheio, sem o veu da miniatura
-			this._mapa = MapaLeaflet.criar(alvo, { base: "satelite", zoom: 12 });
+			this._mapa = MapaLeaflet.criar(alvo, {
+				base: this.configuracoes.obter("/mapa/base") || "satelite",
+				zoom: 12
+			});
+
+			// Gateway clicado: equipamentos lidos por ele, com EXCEL e link
+			// para a ficha — o mesmo popup das demais telas.
+			var that = this;
+			this._mapa.aoClicarGateway(function (g) {
+				that.abrirGateway(g.identificador || g.id);
+			});
 			this._pintar();
 		},
 
 		_pintar: function () {
 			if (!this._mapa) { return; }
+
 			var m = this.frota.modelo();
 			var cercas = m.getProperty("/zonas") || [];
 			var antenas = m.getProperty("/gateways") || [];
-			var ativos = m.getProperty("/ativos") || [];
+
+			var ativos = (m.getProperty("/ativos") || []).filter(function (a) {
+				return a.grupoAtual !== "Tags Digitais Não Habilitadas";
+			});
+
 			var that = this;
 
-			this._mapa.desenharCercas(this.byId("btnCercas").getPressed() ? cercas : []);
-			this._mapa.desenharGateways(this.byId("btnGateways").getPressed() ? antenas : []);
-			this._mapa.desenharAtivos(ativos, function (a) {
-				return that._posicaoDe(a);
-			}, function (a) {
-				that._tela.setProperty("/selecionado", a);
-			});
+			this._mapa.desenharCercas(
+				this.byId("btnCercas").getPressed() ? cercas : []
+			);
+
+			this._mapa.desenharGateways(
+				this.byId("btnGateways").getPressed() ? antenas : []
+			);
+
+			this._mapa.desenharAtivos(
+				ativos,
+				function (a) {
+					return that._posicaoDe(a);
+				},
+				function (a) {
+					that._tela.setProperty("/selecionado", a);
+				}
+			);
 
 			if (!this._enquadrou) {
 				var caixa = zonas.enquadrar(
-					cercas.reduce(function (acc, z) { return acc.concat(z.pontos); }, []),
-					antenas.map(function (g) { return g.posicao; })
+					cercas.reduce(function (acc, z) {
+						return acc.concat(z.pontos);
+					}, []),
+					antenas.map(function (g) {
+						return g.posicao;
+					})
 				);
-				if (caixa) { this._mapa.enquadrar(caixa); this._enquadrou = true; }
+
+				if (caixa) {
+					this._mapa.enquadrar(caixa);
+					this._enquadrou = true;
+				}
 			}
 		},
-
 		_posicaoDe: function (ativo) {
 			var detalhe = this.frota.detalhe(ativo.codigo);
 			if (detalhe && detalhe.posicao) { return detalhe.posicao; }
@@ -71,6 +104,13 @@ sap.ui.define([
 				return String(x.nome || "").toUpperCase() === ativo.veiculo;
 			})[0];
 			return v ? v.posicao : null;
+		},
+
+		/** Base padrao do mapa trocada na guia Configuracoes. */
+		_aoMudarConfig: function (evento) {
+			var antes = evento.getParameter("anterior").mapa.base;
+			var agora = evento.getParameter("atual").mapa.base;
+			if (antes !== agora && this._mapa) { this._mapa.trocarBase(agora); }
 		},
 
 		onTrocarBase: function (evento) {
@@ -103,7 +143,7 @@ sap.ui.define([
 
 		onAbrirFicha: function () {
 			var a = this._tela.getProperty("/selecionado");
-			if (a) { this.navegarPara("RouteEquipamento", { codigo: a.codigo }); }
+			if (a) { this.abrirFicha(a.codigo); }
 		},
 
 		onReduzir: function () {
@@ -112,6 +152,7 @@ sap.ui.define([
 
 		onExit: function () {
 			this.frota.pararDeOuvir(this._pintar, this);
+			this.configuracoes.pararDeOuvir(this._aoMudarConfig, this);
 			if (this._mapa) { this._mapa.destruir(); this._mapa = null; }
 		}
 	});

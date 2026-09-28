@@ -2,8 +2,9 @@ sap.ui.define([
 	"./BaseController",
 	"../service/MapaLeaflet",
 	"sap/ui/model/json/JSONModel",
-	"sap/m/MessageToast"
-], function (BaseController, MapaLeaflet, JSONModel, MessageToast) {
+	"sap/m/MessageToast",
+	"sap/ui/core/routing/History"
+], function (BaseController, MapaLeaflet, JSONModel, MessageToast, History) {
 	"use strict";
 
 	return BaseController.extend("br.com.smartpcm.rastreamento.zrastreio.controller.Equipamento", {
@@ -100,7 +101,63 @@ sap.ui.define([
 		},
 
 		onVerNoMapa: function () { this.navegarPara("RouteMapa"); },
-		onVoltar: function () { this.navegarPara("RouteCatalogo"); },
+
+		/**
+		 * Volta para a tela de onde a ficha foi aberta (Sala, Manutencao,
+		 * um popup de qualquer tela...). Sem historico, cai no Catalogo.
+		 */
+		onVoltar: function () {
+			if (History.getInstance().getPreviousHash() !== undefined) {
+				window.history.go(-1);
+				return;
+			}
+			this.navegarPara("RouteCatalogo");
+		},
+
+		/* --- itens clicaveis e exportacoes da ficha --- */
+
+		onAbrirGatewayAtual: function () {
+			var gateway = this._tela.getProperty("/ativo/gateway");
+			if (gateway) { this.abrirGateway(gateway); }
+		},
+
+		onAbrirGatewayDaLeitura: function (evento) {
+			var gateway = evento.getSource().getBindingContext("tela").getProperty("gateway");
+			if (gateway) { this.abrirGateway(gateway); }
+		},
+
+		/** Familia da arvore do veiculo: os componentes rastreados dela. */
+		onAbrirFamiliaDoVeiculo: function (evento) {
+			var contexto = evento.getSource().getBindingContext("tela");
+			this.abrirDetalhamento("veiculoFamilia", this._tela.getProperty("/ativo/veiculo"), contexto.getProperty("familia"));
+		},
+
+		_sufixo: function () {
+			return String(this._tela.getProperty("/ativo/codigoOriginal") || this._codigo || "").replace(/^0+/, "");
+		},
+
+		onExportarHistorico: function () {
+			this.exportarDetalhamento(this.detalhamentos.historico(this._tela.getData()));
+		},
+
+		onExportarNotas: function () {
+			var def = this.detalhamentos.notas(null, this._tela.getProperty("/notas"));
+			def.arquivo = "Notas_" + this._sufixo();
+			this.exportarDetalhamento(def);
+		},
+
+		onExportarOrdens: function () {
+			var def = this.detalhamentos.ordens(null, this._tela.getProperty("/ordens"));
+			def.arquivo = "Ordens_" + this._sufixo();
+			this.exportarDetalhamento(def);
+		},
+
+		onExportarArvore: function () {
+			var veiculo = this._tela.getProperty("/ativo/veiculo") || "";
+			this.exportarDetalhamento(this.detalhamentos.familiasDoVeiculo(
+				this.dadosDaFrota(), veiculo, this._tela.getProperty("/arvore")
+			));
+		},
 
 		estadoDaConfianca: function (nivel) {
 			if (nivel === "ALTA") { return "Success"; }

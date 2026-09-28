@@ -73,23 +73,32 @@
 
     <!-- Tema salvo aplicado ANTES do bootstrap: evita carregar o claro e
          trocar para o escuro depois (flash + CSS carregado duas vezes). -->
+
+
     <script>
         (function () {
             try {
-                var t = window.localStorage.getItem("zrastreio:tema");
-                if (t === "sap_horizon" || t === "sap_horizon_dark") {
-                    window["sap-ui-config"] = Object.assign(window["sap-ui-config"] || {}, { theme: t });
-                }
-            } catch (e) { /* sem storage: usa o tema do bootstrap */ }
+                var tema = localStorage.getItem("zrastreio:tema") || "sap_horizon";
+
+                window["sap-ui-config"] = {
+                    theme: tema
+                };
+
+            } catch (e) {
+
+                window["sap-ui-config"] = {
+                    theme: "sap_horizon"
+                };
+
+            }
         })();
     </script>
 
-    <!-- SAP UI5 Bootstrap-->
-        <script id="sap-ui-bootstrap" src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
-            data-sap-ui-theme="sap_horizon" data-sap-ui-resource-roots='{"br.com.smartpcm.rastreamento.zrastreio":"./"}'
-            data-sap-ui-on-init="module:sap/ui/core/ComponentSupport" data-sap-ui-compat-version="edge"
-            data-sap-ui-frame-options="trusted">
-            </script>
+    <script id="sap-ui-bootstrap" src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
+        data-sap-ui-resource-roots='{"br.com.smartpcm.rastreamento.zrastreio":"./"}'
+        data-sap-ui-on-init="module:sap/ui/core/ComponentSupport" data-sap-ui-compat-version="edge"
+        data-sap-ui-frame-options="trusted">
+        </script>
 
 
 

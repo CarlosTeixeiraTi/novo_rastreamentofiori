@@ -303,13 +303,51 @@
 	height: 100%;
 }
 
-/* .valeCartaoConfianca {
-	min-height: 26.5rem;
-} */
 
 .valeCartaoConfianca,
 .valeCartaoManutencao {
 	min-height: 29.5rem;
 	max-height: 29.5rem;
 	overflow-y: auto;
+}
+.valeCardClicavel {
+    cursor: pointer;
+}
+
+.valeCardClicavel:hover {
+    transform: translateY(-2px);
+}
+/* ===== relatorios personalizados ===== */
+.valeRelNumero.sapMTitle { font-size: 2.75rem; font-weight: 700; line-height: 1.1; }
+.valeFarolVerde.sapMTitle { color: var(--sapPositiveColor); }
+.valeFarolAmarelo.sapMTitle { color: var(--sapCriticalColor); }
+.valeFarolVermelho.sapMTitle { color: var(--sapNegativeColor); }
+.valeLinhaTotal .sapMText, .valeLinhaTotal .sapMLnk, .valeLinhaTotal .sapMObjStatusText { font-weight: 700; }
+.valeLinhaTotal { background: var(--sapList_HeaderBackground); }
+.valeLinhaOutros .sapMText { font-style: italic; }
+.valeFiltroLinha { padding: 0.125rem 0; }
+.valeParcela .sapMPanelContent { padding: 0.5rem 1rem; }
+.valeEditorRelatorio .sapMDialogScrollCont, .valeAssistenteRelatorio .sapMDialogScrollCont { height: 100%; padding: 0; }
+
+/* barras em HTML (quando sap.viz nao carrega) */
+.valeBarras { display: flex; flex-direction: column; gap: 0.375rem; padding: 0.5rem 0; }
+.valeBarra { display: grid; grid-template-columns: minmax(6rem, 14rem) 1fr 5rem; align-items: center; gap: 0.5rem; font-size: 0.875rem; }
+.valeBarra__rotulo { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--sapTextColor); }
+.valeBarra__trilho { height: 0.875rem; background: var(--sapNeutralBackground, #eee); border-radius: 0.25rem; overflow: hidden; }
+.valeBarra__valor { display: block; height: 100%; background: var(--sapChart_OrderedColor_1, #0a6ed1); }
+.valeBarra__numero { text-align: right; font-variant-numeric: tabular-nums; color: var(--sapTextColor); }
+
+/* ---------------- Sala de Controle: linha de 7 cards ---------------- */
+.valeKpiGrade {
+	display: grid !important;
+	grid-template-columns: repeat(7, minmax(0, 1fr));
+	gap: 1rem;
+}
+
+@media (max-width: 1440px) {
+	.valeKpiGrade { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+@media (max-width: 900px) {
+	.valeKpiGrade { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

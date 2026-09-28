@@ -170,6 +170,13 @@
           ]
         },
         {
+          "name": "RouteConfiguracoes",
+          "pattern": "configuracoes",
+          "target": [
+            "TargetConfiguracoes"
+          ]
+        },
+        {
           "name": "RouteRastreamento",
           "pattern": "Rastreamento",
           "target": [
@@ -263,6 +270,13 @@
           "clearControlAggregation": false,
           "viewId": "relatorios",
           "viewName": "Relatorios"
+        },
+        "TargetConfiguracoes": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "configuracoes",
+          "viewName": "Configuracoes"
         }
       }
     },

@@ -123,6 +123,114 @@ o `World_Imagery` da Esri com o overlay `World_Boundaries_and_Places` por cima, 
 
 ---
 
+## Itens clicáveis → lista exportável para Excel
+
+O padrão nasceu na Sala de Controle e agora vale para todas as telas novas:
+**todo número ou item clicável abre um popup com a lista que o explica**, com
+busca, botão **EXCEL** (exporta exatamente o que está na lista, já filtrado) e
+**OK**. Dentro da lista:
+
+- **equipamento** é link para a ficha (`RouteEquipamento`). Se o equipamento
+  não tem rastreador (ou está fora do recorte de prefixo), aparece como texto,
+  porque a ficha abriria vazia. Ao seguir para a ficha, os popups fecham;
+- **gateway** é link para os equipamentos lidos por aquele gateway;
+- **família, veículo e parcela do índice** são links para a lista seguinte
+  (drill-down: veículo → árvore do veículo → componentes da família → ficha).
+
+| Tela | O que é clicável |
+|---|---|
+| Sala de Controle | 6 cards, famílias da árvore por tipo, gateways no mini-mapa, EXCEL das últimas mudanças |
+| Embarcados | 4 cards, famílias do veículo selecionado, EXCEL da árvore do veículo |
+| Indicadores | índice geral (composição), cada parcela, avanço do piloto |
+| Manutenção | 4 cards (notas, ordens, notas sem rastreador, cadastro divergente) |
+| Relatórios | colunas Equipamento, Veículo e Gateway |
+| Equipamento | gateway atual, gateways da linha do tempo, famílias da árvore; EXCEL da linha do tempo, notas, ordens e árvore |
+| Mapa | gateways |
+
+Onde fica:
+
+- `model/regras/detalhamentos.js`: **o que** cada lista mostra. É um módulo
+  puro, que lê o mesmo snapshot da frota que pinta os cards, então a lista
+  sempre bate com o número clicado. Testado em
+  `test/regras/detalhamentos.test.mjs` (`npm run test:detalhamentos`);
+- `service/RelatorioPopup.js`: **como** a lista aparece (popup, busca, links,
+  EXCEL);
+- `BaseController`: `tornarClicavel(id, fn)` para cards,
+  `abrirDetalhamento(nome, ...)`, `abrirFicha(codigo)` e `abrirGateway(id)`.
+
+Para tornar um novo item clicável, declare a lista em `detalhamentos.js` e
+chame `this.abrirDetalhamento("nomeDaLista")` no controller.
+
+## Relatórios personalizados
+
+Na tela **Relatórios**, a aba **Personalizados** permite que o usuário monte
+relatórios próprios sobre os mesmos dados das telas. Por isso o número de um
+relatório personalizado sempre bate com o de um card.
+
+**Três tipos**
+
+| Tipo | Para quê | Exemplo |
+|---|---|---|
+| **Métrica** | Parcelas P1…Pn (fonte + condições + contagem, soma, média, mín, máx, distintos ou verdadeiros) combinadas por uma fórmula | `P1 / P2` → "18 / 87 = 20,7%" |
+| **Tabela dinâmica** | 1 ou 2 níveis de linhas, coluna cruzada opcional, vários valores, % do total, top N (o restante vira "Outros"), total | Rastreadores pelos 4 primeiros caracteres do local: FEIT 37 (42,5%) · FEMN 19 (21,8%)… |
+| **Lista** | Registros filtrados com as colunas e a ordem escolhidas | Rastreadores mudos há mais de 30 dias |
+
+- **Fórmula**: aceita `+ - * / ( )`, números com ponto e as funções `min`, `max`
+  e `abs`. É interpretada sem `eval`. Divisão por zero dá "não medido", nunca 0%.
+- **Métrica por grupo**: a mesma métrica, com uma linha por prefixo, família,
+  situação etc.
+- **Metas**: faixas de verde e amarelo, para os sentidos "maior é melhor" e
+  "menor é melhor".
+- **Agrupamentos**: valor inteiro, primeiros ou últimos N caracteres, faixas
+  numéricas, dia, mês ou ano.
+- **Gráfico**: barras, colunas, pizza ou linha, com `sap.viz`. Se a biblioteca
+  não carregar, o gráfico sai como barras simples em HTML.
+- **Todo número é clicável** e abre os registros por trás dele, com EXCEL e
+  link para a ficha do equipamento. O resultado inteiro também exporta para
+  Excel.
+
+**Duas formas de criar**
+
+- **Assistente**, em 5 passos:
+  1. o que ver;
+  2. sobre quais dados;
+  3. o que calcular;
+  4. como apresentar;
+  5. nome e pré-visualização.
+
+  O próximo passo só é liberado quando o atual está completo. O que o
+  assistente monta pode ser aberto no editor completo.
+- **Editor completo**, com a pré-visualização recalculada a cada alteração.
+
+Também dá para começar de **8 modelos prontos**, entre eles os dois exemplos
+do pedido, e **importar ou exportar a definição (.json)** para levar um
+relatório de um ambiente a outro.
+
+**Onde fica cada parte**
+
+| Arquivo | Papel |
+|---|---|
+| `model/regras/campos.js` | catálogo de fontes, campos, operadores, agregações e agrupamentos |
+| `model/regras/relatorioPersonalizado.js` | motor: filtros, agregação, fórmula, tabela dinâmica, metas, drill-down e modelos |
+| `model/regras/editorRelatorio.js` | estado do editor e do assistente |
+| `service/RelatoriosSalvos.js` | gravação: API_Hana `/relatorios`; no modo simulado, o navegador |
+| `service/ResultadoRelatorio.js`, `service/GraficoRelatorio.js` | desenho do resultado e do gráfico |
+| `controller/personalizados/Personalizados.js` | a aba, o editor e o assistente |
+| `view/personalizados/*.fragment.xml` | editor e assistente |
+
+Os testes do motor e do assistente (`npm run test:personalizados`) rodam o
+`Frota.js` de verdade sobre as fixtures (`test/regras/frotaNode.mjs`). Eles
+conferem que o modelo "Disponibilidade" dá o mesmo valor do indicador oficial
+e que a tabela por localidade bate com o seletor de prefixo.
+
+**Backend.** A rota `/relatorios` (GET, POST, PUT e DELETE) grava na tabela
+`RelatoriosPersonalizados` do MySQL `db_MVP`, pelo mesmo Sequelize de
+Gateway e Zonas. A tabela é criada pelo `sync()`. A biblioteca é compartilhada:
+todos veem todos os relatórios, e o autor fica registrado. Se duas pessoas
+editam o mesmo relatório ao mesmo tempo, a segunda gravação recebe **409** em
+vez de sobrescrever a primeira. A exclusão é lógica. Os arquivos estão no
+pacote `API_Hana_relatorios`.
+
 ## As regras, e por que elas são assim
 
 **Recorte por prefixo.** Sempre os quatro primeiros caracteres de
@@ -194,6 +302,12 @@ no cliente a partir da varredura dos equipamentos.
 **Metas em configuração.** Os 50 rastreadores e 7 gateways planejados são números do
 piloto. Quando o piloto virar rollout eles mudam, e mudar número de piloto não
 deveria exigir build de front-end.
+
+**Rota `/rest` no `xs-app.json`.** O approuter só declara `/odata`. No BTP, as
+chamadas ao API_Hana (leitura e, agora, a gravação dos relatórios
+personalizados) precisam de uma rota `^/rest/(.*)$` para a destination do
+API_Hana. Por causa do POST, PUT e DELETE, ela precisa de `csrfProtection: false`
+ou do token CSRF.
 
 **Paginação em `/Equipamentos`.** A rota devolve a frota inteira sem `top`/`skip`.
 

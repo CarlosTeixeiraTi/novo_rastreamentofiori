@@ -23,7 +23,7 @@
 					<ToggleButton id="btnLegendas" icon="sap-icon://text-align-left"
 						text="{i18n>mapaLegendas}" pressed="true" press=".onAlternarLegendas" />
 					<ToolbarSpacer />
-					<SegmentedButton id="segBase" selectedKey="satelite"
+					<SegmentedButton id="segBase" selectedKey="{config>/mapa/base}"
 						selectionChange=".onTrocarBase">
 						<items>
 							<SegmentedButtonItem key="claro" text="{i18n>mapaBaseClaro}" />

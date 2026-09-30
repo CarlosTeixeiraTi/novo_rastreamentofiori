@@ -110,6 +110,19 @@
 				</items>
 
 			</Table>
+			<VBox
+				visible="{frota>/carregando}"
+				class="valeLoadingOverlay"
+				justifyContent="Center"
+				alignItems="Center">
+
+				<HBox>
+					<VBox class="valeLoadingDot dot1" />
+					<VBox class="valeLoadingDot dot2" />
+					<VBox class="valeLoadingDot dot3" />
+				</HBox>
+
+			</VBox>
 		</content>
 	</Page>
 </mvc:View>

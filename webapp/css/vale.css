@@ -25,7 +25,7 @@
 	--sap-positivo: var(--sapPositiveTextColor, #107e3e);
 	--sap-critico: var(--sapCriticalColor, #eda800);
 	--sap-critico-texto: var(--sapCriticalTextColor, #d99800);
-	--sap-negativo: var(--sapNegativeTextColor, #bb0000);
+	--sap-negativo: var(--sapNegativeTextColor, #d99800);
 
 	/* Superfícies / texto / bordas — 100% do tema */
 	--vale-fundo: var(--sapBackgroundColor, #f5f6f7);
@@ -310,32 +310,103 @@
 	max-height: 29.5rem;
 	overflow-y: auto;
 }
+
 .valeCardClicavel {
-    cursor: pointer;
+	cursor: pointer;
 }
 
 .valeCardClicavel:hover {
-    transform: translateY(-2px);
+	transform: translateY(-2px);
 }
+
 /* ===== relatorios personalizados ===== */
-.valeRelNumero.sapMTitle { font-size: 2.75rem; font-weight: 700; line-height: 1.1; }
-.valeFarolVerde.sapMTitle { color: var(--sapPositiveColor); }
-.valeFarolAmarelo.sapMTitle { color: var(--sapCriticalColor); }
-.valeFarolVermelho.sapMTitle { color: var(--sapNegativeColor); }
-.valeLinhaTotal .sapMText, .valeLinhaTotal .sapMLnk, .valeLinhaTotal .sapMObjStatusText { font-weight: 700; }
-.valeLinhaTotal { background: var(--sapList_HeaderBackground); }
-.valeLinhaOutros .sapMText { font-style: italic; }
-.valeFiltroLinha { padding: 0.125rem 0; }
-.valeParcela .sapMPanelContent { padding: 0.5rem 1rem; }
-.valeEditorRelatorio .sapMDialogScrollCont, .valeAssistenteRelatorio .sapMDialogScrollCont { height: 100%; padding: 0; }
+.valeRelNumero.sapMTitle {
+	font-size: 2.75rem;
+	font-weight: 700;
+	line-height: 1.1;
+}
+
+.valeFarolVerde.sapMTitle {
+	color: var(--sapPositiveColor);
+}
+
+.valeFarolAmarelo.sapMTitle {
+	color: var(--sapCriticalColor);
+}
+
+.valeFarolVermelho.sapMTitle {
+	color: var(--sapNegativeColor);
+}
+
+.valeLinhaTotal .sapMText,
+.valeLinhaTotal .sapMLnk,
+.valeLinhaTotal .sapMObjStatusText {
+	font-weight: 700;
+}
+
+.valeLinhaTotal {
+	background: var(--sapList_HeaderBackground);
+}
+
+.valeLinhaOutros .sapMText {
+	font-style: italic;
+}
+
+.valeFiltroLinha {
+	padding: 0.125rem 0;
+}
+
+.valeParcela .sapMPanelContent {
+	padding: 0.5rem 1rem;
+}
+
+.valeEditorRelatorio .sapMDialogScrollCont,
+.valeAssistenteRelatorio .sapMDialogScrollCont {
+	height: 100%;
+	padding: 0;
+}
 
 /* barras em HTML (quando sap.viz nao carrega) */
-.valeBarras { display: flex; flex-direction: column; gap: 0.375rem; padding: 0.5rem 0; }
-.valeBarra { display: grid; grid-template-columns: minmax(6rem, 14rem) 1fr 5rem; align-items: center; gap: 0.5rem; font-size: 0.875rem; }
-.valeBarra__rotulo { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--sapTextColor); }
-.valeBarra__trilho { height: 0.875rem; background: var(--sapNeutralBackground, #eee); border-radius: 0.25rem; overflow: hidden; }
-.valeBarra__valor { display: block; height: 100%; background: var(--sapChart_OrderedColor_1, #0a6ed1); }
-.valeBarra__numero { text-align: right; font-variant-numeric: tabular-nums; color: var(--sapTextColor); }
+.valeBarras {
+	display: flex;
+	flex-direction: column;
+	gap: 0.375rem;
+	padding: 0.5rem 0;
+}
+
+.valeBarra {
+	display: grid;
+	grid-template-columns: minmax(6rem, 14rem) 1fr 5rem;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.875rem;
+}
+
+.valeBarra__rotulo {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: var(--sapTextColor);
+}
+
+.valeBarra__trilho {
+	height: 0.875rem;
+	background: var(--sapNeutralBackground, #eee);
+	border-radius: 0.25rem;
+	overflow: hidden;
+}
+
+.valeBarra__valor {
+	display: block;
+	height: 100%;
+	background: var(--sapChart_OrderedColor_1, #0a6ed1);
+}
+
+.valeBarra__numero {
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+	color: var(--sapTextColor);
+}
 
 /* ---------------- Sala de Controle: linha de 7 cards ---------------- */
 .valeKpiGrade {
@@ -345,9 +416,248 @@
 }
 
 @media (max-width: 1440px) {
-	.valeKpiGrade { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+	.valeKpiGrade {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
 }
 
 @media (max-width: 900px) {
-	.valeKpiGrade { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.valeKpiGrade {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+.valeLoadingOverlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 99999;
+
+	background: var(--sapBackgroundColor);
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.valeLoadingDot {
+	width: 18px;
+	height: 18px;
+	margin: 0 6px;
+	border-radius: 50%;
+
+	background: var(--vale-verde);
+
+}
+
+.dot1 {
+	animation: valeLoading 1.2s infinite;
+}
+
+.dot2 {
+	animation: valeLoading 1.2s infinite 0.2s;
+}
+
+.dot3 {
+	animation: valeLoading 1.2s infinite 0.4s;
+}
+
+@keyframes valeLoading {
+
+	0%,
+	80%,
+	100% {
+		transform: scale(0.5);
+		opacity: 0.3;
+	}
+
+	40% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+.valeProgressVerde .sapMPIBar {
+	background: #00807C !important;
+}
+
+/* Verde Vale para sucesso */
+.valeProgressCobertura.sapMPIValueMax .sapMPIBar,
+.valeProgressCobertura .sapMPIBarPositive {
+	background: #00807C !important;
+}
+
+/* Laranja Vale para atenção */
+.valeProgressCobertura .sapMPIBarCritical {
+	background: #EDA800 !important;
+}
+
+/* Vermelho continua para erro */
+.valeProgressCobertura .sapMPIBarNegative {
+	background: #d99800 !important;
+}
+
+/* Parte preenchida */
+.valeProgressCobertura .sapMPIBar {
+	background: #d99800 !important;
+}
+
+/* Fundo da barra */
+.valeProgressCobertura .sapMPIBarRemaining {
+	background: rgba(237, 168, 0, 0.20) !important;
+}
+
+/* Verde Vale */
+.valeProgressCobertura .sapMPIBarPositive {
+	background: #00807C !important;
+}
+
+/* Laranja Vale */
+.valeProgressCobertura .sapMPIBarCritical {
+	background: #d99800 !important;
+}
+
+/* Vermelho */
+.valeProgressCobertura .sapMPIBarNegative {
+	background: #d99800 !important;
+}
+
+/* Fundo da barra */
+.valeProgressCobertura .sapMPIBarRemaining {
+	background: rgba(237, 168, 0, 0.20) !important;
+}
+
+/* Ícone de Warning */
+.valeProgressCobertura .sapMPIIconCritical {
+	color: #d99800 !important;
+}
+
+/* Ícone de Error (X) */
+.valeProgressCobertura .sapMPIIconNegative {
+	color: #d99800 !important;
+}
+
+/* Ícone de Success */
+.valeProgressCobertura .sapMPIIconPositive {
+	color: #00807C !important;
+}
+
+/* Barra preenchida */
+.valeProgressCobertura .sapMPIBar {
+	background: #00807C !important;
+}
+
+/* Fundo da barra */
+.valeProgressCobertura .sapMPIBarRemaining {
+	background: rgba(0, 128, 124, 0.20) !important;
+}
+
+/* Ícone à direita */
+
+
+/* Estado Error */
+.valeProgressCobertura .sapMPIBarNegative,
+.valeProgressCobertura .sapMPIBarCritical,
+.valeProgressCobertura .sapMPIBarPositive {
+	background: #00807C !important;
+	border-color: #00807C !important;
+}
+
+/* Ícone */
+.valeProgressCobertura .sapMPIValueIcon,
+.valeProgressCobertura .sapUiIcon {
+	color: #00807C !important;
+}
+
+/* Ocultar apenas o X */
+.valeProgressCobertura .sapMPIValueIcon[data-sap-ui-icon-content=""] {
+	display: none !important;
+}
+
+
+.valeProgressCobertura .sapMPIBar {
+	background: #00807C !important;
+}
+
+.valeProgressCobertura .sapMPIBarRemaining {
+	background: rgba(0, 128, 124, .20) !important;
+}
+
+.valeProgressCobertura .sapMPIValueIcon {
+	display: none !important;
+}
+
+.sapTntNLI .sapTntNLIIcon {
+	font-size: 1.5rem !important;
+}
+
+.sapTntNLI .sapTntNLIIcon {
+	font-size: 2rem !important;
+}
+
+.sapTntNLI .sapTntNLIIcon {
+	color: var(--sapContent_IconColor) !important;
+}
+
+.sapTntNLI {
+	margin-bottom: 0.75rem !important;
+}
+
+/* Mais espaço entre os itens */
+
+/* Área clicável mais alta */
+.sapTntNLI > div {
+    min-height: 3.5rem !important;
+    display: flex;
+    align-items: center;
+}
+.sapTntNLI .sapTntNLIIcon {
+    font-size: 1.75rem !important;
+    color: var(--sapContent_IconColor) !important;
+    opacity: 0.65;
+}
+
+.sapTntNLI {
+    height: 3.8rem !important;
+    margin-bottom: 0.7rem !important;
+}
+.valeProgressCobertura .sapMPIBar {
+    background: var(--vale-verde) !important;
+}
+
+.valeProgressCobertura .sapMPIBarRemaining {
+    background: rgba(0, 128, 124, 0.20) !important;
+}
+
+.valeProgressCobertura .sapMPIValueIcon {
+    display: none !important;
+}
+/* Remove o ícone do ProgressIndicator */
+.valeProgressCobertura .sapMPIValueIcon {
+    display: none !important;
+}
+/* Barra preenchida */
+.valeProgressCobertura .sapMPIBar {
+    background: var(--vale-verde) !important;
+    border-color: var(--vale-verde) !important;
+}
+
+/* Fundo da barra */
+.valeProgressCobertura .sapMPIBarRemaining {
+    background: rgba(0, 128, 124, 0.20) !important;
+    border-color: rgba(0, 128, 124, 0.20) !important;
+}
+
+/* Texto percentual */
+.valeProgressCobertura .sapMPIText {
+    color: var(--vale-verde) !important;
+    font-weight: 600;
+}
+
+/* Remove todos os ícones */
+.valeProgressCobertura .sapMPIValueIcon,
+.valeProgressCobertura .sapUiIcon {
+    display: none !important;
 }

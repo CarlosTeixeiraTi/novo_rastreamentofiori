@@ -4,8 +4,17 @@ sap.ui.define([
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
 	"sap/ui/core/Item",
-	"sap/ui/export/Spreadsheet"
-], function (BaseController, arvore, Filter, FilterOperator, Item, Spreadsheet) {
+	"sap/ui/export/Spreadsheet",
+	"sap/ui/model/json/JSONModel"
+], function (
+	BaseController,
+	arvore,
+	Filter,
+	FilterOperator,
+	Item,
+	Spreadsheet,
+	JSONModel
+) {
 	"use strict";
 
 	return BaseController.extend("br.com.smartpcm.rastreamento.zrastreio.controller.Catalogo", {
@@ -13,12 +22,20 @@ sap.ui.define([
 		onInit: function () {
 			this.usarFrota();
 			this.escuro(false);
+
+			this._tela = new JSONModel({});
+			this.getView().setModel(this._tela, "tela");
+
 			var seletor = this.byId("filtroFamilia");
+
 			arvore.FAMILIAS.forEach(function (f) {
-				seletor.addItem(new Item({ key: f.id, text: f.rotulo }));
+				seletor.addItem(new Item({
+					key: f.id,
+					text: f.rotulo
+				}));
 			});
+
 			this.frota.aoAtualizar(this._contar, this);
-			this.roteador().getRoute("RouteCatalogo").attachPatternMatched(this._contar, this);
 		},
 
 		onBuscar: function () { this._aplicar(); },

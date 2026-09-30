@@ -13,7 +13,8 @@
 		e as telas ficam dentro dela. Trocar de area deixa de perder o
 		contexto de onde a pessoa estava.
 	-->
-	<tnt:ToolPage id="toolPage" sideExpanded="{= ${device>/system/phone} === false }">
+	<tnt:ToolPage
+		id="toolPage">
 
 		<tnt:header>
 			<tnt:ToolHeader>

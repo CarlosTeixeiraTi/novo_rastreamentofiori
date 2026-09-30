@@ -9,14 +9,32 @@ sap.ui.define([
 		onInit: function () {
 			this.usarFrota();
 			this.escuro(false);
-			this._tela = new JSONModel({ veiculo: "", linhas: [] });
+
+			this._tela = new JSONModel({
+				veiculo: "",
+				linhas: []
+			});
+
+
 			this.getView().setModel(this._tela, "tela");
 
+
 			// Cards: cada um abre a lista de veiculos por tras do numero.
-			this.tornarClicavel("cardVeiculos", function () { this.abrirDetalhamento("veiculos"); });
-			this.tornarClicavel("cardConformes", function () { this.abrirDetalhamento("veiculos", "conformes"); });
-			this.tornarClicavel("cardDivergentes", function () { this.abrirDetalhamento("veiculos", "divergentes"); });
-			this.tornarClicavel("cardCobertura", function () { this.abrirDetalhamento("conferencia"); });
+			this.tornarClicavel("cardVeiculos", function () {
+				this.abrirDetalhamento("veiculos");
+			});
+
+			this.tornarClicavel("cardConformes", function () {
+				this.abrirDetalhamento("veiculos", "conformes");
+			});
+
+			this.tornarClicavel("cardDivergentes", function () {
+				this.abrirDetalhamento("veiculos", "divergentes");
+			});
+
+			this.tornarClicavel("cardCobertura", function () {
+				this.abrirDetalhamento("conferencia");
+			});
 		},
 
 		/** Familia do veiculo selecionado: os componentes rastreados dela. */

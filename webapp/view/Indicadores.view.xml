@@ -60,49 +60,48 @@
 									press=".onAbrirParcela"
 									tooltip="{i18n>indDetalhar}">
 
-								<VBox
-									width="100%"
-									class="sapUiTinyMarginTop sapUiTinyMarginBottom">
-
-									<HBox
+									<VBox
 										width="100%"
-										justifyContent="SpaceBetween"
-										alignItems="Start">
+										class="sapUiTinyMarginTop sapUiTinyMarginBottom">
 
-										<VBox width="90%">
+										<HBox
+											width="100%"
+											justifyContent="SpaceBetween"
+											alignItems="Start">
+
+											<VBox width="90%">
+												<Title
+													text="{tela>titulo}"
+													level="H3"
+													titleStyle="H6" />
+
+												<Text
+													text="{tela>pergunta}"
+													class="valeKpiPe" />
+											</VBox>
+
 											<Title
-												text="{tela>titulo}"
+												text="{ path: 'tela>valor', formatter: '.percentual' }"
 												level="H3"
-												titleStyle="H6" />
+												titleStyle="H4" />
 
-											<Text
-												text="{tela>pergunta}"
-												class="valeKpiPe" />
-										</VBox>
+										</HBox>
+										<ProgressIndicator
+											percentValue="{ path: 'tela>valor', formatter: '.paraPercentual' }"
+											showValue="false"
+											height="0.5rem"
+											state="{ path: 'tela>valor', formatter: '.estadoDaCobertura' }"
+											class="sapUiTinyMarginTop sapUiTinyMarginBottom valeProgressCobertura" />
 
-										<Title
-											text="{ path: 'tela>valor', formatter: '.percentual' }"
-											level="H3"
-											titleStyle="H4" />
+										<Text
+											text="{tela>conta}"
+											class="valeMono valeKpiPe" />
 
-									</HBox>
+										<Text
+											text="{tela>ressalva}"
+											class="valeKpiPe sapUiTinyMarginTop" />
 
-									<ProgressIndicator
-										percentValue="{ path: 'tela>valor', formatter: '.paraPercentual' }"
-										showValue="false"
-										height="0.5rem"
-										state="{ path: 'tela>valor', formatter: '.estadoDaCobertura' }"
-										class="sapUiTinyMarginTop sapUiTinyMarginBottom" />
-
-									<Text
-										text="{tela>conta}"
-										class="valeMono valeKpiPe" />
-
-									<Text
-										text="{tela>ressalva}"
-										class="valeKpiPe sapUiTinyMarginTop" />
-
-								</VBox>
+									</VBox>
 
 								</CustomListItem>
 
@@ -125,7 +124,9 @@
 					</HBox>
 					<ProgressIndicator
 						percentValue="{ path: 'frota>/piloto/rastreadores/fracao', formatter: '.paraPercentual' }"
-						showValue="false" height="0.5rem" class="sapUiTinyMarginBottom" />
+						showValue="false"
+						height="0.5rem"
+						class="sapUiTinyMarginBottom valeProgressCobertura" />
 					<HBox justifyContent="SpaceBetween">
 						<Link text="{i18n>indPilotoGateways}" press=".onAbrirPilotoGateways" />
 						<Text text="{frota>/piloto/gateways/feito} / {frota>/piloto/gateways/meta}"
@@ -133,7 +134,9 @@
 					</HBox>
 					<ProgressIndicator
 						percentValue="{ path: 'frota>/piloto/gateways/fracao', formatter: '.paraPercentual' }"
-						showValue="false" height="0.5rem" />
+						showValue="false"
+						height="0.5rem"
+						class="valeProgressCobertura" />
 				</VBox>
 			</VBox>
 		</content>

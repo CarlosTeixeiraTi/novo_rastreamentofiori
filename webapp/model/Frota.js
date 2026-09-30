@@ -319,15 +319,28 @@ sap.ui.define([
 			m.setProperty("/divergentes", divergentes);
 
 			/* --- movimentacoes recentes --- */
-			var movimentacoes = ativos.filter(function (a) {
-				return a.grupoAnterior && a.grupoAtual && a.grupoAnterior !== a.grupoAtual;
-			}).slice(0, 10).map(function (a) {
-				return {
-					codigo: a.codigoOriginal, descricao: a.descricao,
-					de: a.grupoAnterior, para: a.grupoAtual,
-					oficina: a.oficina, quando: a.silencioTexto
-				};
-			});
+			var movimentacoes = ativos
+				.filter(function (a) {
+					return a.grupoAnterior &&
+						a.grupoAtual &&
+						a.grupoAnterior !== a.grupoAtual;
+				})
+				.sort(function (a, b2) {
+					return new Date(b2.ultimaAtualizacao || 0) -
+						new Date(a.ultimaAtualizacao || 0);
+				})
+				.slice(0, 10)
+				.map(function (a) {
+					return {
+						codigo: a.codigoOriginal,
+						descricao: a.descricao,
+						de: a.grupoAnterior,
+						para: a.grupoAtual,
+						oficina: a.oficina,
+						quando: a.silencioTexto
+					};
+				});
+
 			m.setProperty("/movimentacoes", movimentacoes);
 			var ativosHabilitados = ativos;
 			/* --- indicadores --- */

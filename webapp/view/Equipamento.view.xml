@@ -127,13 +127,16 @@
 
 
 					<VBox class="valeCartao valeCartaoManutencao">
-						<HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallPadding">
+						<HBox justifyContent="SpaceBetween" alignItems="Center"
+							class="sapUiSmallPadding">
 							<Title text="{i18n>detManutencao}" level="H3" titleStyle="H6" />
 							<HBox>
-								<Button icon="sap-icon://excel-attachment" text="{i18n>detNotasExcel}"
+								<Button icon="sap-icon://excel-attachment"
+									text="{i18n>detNotasExcel}"
 									type="Transparent" press=".onExportarNotas"
 									enabled="{= ${tela>/notas}.length > 0 }" />
-								<Button icon="sap-icon://excel-attachment" text="{i18n>detOrdensExcel}"
+								<Button icon="sap-icon://excel-attachment"
+									text="{i18n>detOrdensExcel}"
 									type="Transparent" press=".onExportarOrdens"
 									enabled="{= ${tela>/ordens}.length > 0 }" />
 							</HBox>
@@ -173,7 +176,8 @@
 				<l:Grid defaultSpan="XL8 L8 M12 S12" hSpacing="1" vSpacing="1"
 					class="sapUiTinyMarginTop">
 					<VBox class="valeCartao">
-						<HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallPadding">
+						<HBox justifyContent="SpaceBetween" alignItems="Center"
+							class="sapUiSmallPadding">
 							<VBox>
 								<Title text="{i18n>detLinhaDoTempo}" level="H3" titleStyle="H6" />
 								<Text text="{i18n>detLinhaDoTempoPe}" class="valeKpiPe" />
@@ -218,7 +222,8 @@
 						<layoutData>
 							<l:GridData span="XL4 L4 M12 S12" />
 						</layoutData>
-						<HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallPadding">
+						<HBox justifyContent="SpaceBetween" alignItems="Center"
+							class="sapUiSmallPadding">
 							<VBox>
 								<Title text="{i18n>detArvoreVeiculo}" level="H3" titleStyle="H6" />
 								<Text text="{i18n>detArvoreVeiculoPe}" class="valeKpiPe" />
@@ -254,6 +259,20 @@
 							content="&lt;div class=&quot;valeMiniMapa&quot;&gt;&lt;/div&gt;" />
 					</VBox>
 				</l:Grid>
+			</VBox>
+			<VBox
+				visible="{frota>/carregando}"
+				class="valeLoadingOverlay"
+				justifyContent="Center"
+				alignItems="Center">
+
+
+				<HBox>
+					<VBox class="valeLoadingDot dot1" />
+					<VBox class="valeLoadingDot dot2" />
+					<VBox class="valeLoadingDot dot3" />
+				</HBox>
+
 			</VBox>
 		</content>
 	</Page>

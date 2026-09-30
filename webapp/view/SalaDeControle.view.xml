@@ -16,8 +16,16 @@
 						<Title text="{i18n>salaTitulo}" level="H2" titleStyle="H2" />
 						<Text text="{i18n>salaSubtitulo}" class="valeKpiPe" />
 					</VBox>
-					<Text text="{ path: 'frota>/atualizadoEm', formatter: '.formatarAtualizacao' }"
-						class="valeKpiPe" />
+
+					<VBox alignItems="End">
+						<Text
+							text="{ path: 'frota>/atualizadoEm', formatter: '.formatarAtualizacao' }"
+							class="valeKpiPe" />
+
+						<Text
+							text="Atualização automática a cada 10 minutos"
+							class="valeKpiPe sapUiTinyMarginTop" />
+					</VBox>
 				</HBox>
 
 				<!--
@@ -180,8 +188,7 @@
 										percentValue="{ path: 'frota>cobertura', formatter: '.paraPercentual' }"
 										showValue="false"
 										height="0.5rem"
-										state="{ path: 'frota>cobertura', formatter: '.estadoDaCobertura' }"
-										class="sapUiTinyMarginTop" />
+										class="sapUiTinyMarginTop valeProgressCobertura" />
 
 								</VBox>
 
@@ -246,6 +253,22 @@
 					</Table>
 				</VBox>
 			</VBox>
+
+			<!-- Loading -->
+			<VBox
+				visible="{frota>/carregando}"
+				class="valeLoadingOverlay"
+				justifyContent="Center"
+				alignItems="Center">
+
+				<HBox>
+					<VBox class="valeLoadingDot dot1" />
+					<VBox class="valeLoadingDot dot2" />
+					<VBox class="valeLoadingDot dot3" />
+				</HBox>
+
+			</VBox>
+
 		</content>
 	</Page>
 </mvc:View>

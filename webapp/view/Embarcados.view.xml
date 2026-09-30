@@ -8,7 +8,8 @@
 			<VBox class="sapUiSmallMargin">
 				<Text text="{i18n>embarcadosSubtitulo}" class="valeKpiPe sapUiTinyMarginBottom" />
 
-				<l:Grid defaultSpan="XL3 L3 M6 S6" hSpacing="1" vSpacing="1" class="sapUiTinyMarginBottom">
+				<l:Grid defaultSpan="XL3 L3 M6 S6" hSpacing="1" vSpacing="1"
+					class="sapUiTinyMarginBottom">
 					<VBox id="cardVeiculos" class="valeCartao sapUiSmallPadding valeCardClicavel">
 						<Text text="{i18n>embVeiculos}" class="valeKpiRotulo" />
 						<Text text="{frota>/conferencia/resumo/veiculos}" class="valeKpiValor" />
@@ -23,7 +24,9 @@
 					</VBox>
 					<VBox id="cardCobertura" class="valeCartao sapUiSmallPadding valeCardClicavel">
 						<Text text="{i18n>embCobertura}" class="valeKpiRotulo" />
-						<Text text="{ path: 'frota>/conferencia/resumo/cobertura', formatter: '.percentual' }" class="valeKpiValor" />
+						<Text
+							text="{ path: 'frota>/conferencia/resumo/cobertura', formatter: '.percentual' }"
+							class="valeKpiValor" />
 					</VBox>
 				</l:Grid>
 
@@ -32,13 +35,24 @@
 						<Title text="{i18n>embPorVeiculo}" level="H3" titleStyle="H6" />
 						<Text text="{i18n>embPorVeiculoPe}" class="valeKpiPe" />
 					</VBox>
-					<Table id="tabela" items="{frota>/conferencia/veiculos}" mode="SingleSelectMaster" selectionChange=".onSelecionar">
+					<Table id="tabela" items="{frota>/conferencia/veiculos}"
+						mode="SingleSelectMaster" selectionChange=".onSelecionar">
 						<columns>
-							<Column width="10rem"><Text text="{i18n>colVeiculo}" /></Column>
-							<Column width="15rem"><Text text="{i18n>colLocal}" /></Column>
-							<Column><Text text="{i18n>colCobertura}" /></Column>
-							<Column width="9rem" hAlign="End"><Text text="{i18n>colComArvore}" /></Column>
-							<Column width="10rem"><Text text="{i18n>colSituacao}" /></Column>
+							<Column width="10rem">
+								<Text text="{i18n>colVeiculo}" />
+							</Column>
+							<Column width="15rem">
+								<Text text="{i18n>colLocal}" />
+							</Column>
+							<Column>
+								<Text text="{i18n>colCobertura}" />
+							</Column>
+							<Column width="9rem" hAlign="End">
+								<Text text="{i18n>colComArvore}" />
+							</Column>
+							<Column width="10rem">
+								<Text text="{i18n>colSituacao}" />
+							</Column>
 						</columns>
 						<items>
 							<ColumnListItem type="Active">
@@ -48,9 +62,11 @@
 									<ProgressIndicator
 										percentValue="{ path: 'frota>cobertura', formatter: '.paraPercentual' }"
 										displayValue="{ path: 'frota>cobertura', formatter: '.percentual' }"
-										showValue="true" height="1rem"
-										state="{ path: 'frota>cobertura', formatter: '.estadoDaCobertura' }" />
-									<Text text="{frota>comRastreador} / {frota>naArvore}" class="valeMono" />
+										showValue="true"
+										height="1rem"
+										class="valeProgressCobertura" />
+									<Text text="{frota>comRastreador} / {frota>naArvore}"
+										class="valeMono" />
 									<ObjectStatus
 										text="{ path: 'frota>conforme', formatter: '.textoSituacao' }"
 										state="{ path: 'frota>conforme', formatter: '.estadoSituacao' }" />
@@ -60,18 +76,28 @@
 					</Table>
 				</VBox>
 
-				<VBox class="valeCartao sapUiTinyMarginTop" visible="{= ${tela>/linhas}.length > 0 }">
-					<HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallPadding">
+				<VBox class="valeCartao sapUiTinyMarginTop"
+					visible="{= ${tela>/linhas}.length > 0 }">
+					<HBox justifyContent="SpaceBetween" alignItems="Center"
+						class="sapUiSmallPadding">
 						<Title text="{i18n>embFamilias} {tela>/veiculo}" level="H3" titleStyle="H6" />
 						<Button icon="sap-icon://excel-attachment" text="{i18n>exportar}"
 							type="Transparent" press=".onExportarFamilias" />
 					</HBox>
 					<Table items="{tela>/linhas}" inset="false">
 						<columns>
-							<Column><Text text="{i18n>colFamilia}" /></Column>
-							<Column width="9rem" hAlign="End"><Text text="{i18n>colArvore}" /></Column>
-							<Column width="9rem" hAlign="End"><Text text="{i18n>colComTag}" /></Column>
-							<Column width="16rem"><Text text="{i18n>colDiferenca}" /></Column>
+							<Column>
+								<Text text="{i18n>colFamilia}" />
+							</Column>
+							<Column width="9rem" hAlign="End">
+								<Text text="{i18n>colArvore}" />
+							</Column>
+							<Column width="9rem" hAlign="End">
+								<Text text="{i18n>colComTag}" />
+							</Column>
+							<Column width="16rem">
+								<Text text="{i18n>colDiferenca}" />
+							</Column>
 						</columns>
 						<items>
 							<ColumnListItem>
@@ -87,6 +113,19 @@
 						</items>
 					</Table>
 				</VBox>
+			</VBox>
+			<VBox
+				visible="{frota>/carregando}"
+				class="valeLoadingOverlay"
+				justifyContent="Center"
+				alignItems="Center">
+
+				<HBox>
+					<VBox class="valeLoadingDot dot1" />
+					<VBox class="valeLoadingDot dot2" />
+					<VBox class="valeLoadingDot dot3" />
+				</HBox>
+
 			</VBox>
 		</content>
 	</Page>

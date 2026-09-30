@@ -19,9 +19,6 @@ sap.ui.define([
 				this.usarFrota();
 				this._ligarCards();
 
-				// Repinta quando a carga (assincrona, disparada no App) termina,
-				// no botao Atualizar e na troca de prefixo. Nao usar
-				// attachPropertyChange: ele nao dispara para setProperty.
 				this.frota.aoAtualizar(this._aoMudarModelo, this);
 				this.configuracoes.aoAlterar(this._aoMudarConfig, this);
 
@@ -31,6 +28,10 @@ sap.ui.define([
 						this._aoEntrar,
 						this
 					);
+
+				this._timerRefreshSala = setInterval(function () {
+					this.frota.carregar();
+				}.bind(this), 10 * 60 * 1000);
 			},
 			onAfterRendering: function () {
 
@@ -437,9 +438,20 @@ sap.ui.define([
 			},
 
 			onExit: function () {
+
+				if (this._timerRefreshSala) {
+					clearInterval(this._timerRefreshSala);
+					this._timerRefreshSala = null;
+				}
+
 				this.frota.pararDeOuvir(this._aoMudarModelo, this);
 				this.configuracoes.pararDeOuvir(this._aoMudarConfig, this);
-				if (this._mapa) { this._mapa.destruir(); this._mapa = null; }
+
+				if (this._mapa) {
+					this._mapa.destruir();
+					this._mapa = null;
+				}
 			}
 		});
+
 });

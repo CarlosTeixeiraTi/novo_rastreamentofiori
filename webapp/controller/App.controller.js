@@ -55,9 +55,10 @@ sap.ui.define([
 				MessageToast.show("Falha ao carregar: " + erro.message);
 			});
 
-			if (Configuracoes.obter("/menuExpandido") === false) {
-				this.byId("toolPage").setSideExpanded(false);
-			}
+			this.byId("toolPage").setSideExpanded(
+				Configuracoes.obter("/menuExpandido")
+			);
+
 			this._programarAtualizacao();
 
 			this.roteador().attachRouteMatched(this._aoTrocarDeRota, this);

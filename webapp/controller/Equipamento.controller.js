@@ -12,32 +12,31 @@ sap.ui.define([
 		onInit: function () {
 			this.usarFrota();
 			this.escuro(false);
-			this._tela = new JSONModel({ ativo: {}, confianca: { testes: [] }, historico: [], notas: [], ordens: [], arvore: [] });
+
+			this._tela = new JSONModel({
+				ativo: {},
+				confianca: { testes: [] },
+				historico: [],
+				notas: [],
+				ordens: [],
+				arvore: []
+			});
+
 			this.getView().setModel(this._tela, "tela");
-			this.roteador().getRoute("RouteEquipamento").attachPatternMatched(this._aoEntrar, this);
+
+			this.roteador()
+				.getRoute("RouteEquipamento")
+				.attachPatternMatched(this._aoEntrar, this);
+
 			this.byId("mapaFicha").attachAfterRendering(this._montarMapa, this);
 		},
 
 		_aoEntrar: function (evento) {
 
-			var that = this;
-
 			this._codigo =
 				evento.getParameter("arguments").codigo;
 
-			this.frota.carregar()
-				.then(function () {
-
-					that._mostrar();
-
-				})
-				.catch(function (erro) {
-
-					MessageToast.show(
-						"Falha ao carregar: " + erro.message
-					);
-
-				});
+			this._mostrar();
 
 		},
 
@@ -58,10 +57,17 @@ sap.ui.define([
 				return;
 			}
 
+			if (detalhe.ativo) {
+				detalhe.ativo.codigoOriginal = String(
+					detalhe.ativo.codigoOriginal || ""
+				).replace(/^0+/, "");
+			}
+
 			this._tela.setData(detalhe);
 			this._pintarMapa();
 
 		},
+
 		_montarMapa: function () {
 			if (this._mapa) { return; }
 			var dominio = this.byId("mapaFicha").getDomRef();

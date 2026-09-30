@@ -319,7 +319,8 @@
                                         <ProgressIndicator
                                             percentValue="{dashboard>/coberturaValorGerado}"
                                             displayValue=""
-                                            state="Success" />
+                                            state="Success"
+                                            class="valeProgressCobertura" />
 
                                         <HBox
                                             justifyContent="SpaceBetween"
@@ -335,7 +336,8 @@
                                         <ProgressIndicator
                                             percentValue="{dashboard>/disponibilidadeMonitoramento}"
                                             displayValue=""
-                                            state="Success" />
+                                            state="Success"
+                                            class="valeProgressCobertura" />
 
                                         <HBox
                                             justifyContent="SpaceBetween"
@@ -347,11 +349,11 @@
                                                 number="{dashboard>/percentualConsistenciaMovimentacao}"
                                                 unit="%" />
                                         </HBox>
-
                                         <ProgressIndicator
                                             percentValue="{dashboard>/percentualConsistenciaMovimentacao}"
                                             displayValue=""
-                                            state="Success" />
+                                            state="Success"
+                                            class="valeProgressCobertura" />
 
                                         <VBox class="kpiEfetividade">
 
@@ -367,11 +369,11 @@
 
 
                                         </VBox>
-
                                         <ProgressIndicator
                                             percentValue="{dashboard>/indiceEfetividade}"
                                             displayValue=""
-                                            state="Success" />
+                                            state="Success"
+                                            class="valeProgressCobertura" />
 
                                     </VBox>
 
@@ -427,7 +429,8 @@
 
                                                 <ProgressIndicator
                                                     percentValue="{dashboard>percentual}"
-                                                    displayValue="" />
+                                                    displayValue=""
+                                                    class="valeProgressCobertura" />
 
                                             </VBox>
 
